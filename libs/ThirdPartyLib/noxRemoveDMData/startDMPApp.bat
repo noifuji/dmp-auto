@@ -1,0 +1,1 @@
+%1 shell am start jp.co.takaratomy.duelmastersplays/jp.co.takaratomy.duelmastersplays_native.PlaysUnityPlayerActivity

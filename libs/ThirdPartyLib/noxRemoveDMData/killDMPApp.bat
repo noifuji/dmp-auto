@@ -1,0 +1,1 @@
+%1 shell am force-stop jp.co.takaratomy.duelmastersplays
