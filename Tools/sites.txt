@@ -1,0 +1,6 @@
+# add absolute paths one per line, that point to other directories/jars,
+# where importable modules (Jython, plain Python, SikuliX scripts, ...) can be found.
+# They will be added automatically at startup to the end of sys.path in the given sequence
+
+# lines beginning with # and blank lines are ignored and can be used as comments.
+./libs/ThirdPartyLib

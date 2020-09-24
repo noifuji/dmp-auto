@@ -15,7 +15,6 @@ Avator = Pattern("Avator.png").targetOffset(376,-12)
 instances = EnvSettings.NOX_INSTANCES
 ####################Settings####################
 
-slack_url = EnvSettings.slack_url
 mentionUser = EnvSettings.mentionUser
 NoxAppPath = EnvSettings.NoxAppPath
 NoxApp = App(NoxAppPath)

@@ -14,7 +14,6 @@ import AndAppResources
 Avator = Pattern("Avator.png").similar(0.90).targetOffset(315,1)
 ####################Settings####################
 
-slack_url = EnvSettings.slack_url
 mentionUser = EnvSettings.mentionUser
 AppPath = EnvSettings.AppPath
 appname = 'AllMainStories'
