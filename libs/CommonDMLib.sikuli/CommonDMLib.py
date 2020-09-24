@@ -145,6 +145,8 @@ def scanAccountInfo(resource):
                     tempPacks.append(temp)
                 else:
                     tempPacks.append("")
+        else:
+            tempPacks.append("")
         if i % 2 == 0:
             wheel(resource.TITLE_ITEM, Button.WHEEL_DOWN, 1)
             wait(6)
