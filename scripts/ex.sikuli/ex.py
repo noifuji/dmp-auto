@@ -7,5 +7,4 @@ import CommonDMLib
 import NoxResources
 import random
 
-
-App(EnvSettings.NoxAppPath).close()
+CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser,"a","a")
