@@ -197,7 +197,11 @@ def getDeckCode(DeckName):
         updateDeckCodes()
 
     json_data = getJsonFromDisk(deckCodesJsonPath)
-    return json_data["deck_codes"][DeckName]
+    if DeckName in json_data["deck_codes"] == True:
+        return json_data["deck_codes"][DeckName]
+    else:
+        print "no deck name was matched."
+        return ""
             
 def removeCompletedInstances(instances):
     COMPLETED_INSTANCES_JSON_PATH = EnvSettings.DATA_DIR_PATH + "/" + EnvSettings.COMPLETED_INSTANCES_JSON_FILE

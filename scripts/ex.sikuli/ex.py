@@ -7,4 +7,4 @@ import CommonDMLib
 import NoxResources
 import random
 
-CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser,"a","a")
+CommonDMLib.getDeckCode("ddd")
