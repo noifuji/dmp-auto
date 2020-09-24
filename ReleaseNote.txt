@@ -8,7 +8,7 @@ version3.0.0
 ・sites.txtを./libs/ThirdPartyLibに修正する。
 ・Register_DMP_AUTO_HOME.batを管理者権限で実行する。
 ・自動タスク起動を行う場合は、ToolsのRegisterDailyTaskを管理者権限で実行する。
-  実行後checkTask.batを実行し、正しく登録されているか確認する。
+  実行後checkTask.batを実行し、正しく登録されているか確認する
 ・EnvSettings.sikuliを修正する
 
 version2.1.11
