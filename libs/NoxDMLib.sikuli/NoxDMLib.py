@@ -187,29 +187,32 @@ def closeMission():
     click("1596776234501.png")
     waitVanish(MISSION_TITLE, 30)
 
-def RestartNox(app, instance):
-    App(EnvSettings.NoxAppPath).close()
-    wait(10)
-    App(EnvSettings.NoxMultiPlayerPath).close()
-    wait(10)
+def exitNox():
     App(EnvSettings.NoxMultiPlayerPath).open()
-#    exists(Pattern("1596777921231.png").similar(0.85), 180)
-#    click(Pattern("1596777921231.png").similar(0.85))
     exists(Pattern("1596962591946.png").targetOffset(92,154),10)
-#    for num in range(10):
-#        if exists(Pattern("1596777933938.png").similar(0.90), 1) == None:
-#            wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_DOWN, 1)
-#        else:
-#            break
-#    for num in range(10):
-#        if exists(Pattern("1596777933938.png").similar(0.90), 1) == None:
-#            wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_UP, 2)
-#        else:
-#            break
-#    click(Pattern("1596777933938.png").similar(0.90))
-#    exists(Pattern("1596777989679.png").similar(0.90), 10)
-#    click(Pattern("1596777989679.png").similar(0.90))
-#    wait(15)
+    for num in range(10):
+        if exists(Pattern("1596777933938.png").similar(0.90), 1) == None:
+            wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_DOWN, 1)
+        else:
+            break
+    for num in range(10):
+        if exists(Pattern("1596777933938.png").similar(0.90), 1) == None:
+            wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_UP, 2)
+        else:
+            break
+    if len(findAny(Pattern("1596777933938.png").similar(0.90))) > 0:
+        click(Pattern("1596777933938.png").similar(0.90))
+        if exists(Pattern("1596777989679.png").similar(0.90), 10) != None:
+            click(Pattern("1596777989679.png").similar(0.90))
+        waitVanish(Pattern("1596777933938.png").similar(0.90), 120)
+    App(EnvSettings.NoxMultiPlayerPath).close()
+
+    
+def RestartNox(app, instance):
+    exitNox()
+    wait(3)
+    App(EnvSettings.NoxMultiPlayerPath).open()
+    exists(Pattern("1596962591946.png").targetOffset(92,154),10)
     for num in range(10):
         if exists(instance[0], 1) == None:
             wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_DOWN, 1)

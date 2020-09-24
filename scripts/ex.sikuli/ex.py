@@ -7,4 +7,5 @@ import CommonDMLib
 import NoxResources
 import random
 
-CommonDMLib.dragDropAtSpeed(Pattern("1600851664292.png").targetOffset(1,-21), findAny("1600848839083.png")[0], 1)
+
+App(EnvSettings.NoxAppPath).close()

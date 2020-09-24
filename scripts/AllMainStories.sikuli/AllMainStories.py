@@ -7,6 +7,7 @@ import EnvSettings
 sys.path.append(EnvSettings.LIBS_DIR_PATH)
 sys.path.append(EnvSettings.RES_DIR_PATH)
 import DMLib
+import NoxDMLib
 import CommonDMLib
 import AndAppResources
 
@@ -24,8 +25,7 @@ win_count =0
 retryCount = 0
 
 #Pre-processing Start
-App(EnvSettings.NoxAppPath).close()
-App(EnvSettings.NoxMultiPlayerPath).close()
+NoxDMLib.exitNox()
 CommonDMLib.updateDeckCodes()
 #Pre-processing End
 
