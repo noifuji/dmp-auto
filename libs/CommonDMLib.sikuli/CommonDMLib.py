@@ -111,14 +111,39 @@ def isNumber(str):
             return False
     return True
 
-def scanNumberChangeWidth(targetImage, offsetX, offsetY, width, height):
+def scanNumberChangeWidthFromRight(targetImage, offsetX, offsetY, width, height):
+    WIDTH_A_CHAR = 20
+    MARGIN_LEFT = 20
+    res = findAny(targetImage)
+    num = ""
+    if len(res) > 0:
+        WIDTH_INIT = width
+        WIDTH_CONFIRM = width
+        dW = 2
+        for num in range(1000):
+            reg = Region(res[0].getX()+offsetX, res[0].getY()+offsetY, WIDTH_INIT - dW*num, height)
+            reg.highlight(0.1)
+            num = OCR.readWord(reg)
+            if isNumber(num):
+                WIDTH_CONFIRM = len(num) * WIDTH_A_CHAR + MARGIN_LEFT
+                break
+
+        for num in range(1000):
+            reg = Region(res[0].getX()+offsetX, res[0].getY()+offsetY, WIDTH_CONFIRM - dW*num, height)
+            reg.highlight(0.1)
+            num = OCR.readWord(reg)
+            if isNumber(num):
+                    break
+    return num
+
+def scanNumberChangeWidthFromLeft(targetImage, offsetX, offsetY, width, height):
     res = findAny(targetImage)
     num = ""
     if len(res) > 0:
         WIDTH_INIT = width
         dW = 2
         for num in range(1000):
-            reg = Region(res[0].getX()+offsetX, res[0].getY()+offsetY, WIDTH_INIT - dW*num, height)
+            reg = Region(res[0].getX()+offsetX + dW*num, res[0].getY()+offsetY, WIDTH_INIT - dW*num, height)
             reg.highlight(0.1)
             num = OCR.readWord(reg)
             if isNumber(num):
@@ -139,11 +164,11 @@ def scanAccountInfo(resource):
     OFFSET_Y = 96
     WIDTH_INIT = 60
     HEIGHT = 27
-    WIDTH_INIT_LONG = 90
+    WIDTH_INIT_LONG = 110
     
-    OFFSET_X_LV = 275
+    OFFSET_X_LV = 265
     OFFSET_Y_LV = 34
-    WIDTH_INIT_LV = 100
+    WIDTH_INIT_LV = 85
     HEIGHT_LV = 46
 
     for waitProfileLoop in range(100):
@@ -156,7 +181,7 @@ def scanAccountInfo(resource):
         if len(findAny(resource.TITLE_PROFILE)) > 0:
             break
     
-    lv = scanNumberChangeWidth(resource.TITLE_PLAYER_LV, OFFSET_X_LV, OFFSET_Y_LV, WIDTH_INIT_LV, HEIGHT_LV)
+    lv = scanNumberChangeWidthFromLeft(resource.TITLE_PLAYER_LV, OFFSET_X_LV, OFFSET_Y_LV, WIDTH_INIT_LV, HEIGHT_LV)
 
     
     click(resource.BUTTON_ITEM)
@@ -164,7 +189,7 @@ def scanAccountInfo(resource):
 
     scanCount = 0
     for i in range(len(ts)):
-        res = scanNumberChangeWidth(ts[i], OFFSET_X, OFFSET_Y, WIDTH_INIT, HEIGHT)
+        res = scanNumberChangeWidthFromRight(ts[i], OFFSET_X, OFFSET_Y, WIDTH_INIT, HEIGHT)
         if res == "":
             tempPacks.append("")
         else:
@@ -180,8 +205,8 @@ def scanAccountInfo(resource):
     wait(1)
 
 
-    gold = scanNumberChangeWidth(resource.TITLE_GOLD, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT)
-    dmp = scanNumberChangeWidth(resource.TITLE_DMPOINT, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT)
+    gold = scanNumberChangeWidthFromRight(resource.TITLE_GOLD, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT)
+    dmp = scanNumberChangeWidthFromRight(resource.TITLE_DMPOINT, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT)
 
     packs = [0,0,0,0,0,0,0,0,0]
     for i in range(len(tempPacks)-1):
