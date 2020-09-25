@@ -104,32 +104,40 @@ for entire_loop in range(100):
                 CommonDMLib.skipRewards(AndAppResources)
 
                 #エピソード選択画面にいる場合の処理
-                if len(findAny("1600267657384.png")) > 0:
+                if len(findAny(AndAppResources.BACKGROUND_EPISODE_LIST)) > 0:
                     wait(10)
-                    if len(findAny(Pattern("1598197418579.png").similar(0.87).targetOffset(-51,-214))) > 0:
+                    if len(findAny(AndAppResources.TITLE_EP5)) > 0:
+                        CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode5 has started.', appname)
+                        click(AndAppResources.TITLE_EP5)
+                    elif len(findAny(AndAppResources.TITLE_EP4)) > 0:#Pattern("1598197418579.png").similar(0.86).targetOffset(-51,-214)
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode4 has started.', appname)
-                        click(Pattern("1598197418579.png").similar(0.86).targetOffset(-51,-214))
-                    elif len(findAny(Pattern("1595243394444.png").similar(0.94))) > 0:
+                        click(AndAppResources.TITLE_EP4)#Pattern("1598197418579.png").similar(0.86).targetOffset(-51,-214)
+                    elif len(findAny(AndAppResources.TITLE_EP3)) > 0:#Pattern("1595243394444.png").similar(0.94)
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode3 has started.', appname)
-                        click(Pattern("1595243394444.png").similar(0.94).targetOffset(3,-65))
-                    elif len(findAny(Pattern("1595243419652.png").similar(0.95))) > 0:
+                        click(AndAppResources.TITLE_EP3)#Pattern("1595243394444.png").similar(0.94).targetOffset(3,-65)
+                    elif len(findAny(AndAppResources.TITLE_EP2)) > 0:#Pattern("1595243419652.png").similar(0.95)
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode2 has started.', appname)
-                        click(Pattern("1595243419652.png").similar(0.95).targetOffset(1,-57))
-                if len(findAny("1599610866634.png")) > 0:
-                    click("1599610866634.png")
+                        click(AndAppResources.TITLE_EP2)#Pattern("1595243419652.png").similar(0.95).targetOffset(1,-57)
+                if len(findAny(AndAppResources.BUTTON_CHECK_REWARD)) > 0:
+                    click(AndAppResources.BUTTON_CHECK_REWARD)
                     wait(0.5)
-                if len(findAny("1599610908602.png")) > 0:
-                    click("1599610920793.png")
+                if len(findAny(AndAppResources.TITLE_REWARD_INFO)) > 0:
+                    click(AndAppResources.BUTTON_CLOSE)
                     break
                 
             if EnvSettings.RUN_MODE == "DEV":
                 wait(1)
                 CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Battle Loop Count : ' + str(retryCount), appname)
                 retryCount = 0
-            if len(findAny(Pattern("1596547428588.png").similar(0.90))) > 0 or len(findAny(Pattern("1596579505109.png").similar(0.90))) > 0:
-                CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories are cleared!', appname)
-                entire_loop_flag = False
-                break
+            if len(findAny(AndAppResources.TITLE_EP5_STAGE10)) > 0:
+                if len(findAny(AndAppResources.BUTTON_CHECK_REWARD)) > 0:
+                    click(AndAppResources.BUTTON_CHECK_REWARD)
+                    exists(AndAppResources.TITLE_REWARD_INFO,60)
+                    if len(findAny(AndAppResources.ICON_CLEARED)) > 0:
+                        CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories are cleared!', appname)
+                        entire_loop_flag = False
+                        break
+                    click(AndAppResources.BUTTON_CLOSE)
                 
             strategy = CommonDMLib.getStrategyByMainStoryStage(AndAppResources)
             deck = CommonDMLib.getDeckByStrategy(AndAppResources, strategy)

@@ -31,10 +31,15 @@ ICON_MISSION = "ICON_MISSION.png"
 BUTTON_MAIN_STORY = "1595065859928.png"
 
 #################MainStory####################
+BACKGROUND_EPISODE_LIST = "1600267657384.png"
 TITLE_MAIN_STORY = "1595205824088.png"
 TITLE_MAIN_STORY2 = Pattern("1595205824088.png").targetOffset(-1,190)
 TUTORIAL_MAIN_STORY = Pattern("1596699277800.png").similar(0.85)
 TITLE_EP1 = "MESSAGE_LAST_SP_BATTLE-4.png"
+TITLE_EP2 = Pattern("1600993417708.png").similar(0.90).targetOffset(32,33)
+TITLE_EP3 = Pattern("1600993398929.png").similar(0.90).targetOffset(40,35)
+TITLE_EP4 = Pattern("1600993347115.png").similar(0.90).targetOffset(40,38)
+TITLE_EP5 = Pattern("1600993226909.png").similar(0.90).targetOffset(35,35)
 TITLE_EP1_LOW_RESOLUTION = "MESSAGE_LAST_SP_BATTLE-5.png"
 BUTTON_EP1 = "MESSAGE_LAST_SP_BATTLE-6.png"
 TITLE_EP2_STAGE21 = Pattern("1598845360896.png").similar(0.95)
@@ -47,6 +52,10 @@ TITLE_EP4_STAGE3 = Pattern("1598845041551.png").similar(0.95)
 TITLE_EP4_STAGE4 = Pattern("1598845082765.png").similar(0.95)
 TITLE_EP4_STAGE9 = Pattern("1598845320451.png").similar(0.95)
 TITLE_EP4_STAGE10 = Pattern("1598845329738.png").similar(0.95)
+TITLE_EP5_STAGE10 = Pattern("TITLE_EP5_STAGE10.png").similar(0.90)
+BUTTON_CHECK_REWARD = "BUTTON_CHECK_REWARD.png"
+TITLE_REWARD_INFO = "TITLE_REWARD_INFO.png"
+ICON_CLEARED = Pattern("ICON_CLEARED.png").similar(0.85)
 
 ##################Messages################
 MESSAGE_RESTART_DUEL = Pattern("1595384665194.png").similar(0.95)
