@@ -1,10 +1,12 @@
 import sys
 import traceback
 import copy
-sys.path.append("DMLib.sikuli")
-sys.path.append("EnvSettings.sikuli")
-import DMLib
+sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
 import EnvSettings
+sys.path.append(EnvSettings.LIBS_DIR_PATH)
+sys.path.append(EnvSettings.RES_DIR_PATH)
+import DMLib
+import CommonDMLib
 
 def sum(list) :
     result = 0
@@ -28,6 +30,13 @@ rarities = [Pattern("1596254755989.png").similar(0.90), Pattern("1596254891002.p
 #rarities = [Pattern("1596254900848.png").similar(0.90)]
 names = []
 cards = []
+ref = 0
+if len(sys.argv) != 2:
+    raise Exception("Please enter a Ref No as an argument.")
+else:
+    ref = sys.argv[1]
+    print "ref : " + str(ref)
+
 for rarity in rarities:
     click("1596254734407.png")
     click("1596255093688.png")
@@ -107,6 +116,7 @@ for rarity in rarities:
     names.append(sum(confirmedCount))
     cards.append(confirmedCount[0]*1 + confirmedCount[1]*2 + confirmedCount[2]*3 + confirmedCount[3]*4)
 
+CommonDMLib.updateCardCount(ref, names, cards)
 
 print " C:" + str(names[0]) + "Card Names / " + str(cards[0]) + "Cards"
 print "UC:" + str(names[1]) + "Card Names / " + str(cards[1]) + "Cards"

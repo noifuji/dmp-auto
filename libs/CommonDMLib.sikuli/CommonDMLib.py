@@ -90,6 +90,22 @@ def uploadScreenShotToSlack(userid, message,  appname):
                 print(mes)
             wait(1)
 
+def updateCardCount(ref, nameCount, cardCount):
+    if len(nameCount) != len(cardCount) or len(nameCount) != 5:
+        raise Exception
+    
+    row = [[nameCount[4],cardCount[4],nameCount[3],cardCount[3],nameCount[2],cardCount[2],nameCount[1],cardCount[1],nameCount[0],cardCount[0]]]
+    
+    spreadsheet = SpreadSheetApis("DMPAuto")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!C3:C300")
+    rowIndex = None
+    for i in range(len(refs)):
+        if refs[i][0] == str(ref):
+            rowIndex = i + 3
+            break
+    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!Q" + str(rowIndex) + ":Z" + str(rowIndex), row, "ROWS")
+
+
 def updateAccountInfo(ref, lv, dmp, gold, packs, srPack):
     row = [[lv, dmp, gold]]
     row[0].extend(packs)

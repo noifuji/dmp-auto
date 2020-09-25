@@ -11,4 +11,4 @@ import random
 mentionUser = EnvSettings.mentionUser
 appname = "test"
 
-CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_STSPELL"))
+CommonDMLib.updateCardCount(1077, [1,2,3,4,5], [10,20,30,40,50])
