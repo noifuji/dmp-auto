@@ -238,7 +238,7 @@ def getDeckCode(DeckName):
         updateDeckCodes()
 
     json_data = getJsonFromDisk(deckCodesJsonPath)
-    if DeckName in json_data["deck_codes"] == True:
+    if DeckName in json_data["deck_codes"].keys():
         return json_data["deck_codes"][DeckName]
     else:
         print "no deck name was matched."
@@ -435,12 +435,17 @@ def addNewDeckByCode(resource, code):
     wheel(resource.TITLE_DECKLIST, Button.WHEEL_UP, 10)
     wait(1)
     click(resource.BUTTON_CREATE_NEW_DECK)
+    wait(0.5)
     click(resource.BUTTON_CREATE_BY_CODE)
+    wait(0.5)
     click(resource.INPUT_DECK_CODE1)
     wait(2)
     type(code)
+    wait(0.5)
     click(resource.INPUT_DECK_CODE2)
+    wait(0.5)
     click(resource.BUTTON_OK)
+    wait(0.5)
     exists(resource.BUTTON_SAVE_DECK,120)
     for skipTutorialLoop in range(6):
         if len(findAny(resource.BUTTON_BACK2)) > 0:

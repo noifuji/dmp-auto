@@ -2,11 +2,10 @@ import sys
 import urllib2
 import json
 import traceback
-sys.path.append("EnvSettings.sikuli")
-sys.path.append("NoxDMLib.sikuli")
-sys.path.append("CommonDMLib.sikuli")
-sys.path.append("NoxResources.sikuli")
+sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
 import EnvSettings
+sys.path.append(EnvSettings.LIBS_DIR_PATH)
+sys.path.append(EnvSettings.RES_DIR_PATH)
 import NoxDMLib
 import CommonDMLib
 import NoxResources
@@ -14,10 +13,8 @@ import NoxResources
 ####################Settings####################
 appname = 'NoxSetupAccount'
 mentionUser = EnvSettings.mentionUser
-deckCodes = ["336AEW","32XP47","336AHX","336ALY","336APZ"]
 Settings.MoveMouseDelay = 0.1
-NoxAppPath = EnvSettings.NoxAppPath
-NoxApp = App(NoxAppPath)
+NoxApp = App(EnvSettings.NoxAppPath)
 ####################Settings####################
 
 #resources
@@ -26,19 +23,11 @@ OK2 = Pattern("OK2.png").similar(0.80)
 tutorial = "tutorial.png"
 
 instances = [
-#        [Pattern("1600150756252.png").similar(0.95).targetOffset(423,-2),1076],
-#        [Pattern("1600150869090.png").similar(0.94).targetOffset(427,-1),1077],
-#        [Pattern("1600150896461.png").similar(0.95).targetOffset(430,1),1078],
-#        [Pattern("1600150917467.png").similar(0.95).targetOffset(421,-3),1079],
-#        [Pattern("1600150940949.png").similar(0.95).targetOffset(421,0),1080],
-#        [Pattern("1600150961485.png").similar(0.95).targetOffset(421,-1),1081],
-#        [Pattern("1600150982535.png").similar(0.95).targetOffset(420,-4),1082],
-#        [Pattern("1600151004590.png").similar(0.95).targetOffset(422,-2),1083],
-#        [Pattern("1600151023104.png").similar(0.95).targetOffset(424,1),1084],
-        [Pattern("1600151052221.png").similar(0.95).targetOffset(421,1),1085],
-        [Pattern("1600151060273.png").similar(0.95).targetOffset(422,2),1086],
-        [Pattern("1600151069275.png").similar(0.95).targetOffset(420,1),1087]
+        [Pattern("1601036285485.png").similar(0.89).targetOffset(437,0),9999]
         ]
+
+
+CommonDMLib.updateDeckCodes()
 
 instanceIndex = 0
 retryCount = 0
@@ -56,15 +45,15 @@ while instanceIndex < len(instances):
             loop_without_action_count = 0
             action_flag = False
             while loop_without_action_count <= 120:
-                if len(findAny("1596591221362.png")) > 0:
+                if len(findAny(NoxResources.BUTTON_AGREE)) > 0:
                     print 'An agreement button is detected.'
-                    click("1596591221362.png")
+                    click(NoxResources.BUTTON_AGREE)
                     wait(1)
                     action_flag = True
                     loop_without_action_count = 0
-                if len(findAny("1596591250915.png")) > 0:
+                if len(findAny(NoxResources.BUTTON_TAKEOVER)) > 0:
                     print 'A data button is detected.'
-                    click(Pattern("1596591250915.png").targetOffset(-154,145))
+                    click(NoxResources.BUTTON_TAKEOVER)
                     break
                     
                 if action_flag == False:
@@ -223,33 +212,12 @@ while instanceIndex < len(instances):
                 click("1596780684705.png")
                 wait(1)
             exists("1596780703269.png",60)
-            for deckCode in deckCodes:
-                click("1596780734703.png")
-                click("1596780746138.png")
-                click(Pattern("1596780800323.png").targetOffset(-2,35))
-                wait(2)
-                type(deckCode)
-                click("1596792937212.png")
-                click("1596780865630.png")
-                for saveDeckLoop in range(100):
-                    if len(findAny(Pattern("1596780884368.png").similar(0.90))) > 0:
-                        try:
-                            click(Pattern("1596780884368.png").similar(0.90))
-                        except:
-                            print "failed to click"
-                    if len(findAny(Pattern("1600159324860.png").similar(0.90))) > 0:
-                        try:
-                            click("1600159349574.png")
-                        except:
-                            print "failed to click"
-                        wait(1)
-                        break
-                    if len(findAny("1600160521444.png")) > 0:
-                        try:
-                            click(Pattern("1600160521444.png").targetOffset(-5,68))
-                        except:
-                            print "failed to click"
-                exists("1596787598791.png", 30)
+            
+            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_STSPELL"))
+            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_RED_BLACK"))
+            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_ST"))
+            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_LARGE_CREATURE"))
+            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_MAIN"))
             CommonDMLib.sendMessagetoSlack(mentionUser,'Setup has finished.', appname)
             instanceIndex += 1
             break
