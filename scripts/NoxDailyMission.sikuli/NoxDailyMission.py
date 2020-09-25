@@ -53,7 +53,7 @@ while instanceIndex < len(instances):
             NoxDMLib.closeMission()
             CommonDMLib.getPresent(NoxResources)
             res = CommonDMLib.scanAccountInfo(NoxResources)
-            CommonDMLib.updateAccountInfo(instances[instanceIndex][1], "", res[0], res[1], res[2], res[3])
+            CommonDMLib.updateAccountInfo(instances[instanceIndex][1], res[0], res[1], res[2], res[3],res[4])
             CommonDMLib.updateCompletedInstanceJson(instances[instanceIndex][1]) 
             instanceIndex += 1
             continue
@@ -164,7 +164,7 @@ while instanceIndex < len(instances):
                     CommonDMLib.closeMission(NoxResources)
                     CommonDMLib.getPresent(NoxResources)
                     res = CommonDMLib.scanAccountInfo(NoxResources)
-                    CommonDMLib.updateAccountInfo(instances[instanceIndex][1], "", res[0], res[1], res[2], res[3])
+                    CommonDMLib.updateAccountInfo(instances[instanceIndex][1], res[0], res[1], res[2], res[3],res[4])
                     CommonDMLib.updateCompletedInstanceJson(instances[instanceIndex][1])
                     break
                 strategy = CommonDMLib.getMissionStrategy(NoxResources,mission)

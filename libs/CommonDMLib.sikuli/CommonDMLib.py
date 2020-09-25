@@ -104,16 +104,48 @@ def updateAccountInfo(ref, lv, dmp, gold, packs, srPack):
             break
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!D" + str(rowIndex) + ":P" + str(rowIndex), row, "ROWS")
 
+def isNumber(str):
+    definedChar = "0123456789,"
+    for s in str:
+        if (s in definedChar) == False:
+            return False
+    return True
+
+def scanNumberChangeWidth(targetImage, offsetX, offsetY, width, height):
+    res = findAny(targetImage)
+    num = ""
+    if len(res) > 0:
+        WIDTH_INIT = width
+        dW = 2
+        for num in range(1000):
+            reg = Region(res[0].getX()+offsetX, res[0].getY()+offsetY, WIDTH_INIT - dW*num, height)
+            reg.highlight(0.1)
+            num = OCR.readWord(reg)
+            if isNumber(num):
+                break
+    return num
+
 def scanAccountInfo(resource):
     ts = [resource.TITLE_PACK1,resource.TITLE_PACK2,
             resource.TITLE_PACK3,resource.TITLE_PACK4,
             resource.TITLE_PACK5,resource.TITLE_PACK5SR]
-    rs = [resource.TITLE_GOLD, resource.TITLE_DMPOINT]
 
     dmp = 0
     gold = 0
     tempPacks = []
+    lv = ""
+
+    OFFSET_X = 78
+    OFFSET_Y = 96
+    WIDTH_INIT = 60
+    HEIGHT = 27
+    WIDTH_INIT_LONG = 90
     
+    OFFSET_X_LV = 275
+    OFFSET_Y_LV = 34
+    WIDTH_INIT_LV = 100
+    HEIGHT_LV = 46
+
     for waitProfileLoop in range(100):
         if len(findAny(resource.ICON_OTHER)) > 0:
             click(resource.ICON_OTHER)
@@ -123,56 +155,40 @@ def scanAccountInfo(resource):
             wait(2)
         if len(findAny(resource.TITLE_PROFILE)) > 0:
             break
+    
+    lv = scanNumberChangeWidth(resource.TITLE_PLAYER_LV, OFFSET_X_LV, OFFSET_Y_LV, WIDTH_INIT_LV, HEIGHT_LV)
+
+    
     click(resource.BUTTON_ITEM)
     wait(1)
 
-    OFFSET_X = 76
-    OFFSET_Y = 95
-    WIDTH = 49
-    WIDTH_FOR_DIGIT = 30
-    HEIGHT = 30
+    scanCount = 0
     for i in range(len(ts)):
-        res = findAny(ts[i])
-        if len(res) > 0:
-            temp = OCR.readWord(Region(res[0].getX()+OFFSET_X, res[0].getY()+OFFSET_Y, WIDTH, HEIGHT))
-            print str(res[0].getX()+OFFSET_X) + "," +  str(res[0].getY()+OFFSET_Y)
-            if temp.isdecimal() == True:
-                tempPacks.append(temp)
-            else:
-                temp = OCR.readWord(Region(res[0].getX()+OFFSET_X, res[0].getY()+OFFSET_Y, WIDTH_FOR_DIGIT, HEIGHT))
-                print str(res[0].getX()+OFFSET_X) + "," +  str(res[0].getY()+OFFSET_Y)
-                if temp.isdecimal() == True:
-                    tempPacks.append(temp)
-                else:
-                    tempPacks.append("")
-        else:
+        res = scanNumberChangeWidth(ts[i], OFFSET_X, OFFSET_Y, WIDTH_INIT, HEIGHT)
+        if res == "":
             tempPacks.append("")
-        if i % 2 == 0:
-            wheel(resource.TITLE_ITEM, Button.WHEEL_DOWN, 1)
-            wait(6)
+        else:
+            tempPacks.append(res)
+            scanCount += 1
+            if scanCount % 2 == 0:
+                Settings.MoveMouseDelay = 1
+                dragDrop(resource.TITLE_ITEM_DRAG, resource.TITLE_ITEM_DROP)
+                Settings.MoveMouseDelay = 0.1
+                wait(1)
     
     click(resource.BUTTON_OTHER)
     wait(1)
-    
 
-    res = findAny(rs[0])
-    if len(res) > 0:
-        gold = Region(res[0].getX()+78, res[0].getY()+94, 150, 28).text()
-        wheel(resource.TITLE_ITEM, Button.WHEEL_DOWN, 1)
-        wait(4)
-        
-    res = findAny(rs[1])
-    if len(res) > 0:
-        dmp = Region(res[0].getX()+78, res[0].getY()+94, 150, 28).text()
-        wheel(resource.TITLE_ITEM, Button.WHEEL_DOWN, 1)
-        wait(4)
+
+    gold = scanNumberChangeWidth(resource.TITLE_GOLD, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT)
+    dmp = scanNumberChangeWidth(resource.TITLE_DMPOINT, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT)
 
     packs = [0,0,0,0,0,0,0,0,0]
     for i in range(len(tempPacks)-1):
         packs[i] = tempPacks[i]
 
     srPack = tempPacks[len(tempPacks)-1]
-    return [dmp, gold, packs, srPack]
+    return [lv, dmp, gold, packs, srPack]
 
 def downloadFile(url, dest):
     filedata = urllib2.urlopen(url)

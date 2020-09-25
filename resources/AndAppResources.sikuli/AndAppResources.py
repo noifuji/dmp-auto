@@ -53,7 +53,7 @@ TITLE_EP4_STAGE4 = Pattern("1598845082765.png").similar(0.95)
 TITLE_EP4_STAGE9 = Pattern("1598845320451.png").similar(0.95)
 TITLE_EP4_STAGE10 = Pattern("1598845329738.png").similar(0.95)
 TITLE_EP5_STAGE10 = Pattern("TITLE_EP5_STAGE10.png").similar(0.90)
-BUTTON_CHECK_REWARD = "BUTTON_CHECK_REWARD.png"
+BUTTON_CONFIRM_REWARD = "BUTTON_CONFIRM_REWARD.png"
 TITLE_REWARD_INFO = "TITLE_REWARD_INFO.png"
 ICON_CLEARED = Pattern("ICON_CLEARED.png").similar(0.85)
 
@@ -82,5 +82,11 @@ INPUT_DECK_CODE2 = "1599121484948.png"
 BUTTON_SAVE_DECK = "1599121566385.png"
 ################DUEL#################
 BUTTON_TURN_END = Pattern("1594954855862-1.png").similar(0.84)
+ICON_ENEMY_CARD_COUNT = Pattern("1594957113274.png").targetOffset(11,1)
+DESIGN_CARD_BACKSIDE_NORMAL = Pattern("1594948414271.png").similar(0.60)
+AVATOR_DEFAULT_MALE = Pattern("Avator.png").similar(0.90).targetOffset(315,1)
+################BATTLE RESULT#################
+ICON_WIN = "1595034514931.png"
+ICON_LOSE = "1599561314584.png"
 ##################MISSION################
 TITLE_MISSION =  "TITLE_MISSION.png"

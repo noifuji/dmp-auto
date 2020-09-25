@@ -11,10 +11,7 @@ import NoxDMLib
 import CommonDMLib
 import AndAppResources
 
-####################Settings####################
-Avator = Pattern("Avator.png").similar(0.90).targetOffset(315,1)
-####################Settings####################
-
+Avator = AndAppResources.AVATOR_DEFAULT_MALE
 mentionUser = EnvSettings.mentionUser
 AppPath = EnvSettings.AppPath
 appname = 'AllMainStories'
@@ -50,8 +47,8 @@ for entire_loop in range(100):
             # ゲームループ
             for game_loop in range(50):
                 print "Inside Game Loop"
-                if len(findAny(Pattern("1594957113274.png").targetOffset(11,1))) > 0:
-                    click(Pattern("1594957113274.png").targetOffset(11,1))
+                if len(findAny(AndAppResources.ICON_ENEMY_CARD_COUNT)) > 0:
+                    click(AndAppResources.ICON_ENEMY_CARD_COUNT)
                     wait(1)
                 #  手札選択
                 if len(findAny(Avator)) > 0:
@@ -70,10 +67,10 @@ for entire_loop in range(100):
                     DMLib.SummonRedBlack(currentMana)
                 wait(1)
                 #  攻撃
-                DMLib.directAttack(DMApp, Pattern("1594948414271.png").similar(0.60))
+                DMLib.directAttack(DMApp, AndAppResources.DESIGN_CARD_BACKSIDE_NORMAL)
                 wait(1)
                 #  ターンエンド
-                if len(findAny(Pattern("1594954855862.png").similar(0.84))) > 0:          
+                if len(findAny(AndAppResources.BUTTON_TURN_END)) > 0:          
                     keyDown(Key.SHIFT)
                     type(Key.ENTER)
                     keyUp(Key.SHIFT)
@@ -86,13 +83,13 @@ for entire_loop in range(100):
             winFlag = False
             for battleResultLoop in range(180):
                 CommonDMLib.skipRewards(AndAppResources)
-                if len(findAny("1595034514931.png")) > 0:
-                    click("1599599373285.png")
+                if len(findAny(AndAppResources.ICON_WIN)) > 0:
+                    click(AndAppResources.BUTTON_SMALL_OK)
                     winFlag = True
-                if len(findAny("1599561314584.png")) > 0:
-                    click("1594949925094.png")
+                if len(findAny(AndAppResources.ICON_LOSE)) > 0:
+                    click(AndAppResources.BUTTON_SMALL_BATTLE_START)
                     winFlag = False
-                if len(findAny("1594949925094.png")) == 0:
+                if len(findAny(AndAppResources.BUTTON_SMALL_BATTLE_START)) == 0:
                     break
             if winFlag == False:
                 retryCount += 1
@@ -118,8 +115,8 @@ for entire_loop in range(100):
                     elif len(findAny(AndAppResources.TITLE_EP2)) > 0:#Pattern("1595243419652.png").similar(0.95)
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode2 has started.', appname)
                         click(AndAppResources.TITLE_EP2)#Pattern("1595243419652.png").similar(0.95).targetOffset(1,-57)
-                if len(findAny(AndAppResources.BUTTON_CHECK_REWARD)) > 0:
-                    click(AndAppResources.BUTTON_CHECK_REWARD)
+                if len(findAny(AndAppResources.BUTTON_CONFIRM_REWARD)) > 0:
+                    click(AndAppResources.BUTTON_CONFIRM_REWARD)
                     wait(0.5)
                 if len(findAny(AndAppResources.TITLE_REWARD_INFO)) > 0:
                     click(AndAppResources.BUTTON_CLOSE)
