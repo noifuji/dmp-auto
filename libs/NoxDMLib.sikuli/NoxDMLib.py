@@ -249,7 +249,7 @@ def openNoxInstance(ref):
     if len(findAny(Pattern("1601077335160.png").similar(0.95))) > 0:
         click(Pattern("1601077335160.png").similar(0.95))
     else:
-        print "No instance : " + str(ref)
+        raise Exception("No instance : " + str(ref))
     App(EnvSettings.NoxMultiPlayerPath).close()
     
 def RestartNox(ref):

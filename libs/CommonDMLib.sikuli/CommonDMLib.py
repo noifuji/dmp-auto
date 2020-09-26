@@ -112,23 +112,23 @@ def updateCardCount(ref, nameCount, cardCount):
 #return ref
 def getSetupAccountRef():
     spreadsheet = SpreadSheetApis("DMPAuto")
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!A3:C300")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:C300")
     result = ""
     for ref in refs:
-        if ref[0] == "":
-            result = ref[2]
+        if len(ref) == 1:
+            result = ref[0]
             break
     return result
 
 def updatePlayerId(ref, playerId, computername):
     spreadsheet = SpreadSheetApis("DMPAuto")
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!C3:C300")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
             rowIndex = i + 3
             break
-    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!A" + str(rowIndex), [[playerId]], "ROWS")
+    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!C" + str(rowIndex), [[playerId]], "ROWS")
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!AA" + str(rowIndex), [[computername]], "ROWS")
 
 def updateAccountInfo(ref, lv, dmp, gold, packs, srPack):
