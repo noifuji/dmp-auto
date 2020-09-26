@@ -22,18 +22,19 @@ OK = Pattern("OK.png").similar(0.90)
 OK2 = Pattern("OK2.png").similar(0.80)
 tutorial = "tutorial.png"
 
-instances = [
-        [Pattern("1601036285485.png").similar(0.89).targetOffset(437,0),9999]
-        ]
-
 
 CommonDMLib.updateDeckCodes()
 
-instanceIndex = 0
-retryCount = 0
-while instanceIndex < len(instances):
-    username = instances[instanceIndex][1]
-    NoxDMLib.RestartNox(instances[instanceIndex])
+for count in range(100):
+    ref = CommonDMLib.getSetupAccountRef()
+    if ref == "":
+        print "There are no setup accounts."
+        break
+    print "SetupAccount is started. ref : " + str(ref)
+    CommonDMLib.updatePlayerId(ref, "working", os.environ["COMPUTERNAME"])
+    print "A tempporary Player ID is updated."
+    username = ref
+    NoxDMLib.RestartNox(ref)
     CommonDMLib.callRemoveDataBat()
         
     for num in range(100):
@@ -175,9 +176,7 @@ while instanceIndex < len(instances):
             click("1597235336512.png")
             exists("1597235361421.png",30)
             CommonDMLib.uploadScreenShotToSlack(mentionUser, str(username), appname)
-            click("1597235388434.png")
-            exists("1597235404354.png",10)
-            click("1597235404354.png")
+            playerId = CommonDMLib.scanNumberChangeWidth("1601082545206.png", -270, 0, 233, 38, 0, 25)
             click(Pattern("1600004482153.png").targetOffset(9,-27))
             exists("1600004545866.png", 60)
             click("1600004566684.png")
@@ -218,13 +217,14 @@ while instanceIndex < len(instances):
             CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_ST"))
             CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_LARGE_CREATURE"))
             CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_MAIN"))
+            CommonDMLib.updatePlayerId(ref, playerId, os.environ["COMPUTERNAME"])
             CommonDMLib.sendMessagetoSlack(mentionUser,'Setup has finished.', appname)
-            instanceIndex += 1
             break
         except:
             e = sys.exc_info()
             for mes in e:
                 print(mes)
+            CommonDMLib.updatePlayerId(ref, "", "")
             CommonDMLib.sendMessagetoSlack(mentionUser,'Error occured. Restarting..', appname)
             CommonDMLib.sendMessagetoSlack( mentionUser,traceback.format_exc(), appname)
             wait(5)
