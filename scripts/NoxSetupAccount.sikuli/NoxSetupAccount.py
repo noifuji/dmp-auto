@@ -61,7 +61,7 @@ while instanceIndex < len(instances):
                     print 'loop without action : ' + str(loop_without_action_count)
                 
                 if loop_without_action_count >= 119:
-                    sendMessagetoSlack(mentionUser,'Too many loops without actions. This app will be restarted.', appname)
+                    CommonDMLib.sendMessagetoSlack(mentionUser,'Too many loops without actions. This app will be restarted.', appname)
                     breakFlag = True
                     loop_without_action_count = 0
     
