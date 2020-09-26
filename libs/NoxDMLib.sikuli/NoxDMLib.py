@@ -4,6 +4,7 @@ import urllib2
 import json
 import shutil
 import os
+import subprocess
 sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
 import EnvSettings
 sys.path.append(EnvSettings.LIBS_DIR_PATH)
@@ -187,9 +188,36 @@ def closeMission():
     click("1596776234501.png")
     waitVanish(MISSION_TITLE, 30)
 
+#True : On
+#False : Off
+def isNoxOn():
+    command1 = 'tasklist'
+    command2 = 'findstr Nox.exe'
+    proc1 = subprocess.Popen(
+        command1,
+        shell  = True,
+        stdin  = subprocess.PIPE,
+        stdout = subprocess.PIPE,
+        stderr = subprocess.PIPE)
+    
+    proc2 = subprocess.Popen(
+        command2,
+        shell  = True,
+        stdin  = proc1.stdout,
+        stdout = subprocess.PIPE,
+        stderr = subprocess.PIPE)
+    
+    stdout_data, stderr_data = proc2.communicate()
+    return stdout_data != ""
+
 def exitNox():
+    if isNoxOn() == False:
+        return
+    
     App(EnvSettings.NoxMultiPlayerPath).open()
-    exists(Pattern("1596962591946.png").targetOffset(92,154),10)
+    if exists(Pattern("1596962591946.png").targetOffset(92,154),120) == None:
+        killMultiPlayerManager()
+        raise Exception("MultiPlayerManager has error. Please retry to launch.")
     for num in range(10):
         if exists(Pattern("1596777933938.png").similar(0.90), 1) == None:
             wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_DOWN, 1)
@@ -207,23 +235,27 @@ def exitNox():
         waitVanish(Pattern("1596777933938.png").similar(0.90), 120)
     App(EnvSettings.NoxMultiPlayerPath).close()
 
+def openNoxInstance(ref):
+    App(EnvSettings.NoxMultiPlayerPath).open()
+    if exists(Pattern("1596962591946.png").targetOffset(92,154),120) == None:
+        killMultiPlayerManager()
+        raise Exception("MultiPlayerManager has error. Please retry to launch.")
+    exists(Pattern("1601077335160.png").similar(0.95), 120)
+    click(Pattern("1601077099284.png").similar(0.95).targetOffset(-59,2))
+    wait(0.5)
+    type(str(ref))
+    type(Key.ENTER)
+    wait(5)
+    if len(findAny(Pattern("1601077335160.png").similar(0.95))) > 0:
+        click(Pattern("1601077335160.png").similar(0.95))
+    else:
+        print "No instance : " + str(ref)
+    App(EnvSettings.NoxMultiPlayerPath).close()
     
-def RestartNox(app, instance):
+def RestartNox(ref):
     exitNox()
     wait(3)
-    App(EnvSettings.NoxMultiPlayerPath).open()
-    exists(Pattern("1596962591946.png").targetOffset(92,154),10)
-    for num in range(10):
-        if exists(instance[0], 1) == None:
-            wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_DOWN, 1)
-        else:
-            break
-    for num in range(10):
-        if exists(instance[0], 1) == None:
-            wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_UP, 2)
-        else:
-            break
-    click(instance[0])
+    openNoxInstance(ref)
 
     for noxLaunchLoop in range(600):
         print "noxLaunchLoop..." + str(noxLaunchLoop)

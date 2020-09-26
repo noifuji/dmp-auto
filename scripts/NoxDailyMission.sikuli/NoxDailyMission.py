@@ -40,21 +40,21 @@ while instanceIndex < len(instances):
         continue
     
     try:
-        NoxDMLib.RestartNox(NoxApp, instances[instanceIndex])
+        NoxDMLib.RestartNox(instances[instanceIndex])
         CommonDMLib.RestartApp(NoxResources, NoxApp)
         CommonDMLib.openMission(NoxResources)
         NoxDMLib.changeMission()
         if mode == "DEV":
             wait(1)
-            CommonDMLib.uploadScreenShotToSlack(mentionUser,'Account' + str(instances[instanceIndex][1]) + ' is in process.', appname)
+            CommonDMLib.uploadScreenShotToSlack(mentionUser,'Account' + str(instances[instanceIndex]) + ' is in process.', appname)
         mission = CommonDMLib.getMissionPattern(NoxResources)
         if mission == None:
-            CommonDMLib.uploadScreenShotToSlack(mentionUser,'Account' + str(instances[instanceIndex][1]) + ' is completed. Going to the next.', appname)
+            CommonDMLib.uploadScreenShotToSlack(mentionUser,'Account' + str(instances[instanceIndex]) + ' is completed. Going to the next.', appname)
             NoxDMLib.closeMission()
             CommonDMLib.getPresent(NoxResources)
             res = CommonDMLib.scanAccountInfo(NoxResources)
-            CommonDMLib.updateAccountInfo(instances[instanceIndex][1], res[0], res[1], res[2], res[3],res[4])
-            CommonDMLib.updateCompletedInstanceJson(instances[instanceIndex][1]) 
+            CommonDMLib.updateAccountInfo(instances[instanceIndex], res[0], res[1], res[2], res[3],res[4])
+            CommonDMLib.updateCompletedInstanceJson(instances[instanceIndex]) 
             instanceIndex += 1
             continue
         strategy = CommonDMLib.getMissionStrategy(NoxResources,mission)
@@ -160,12 +160,12 @@ while instanceIndex < len(instances):
                 if mode == "DEV":
                     CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Mission', appname)
                 if mission == None:
-                    CommonDMLib.sendMessagetoSlack(mentionUser, 'Account' + str(instances[instanceIndex][1]) + ' was completed.', appname)
+                    CommonDMLib.sendMessagetoSlack(mentionUser, 'Account' + str(instances[instanceIndex]) + ' was completed.', appname)
                     CommonDMLib.closeMission(NoxResources)
                     CommonDMLib.getPresent(NoxResources)
                     res = CommonDMLib.scanAccountInfo(NoxResources)
-                    CommonDMLib.updateAccountInfo(instances[instanceIndex][1], res[0], res[1], res[2], res[3],res[4])
-                    CommonDMLib.updateCompletedInstanceJson(instances[instanceIndex][1])
+                    CommonDMLib.updateAccountInfo(instances[instanceIndex], res[0], res[1], res[2], res[3],res[4])
+                    CommonDMLib.updateCompletedInstanceJson(instances[instanceIndex])
                     break
                 strategy = CommonDMLib.getMissionStrategy(NoxResources,mission)
                 CommonDMLib.closeMission(NoxResources)
@@ -184,6 +184,6 @@ while instanceIndex < len(instances):
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(instances[instanceIndex][1]) + '. Retrying....', appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(instances[instanceIndex]) + '. Retrying....', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser,"Screenshot" , appname)

@@ -33,7 +33,7 @@ instanceIndex = 0
 retryCount = 0
 while instanceIndex < len(instances):
     username = instances[instanceIndex][1]
-    NoxDMLib.RestartNox(NoxApp, instances[instanceIndex])
+    NoxDMLib.RestartNox(instances[instanceIndex])
     CommonDMLib.callRemoveDataBat()
         
     for num in range(100):

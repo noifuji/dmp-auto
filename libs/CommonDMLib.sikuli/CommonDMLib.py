@@ -13,6 +13,10 @@ from slackapis import SlackApis
 from resizeimage import ResizeImage;
 from spreadsheetapis import SpreadSheetApis
 
+def killMultiPlayerManager():
+    cmd = 'taskkill /im MultiPlayerManager.exe /t'
+    returncode = subprocess.Popen(cmd, shell=True)
+
 def dragDropAtSpeed(fromImg, toImg, speed):
     currentSpeed = Settings.MoveMouseDelay
 
@@ -120,15 +124,24 @@ def updateAccountInfo(ref, lv, dmp, gold, packs, srPack):
             break
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!D" + str(rowIndex) + ":P" + str(rowIndex), row, "ROWS")
 
+#Only for less 999,999
 def isNumber(str):
-    definedChar = "0123456789,"
-    for s in str:
-        if (s in definedChar) == False:
-            return False
+    definedCharLess1000 = "0123456789"
+    definedCharBigger1000 = "0123456789,"
+    if len(str) <= 4:
+        for s in str:
+            if (s in definedCharLess1000) == False:
+                return False
+    else:
+        for s in str:
+            if (s in definedCharBigger1000) == False:
+                return False
     return True
 
-def scanNumberChangeWidthFromRight(targetImage, offsetX, offsetY, width, height):
-    WIDTH_A_CHAR = 20
+#FromRight 0
+#FromLeft 1
+def scanNumberChangeWidth(targetImage, offsetX, offsetY, width, height, RightLeft, charWidth):
+    WIDTH_A_CHAR = charWidth
     MARGIN_LEFT = 20
     res = findAny(targetImage)
     num = ""
@@ -137,33 +150,32 @@ def scanNumberChangeWidthFromRight(targetImage, offsetX, offsetY, width, height)
         WIDTH_CONFIRM = width
         dW = 2
         for num in range(1000):
-            reg = Region(res[0].getX()+offsetX, res[0].getY()+offsetY, WIDTH_INIT - dW*num, height)
+            reg = None
+            if RightLeft == 0:
+                reg = Region(res[0].getX()+offsetX, res[0].getY()+offsetY, WIDTH_INIT - dW*num, height)
+            elif RightLeft == 1:
+                reg = Region(res[0].getX()+offsetX + dW*num, res[0].getY()+offsetY, WIDTH_INIT - dW*num, height)
+            else:
+                raise Exception("Illegal argumant RightLeft : " + str(RightLeft))
             reg.highlight(0.1)
             num = OCR.readWord(reg)
             if isNumber(num):
+                print len(num)
                 WIDTH_CONFIRM = len(num) * WIDTH_A_CHAR + MARGIN_LEFT
                 break
 
         for num in range(1000):
-            reg = Region(res[0].getX()+offsetX, res[0].getY()+offsetY, WIDTH_CONFIRM - dW*num, height)
+            reg = None
+            if RightLeft == 0:
+                reg = Region(res[0].getX()+offsetX, res[0].getY()+offsetY, WIDTH_CONFIRM - dW*num, height)
+            elif RightLeft == 1:
+                reg = Region(res[0].getX()+offsetX + dW*num, res[0].getY()+offsetY, WIDTH_CONFIRM - dW*num, height)
+            else:
+                raise Exception("Illegal argumant RightLeft : " + str(RightLeft))
             reg.highlight(0.1)
             num = OCR.readWord(reg)
             if isNumber(num):
                     break
-    return num
-
-def scanNumberChangeWidthFromLeft(targetImage, offsetX, offsetY, width, height):
-    res = findAny(targetImage)
-    num = ""
-    if len(res) > 0:
-        WIDTH_INIT = width
-        dW = 2
-        for num in range(1000):
-            reg = Region(res[0].getX()+offsetX + dW*num, res[0].getY()+offsetY, WIDTH_INIT - dW*num, height)
-            reg.highlight(0.1)
-            num = OCR.readWord(reg)
-            if isNumber(num):
-                break
     return num
 
 def scanAccountInfo(resource):
@@ -197,7 +209,7 @@ def scanAccountInfo(resource):
         if len(findAny(resource.TITLE_PROFILE)) > 0:
             break
     
-    lv = scanNumberChangeWidthFromLeft(resource.TITLE_PLAYER_LV, OFFSET_X_LV, OFFSET_Y_LV, WIDTH_INIT_LV, HEIGHT_LV)
+    lv = scanNumberChangeWidth(resource.TITLE_PLAYER_LV, OFFSET_X_LV, OFFSET_Y_LV, WIDTH_INIT_LV, HEIGHT_LV, 1, 35)
 
     
     click(resource.BUTTON_ITEM)
@@ -205,7 +217,7 @@ def scanAccountInfo(resource):
 
     scanCount = 0
     for i in range(len(ts)):
-        res = scanNumberChangeWidthFromRight(ts[i], OFFSET_X, OFFSET_Y, WIDTH_INIT, HEIGHT)
+        res = scanNumberChangeWidth(ts[i], OFFSET_X, OFFSET_Y, WIDTH_INIT, HEIGHT, 0, 20)
         if res == "":
             tempPacks.append("")
         else:
@@ -221,8 +233,8 @@ def scanAccountInfo(resource):
     wait(1)
 
 
-    gold = scanNumberChangeWidthFromRight(resource.TITLE_GOLD, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT)
-    dmp = scanNumberChangeWidthFromRight(resource.TITLE_DMPOINT, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT)
+    gold = scanNumberChangeWidth(resource.TITLE_GOLD, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT, 0, 20)
+    dmp = scanNumberChangeWidth(resource.TITLE_DMPOINT, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT, 0, 20)
 
     packs = [0,0,0,0,0,0,0,0,0]
     for i in range(len(tempPacks)-1):
@@ -283,7 +295,7 @@ def removeCompletedInstances(instances):
     for i in instances:
         appendFlag = True
         for ci in completedInstances:
-            if i[1] == ci:
+            if i == ci:
                 appendFlag = False
         if appendFlag == True:
             targetInstances.append(i)

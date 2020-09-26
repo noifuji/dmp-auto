@@ -22,7 +22,7 @@ mode = EnvSettings.RUN_MODE
 
 for instance in instances:
     try:
-        NoxDMLib.RestartNox(NoxApp, instance)
+        NoxDMLib.RestartNox(instance)
         NoxDMLib.RestartApp()
         click("1598940054059.png")
         wait(3)

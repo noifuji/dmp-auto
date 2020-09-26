@@ -13,7 +13,7 @@ AndAppPath = UserSettings.AndAppPath
 NoxDirPath = UserSettings.NoxDirPath
 RUN_MODE = UserSettings.RUN_MODE
 TARGET_CHANNEL = UserSettings.TARGET_CHANNEL
-NOX_INSTANCES = UserSettings.NOX_INSTANCES
+NOX_INSTANCES = UserSettings.NOX_INSTANCES2
 
 TOKEN = UserSettings.TOKEN
 DRIVE_DECK_CODE_JSON_URL = UserSettings.DRIVE_DECK_CODE_JSON_URL
