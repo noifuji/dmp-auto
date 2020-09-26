@@ -137,7 +137,7 @@ def updateAccountInfo(ref, lv, dmp, gold, packs, srPack):
     row[0].append(srPack)
     
     spreadsheet = SpreadSheetApis("DMPAuto")
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!C3:C300")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
