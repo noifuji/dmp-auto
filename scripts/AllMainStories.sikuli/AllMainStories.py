@@ -84,10 +84,17 @@ for entire_loop in range(100):
             for battleResultLoop in range(180):
                 CommonDMLib.skipRewards(AndAppResources)
                 if len(findAny(AndAppResources.ICON_WIN)) > 0:
-                    click(AndAppResources.BUTTON_SMALL_OK)
+                    try:
+                        click(AndAppResources.BUTTON_SMALL_OK)
+                    except:
+                        print "failed to click"
+                        
                     winFlag = True
                 if len(findAny(AndAppResources.ICON_LOSE)) > 0:
-                    click(AndAppResources.BUTTON_SMALL_BATTLE_START)
+                    try:
+                        click(AndAppResources.BUTTON_SMALL_BATTLE_START)
+                    except:
+                        print "failed to click"
                     winFlag = False
                 if len(findAny(AndAppResources.BUTTON_SMALL_BATTLE_START)) == 0:
                     break
@@ -102,24 +109,41 @@ for entire_loop in range(100):
 
                 #エピソード選択画面にいる場合の処理
                 if len(findAny(AndAppResources.BACKGROUND_EPISODE_LIST)) > 0:
-                    wait(10)
                     if len(findAny(AndAppResources.TITLE_EP5)) > 0:
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode5 has started.', appname)
-                        click(AndAppResources.TITLE_EP5)
+                        try:
+                            click(AndAppResources.TITLE_EP5)
+                        except:
+                            print "failed to click"
                     elif len(findAny(AndAppResources.TITLE_EP4)) > 0:#Pattern("1598197418579.png").similar(0.86).targetOffset(-51,-214)
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode4 has started.', appname)
-                        click(AndAppResources.TITLE_EP4)#Pattern("1598197418579.png").similar(0.86).targetOffset(-51,-214)
+                        try:
+                            click(AndAppResources.TITLE_EP4)#Pattern("1598197418579.png").similar(0.86).targetOffset(-51,-214)
+                        except:
+                            print "failed to click"
                     elif len(findAny(AndAppResources.TITLE_EP3)) > 0:#Pattern("1595243394444.png").similar(0.94)
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode3 has started.', appname)
-                        click(AndAppResources.TITLE_EP3)#Pattern("1595243394444.png").similar(0.94).targetOffset(3,-65)
+                        try:
+                            click(AndAppResources.TITLE_EP3)#Pattern("1595243394444.png").similar(0.94).targetOffset(3,-65)
+                        except:
+                            print "failed to click"
                     elif len(findAny(AndAppResources.TITLE_EP2)) > 0:#Pattern("1595243419652.png").similar(0.95)
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode2 has started.', appname)
-                        click(AndAppResources.TITLE_EP2)#Pattern("1595243419652.png").similar(0.95).targetOffset(1,-57)
+                        try:
+                            click(AndAppResources.TITLE_EP2)#Pattern("1595243419652.png").similar(0.95).targetOffset(1,-57)
+                        except:
+                            print "failed to click"
                 if len(findAny(AndAppResources.BUTTON_CONFIRM_REWARD)) > 0:
-                    click(AndAppResources.BUTTON_CONFIRM_REWARD)
+                    try:
+                        click(AndAppResources.BUTTON_CONFIRM_REWARD)
+                    except:
+                        print "failed to click"
                     wait(0.5)
                 if len(findAny(AndAppResources.TITLE_REWARD_INFO)) > 0:
-                    click(AndAppResources.BUTTON_CLOSE)
+                    try:
+                        click(AndAppResources.BUTTON_CLOSE)
+                    except:
+                        print "failed to click"
                     break
                 
             if EnvSettings.RUN_MODE == "DEV":
@@ -127,8 +151,8 @@ for entire_loop in range(100):
                 CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Battle Loop Count : ' + str(retryCount), appname)
                 retryCount = 0
             if len(findAny(AndAppResources.TITLE_EP5_STAGE10)) > 0:
-                if len(findAny(AndAppResources.BUTTON_CHECK_REWARD)) > 0:
-                    click(AndAppResources.BUTTON_CHECK_REWARD)
+                if len(findAny(AndAppResources.BUTTON_CONFIRM_REWARD)) > 0:
+                    click(AndAppResources.BUTTON_CONFIRM_REWARD)
                     exists(AndAppResources.TITLE_REWARD_INFO,60)
                     if len(findAny(AndAppResources.ICON_CLEARED)) > 0:
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories are cleared!', appname)

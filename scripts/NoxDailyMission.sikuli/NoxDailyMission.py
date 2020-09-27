@@ -33,7 +33,7 @@ instances = CommonDMLib.removeCompletedInstances(instances)
 instanceIndex = 0
 retryCount = 0
 while instanceIndex < len(instances):
-    if retryCount > 10:
+    if retryCount > 3:
         print "Too many retries. This instance will be skipped."
         retryCount = 0
         instanceIndex += 1

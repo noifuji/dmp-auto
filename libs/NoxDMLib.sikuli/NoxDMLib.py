@@ -212,6 +212,8 @@ def isNoxOn():
 
 def exitNox():
     if isNoxOn() == False:
+        print "closing Multiplayer"
+        App(EnvSettings.NoxMultiPlayerPath).close()
         return
     
     App(EnvSettings.NoxMultiPlayerPath).open()
@@ -285,7 +287,7 @@ def RestartNox(ref):
 #return : マナ数
 def getManaNumBeforeCharge():
     print 'getManaNumBeforeCharge'
-    targetImages = [mana0, mana1, mana2, mana3, mana4, mana5, mana6, mana7, mana8, mana9, mana10, mana11]
+    targetImages = [mana0, mana1, mana2, mana3, mana4, mana5, mana6, mana7]#, mana8, mana9, mana10, mana11]
     res = findAny(targetImages)
     if len(res) > 0:
         return res[0].getIndex()
