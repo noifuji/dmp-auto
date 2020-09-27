@@ -65,6 +65,8 @@ for count in range(100):
                     CommonDMLib.sendMessagetoSlack(mentionUser,'Too many loops without actions. This app will be restarted.', appname)
                     breakFlag = True
                     loop_without_action_count = 0
+
+                wait(1)
     
                 action_flag = False
                 

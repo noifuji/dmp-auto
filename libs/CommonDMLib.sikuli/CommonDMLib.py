@@ -104,7 +104,7 @@ def updateCardCount(ref, nameCount, cardCount):
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!C3:C300")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
@@ -125,6 +125,14 @@ def getSetupAccountRef():
             result = ref[0]
             break
     return result
+
+def appendStatistics(sheetname, statistics):
+    row = [statistics]
+    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
+    strCredentials = f.read()
+    f.close()
+    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
+    spreadsheet.append(EnvSettings.STATISTICS_SHEET_ID, sheetname + "!A1", row, "ROWS")
 
 def updatePlayerId(ref, playerId, computername):
     f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
@@ -277,6 +285,7 @@ def scanAccountInfo(resource):
     return [lv, dmp, gold, packs, srPack]
 
 def downloadFile(url, dest):
+    print "downloadFile"
     filedata = urllib2.urlopen(url)
     datatowrite = filedata.read()
     f = open(dest, 'wb')
@@ -290,6 +299,7 @@ def getJsonFromDisk(path):
     return json_data
 
 def updateDeckCodes():
+    print "updateDeckCodes"
     saveFilePath = os.path.join(EnvSettings.DATA_DIR_PATH, EnvSettings.DECK_CODE_JSON_FILE)
     downloadFile(EnvSettings.DRIVE_DECK_CODE_JSON_URL, saveFilePath)
 
