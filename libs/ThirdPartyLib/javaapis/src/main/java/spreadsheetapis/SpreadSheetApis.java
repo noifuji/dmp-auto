@@ -12,6 +12,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,61 +24,70 @@ import java.util.List;
 
 
 public class SpreadSheetApis {
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "data";
-    private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+  private static final String TOKENS_DIRECTORY_PATH = "data";
+  private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	
 	
-	private Sheets service;
+  private Sheets service;
 	
-	public SpreadSheetApis(String appname) throws IOException, GeneralSecurityException{
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-		this.service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(appname)
-                .build();
-  	}
+  public SpreadSheetApis(String appname, String strClientSecrets) throws IOException, GeneralSecurityException{
+    final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+    this.service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT, strClientSecrets))
+                 .setApplicationName(appname)
+                 .build();
+  }
 	
-	private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
-        // Load client secrets.
-        InputStream in = SpreadSheetApis.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
-        }
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+  private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, String strClientSecrets) throws IOException {
+    GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new java.io.StringReader(strClientSecrets));
 
-        // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType("offline")
-                .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    // Build flow and trigger user authorization request.
+    GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+                                     .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                                     .setAccessType("offline")
+                                     .build();
+    LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+    return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+  }
+
+  public List<List<Object>> read(String spreadsheetId, String range) throws IOException  {
+    ValueRange response = service.spreadsheets().values()
+                        .get(spreadsheetId, range)
+                        .execute();
+    List<List<Object>> values = response.getValues();
+    return values;
+  }
+	
+  public void write(String spreadsheetId, String range, List<List<Object>> values, String dimension) throws IOException {
+    if (!dimension.equals("ROWS") && !dimension.equals("COLUMNS")) {
+      throw new IOException();
     }
+    String valueInputOption = "USER_ENTERED";
+    ValueRange requestBody = new ValueRange();
+    requestBody.setValues(values);
+    requestBody.setMajorDimension(dimension);
 
-    public List<List<Object>> read(String spreadsheetId, String range) throws IOException  {
-    	ValueRange response = service.spreadsheets().values()
-                .get(spreadsheetId, range)
-                .execute();
-        List<List<Object>> values = response.getValues();
-    	return values;
-    }
+    Sheets.Spreadsheets.Values.Update request =
+    service.spreadsheets().values().update(spreadsheetId, range, requestBody);
+    request.setValueInputOption(valueInputOption);
+
+    request.execute();
+  }
 	
-	public void write(String spreadsheetId, String range, List<List<Object>> values, String dimension) throws IOException {
-		if (!dimension.equals("ROWS") && !dimension.equals("COLUMNS")) {
-			throw new IOException();
-		}
-        String valueInputOption = "USER_ENTERED";
-        ValueRange requestBody = new ValueRange();
-	    requestBody.setValues(values);
-		requestBody.setMajorDimension(dimension);
-
-        Sheets.Spreadsheets.Values.Update request =
-            service.spreadsheets().values().update(spreadsheetId, range, requestBody);
-        request.setValueInputOption(valueInputOption);
-
-        request.execute();
+  public void append(String spreadsheetId, String range, List<List<Object>> values, String dimension) throws IOException {
+    if (!dimension.equals("ROWS") && !dimension.equals("COLUMNS")) {
+      throw new IOException();
     }
+    String valueInputOption = "USER_ENTERED";
+    ValueRange requestBody = new ValueRange();
+    requestBody.setValues(values);
+    requestBody.setMajorDimension(dimension);
+
+    AppendValuesResponse result = service.spreadsheets().values().append(spreadsheetId, range, requestBody)
+                                .setValueInputOption(valueInputOption)
+                                .execute();
+		
+    System.out.printf("%d cells appended.\n", result.getUpdates().getUpdatedCells());
+  }
 
 }

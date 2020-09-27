@@ -100,7 +100,10 @@ def updateCardCount(ref, nameCount, cardCount):
     
     row = [[nameCount[4],cardCount[4],nameCount[3],cardCount[3],nameCount[2],cardCount[2],nameCount[1],cardCount[1],nameCount[0],cardCount[0]]]
     
-    spreadsheet = SpreadSheetApis("DMPAuto")
+    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
+    strCredentials = f.read()
+    f.close()
+    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!C3:C300")
     rowIndex = None
     for i in range(len(refs)):
@@ -111,7 +114,10 @@ def updateCardCount(ref, nameCount, cardCount):
 
 #return ref
 def getSetupAccountRef():
-    spreadsheet = SpreadSheetApis("DMPAuto")
+    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
+    strCredentials = f.read()
+    f.close()
+    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:C300")
     result = ""
     for ref in refs:
@@ -121,7 +127,10 @@ def getSetupAccountRef():
     return result
 
 def updatePlayerId(ref, playerId, computername):
-    spreadsheet = SpreadSheetApis("DMPAuto")
+    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
+    strCredentials = f.read()
+    f.close()
+    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300")
     rowIndex = None
     for i in range(len(refs)):
@@ -136,7 +145,10 @@ def updateAccountInfo(ref, lv, dmp, gold, packs, srPack):
     row[0].extend(packs)
     row[0].append(srPack)
     
-    spreadsheet = SpreadSheetApis("DMPAuto")
+    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
+    strCredentials = f.read()
+    f.close()
+    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300")
     rowIndex = None
     for i in range(len(refs)):
