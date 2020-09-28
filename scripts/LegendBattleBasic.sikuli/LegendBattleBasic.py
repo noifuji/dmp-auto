@@ -83,8 +83,9 @@ for entire_loop in range(100):
             game_loop_flag = True
             for game_loop in range(10):
                 print "Inside Game Loop"
-                click(Pattern("1594957113274.png").targetOffset(11,1))
-                wait(0.5)
+                if len(findAny(AndAppResources.ICON_ENEMY_CARD_COUNT)) > 0:
+                    click(AndAppResources.ICON_ENEMY_CARD_COUNT)
+                    wait(1)
                 #  手札選択
                 if len(findAny(Avator)) > 0:
                     click(Avator)
