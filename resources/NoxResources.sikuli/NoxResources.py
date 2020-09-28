@@ -75,12 +75,57 @@ TITLE_MAIN_STORY2 = Pattern("1596767550917.png").targetOffset(-167,290)
 TUTORIAL_MAIN_STORY = "1596767507281.png"
 TITLE_EP1 = Pattern("1596989223358.png").similar(0.87)
 TITLE_EP1_LOW_RESOLUTION = Pattern("1597203982188.png").similar(0.92)
+EPISODES = [{"EPISODE":1, "IMAGE":Pattern("1601271450420.png").similar(0.90)},
+        {"EPISODE":2, "IMAGE":Pattern("1601271478062.png").similar(0.90)},
+        {"EPISODE":3, "IMAGE":Pattern("1601271490536.png").similar(0.90)},
+        {"EPISODE":4, "IMAGE":Pattern("1601271503367.png").similar(0.90)},
+        {"EPISODE":5, "IMAGE":Pattern("1601271519805.png").similar(0.90)}]
 BUTTON_EP1 = Pattern("1597970568251.png").similar(0.95)
 TITLE_EP1_STAGE1 = Pattern("1596861957365.png").similar(0.85)
 TITLE_EP5_STAGE10 = Pattern("1600991582416.png").similar(0.90)
 BUTTON_CONFIRM_REWARD = "BUTTON_CHECK_REWARD.png"
 TITLE_REWARD_INFO = "1600991713407.png"
 ICON_CLEARED = Pattern("1600991811657.png").similar(0.90)
+STAGES = [{"STAGE":1, "IMAGE":"1601267258379.png"},
+            {"STAGE":2, "IMAGE":"1601267289541.png"},
+            {"STAGE":3, "IMAGE":"1601267298169.png"},
+            {"STAGE":4, "IMAGE":"1601267308310.png"},
+            {"STAGE":5, "IMAGE":"1601267319803.png"},
+            {"STAGE":6, "IMAGE":"1601267327819.png"},
+            {"STAGE":7, "IMAGE":"1601267339419.png"},
+            {"STAGE":8, "IMAGE":"1601267349588.png"},
+            {"STAGE":9, "IMAGE":"1601267359991.png"},
+            {"STAGE":10, "IMAGE":"1601267368618.png"},
+            {"STAGE":1, "IMAGE":"1601269334194.png"},
+            {"STAGE":2, "IMAGE":"1601269342691.png"},
+            {"STAGE":3, "IMAGE":"1601269351087.png"},
+            {"STAGE":4, "IMAGE":"1601269361387.png"},
+            {"STAGE":5, "IMAGE":"1601269370363.png"},
+            {"STAGE":6, "IMAGE":"1601269379960.png"},
+            {"STAGE":7, "IMAGE":"1601269389436.png"},
+            {"STAGE":8, "IMAGE":"1601269397792.png"},
+            {"STAGE":9, "IMAGE":"1601269412454.png"},
+            {"STAGE":10, "IMAGE":"1601269421414.png"},
+            {"STAGE":11, "IMAGE":"1601269429136.png"},
+            {"STAGE":12, "IMAGE":"1601269438065.png"},
+            {"STAGE":13, "IMAGE":"1601269448309.png"},
+            {"STAGE":14, "IMAGE":"1601269454944.png"},
+            {"STAGE":15, "IMAGE":"1601269462312.png"},
+            {"STAGE":1, "IMAGE":"1601269477661.png"},
+            {"STAGE":2, "IMAGE":"1601269486427.png"},
+            {"STAGE":3, "IMAGE":"1601269493341.png"},
+            {"STAGE":4, "IMAGE":"1601269499709.png"},
+            {"STAGE":5, "IMAGE":"1601269507017.png"},
+            {"STAGE":6, "IMAGE":"1601269518783.png"},
+            {"STAGE":7, "IMAGE":"1601269525564.png"},
+            {"STAGE":8, "IMAGE":"1601269532371.png"},
+            {"STAGE":9, "IMAGE":"1601269546437.png"},
+            {"STAGE":10, "IMAGE":"1601269666947.png"},
+            {"STAGE":11, "IMAGE":"1601269677285.png"},
+            {"STAGE":12, "IMAGE":"1601269685648.png"},
+            {"STAGE":13, "IMAGE":"1601269694655.png"},
+            {"STAGE":14, "IMAGE":"1601269704417.png"},
+            {"STAGE":15, "IMAGE":"1601269712707.png"}]
 ##################Messages################
 MESSAGE_RESTART_DUEL = Pattern("1596765847719.png").similar(0.86)
 MESSAGE_LAST_SP_BATTLE = "MESSAGE_LAST_SP_BATTLE.png"
@@ -100,42 +145,68 @@ TITLE_REWARD_POINT = "1596768099812.png"
 ##################MISSION################
 TITLE_MISSION =  "1596776003050.png"
 #SPELL
-MISSION_SPELL_10 = Pattern("TenTimesSpell-1.png").similar(0.85)
-MISSION_SPELL_12_LOWER5COST = Pattern("TwelveTimesSmallSpell-1.png").similar(0.85)
+MISSION_SPELL_10={"GROUP":"SPELL","NAME":"MISSION_SPELL_10","IMAGE":Pattern("TenTimesSpell-1.png").similar(0.85)}
+MISSION_SPELL_12_LOWER5COST={"GROUP":"SPELL","NAME":"MISSION_SPELL_12_LOWER5COST","IMAGE":Pattern("TwelveTimesSmallSpell-1.png").similar(0.85)}
 
 #SPEED
-MISSION_WIN_7TURNS = Pattern("WinIn7Turns.png").similar(0.85)
-MISSION_WIN_10TURNS = Pattern("WinIn10Turns.png").similar(0.85)
-MISSION_WIN_4SHIELD = Pattern("WinWith4ShieldsRemained-1.png").similar(0.85)
-MISSION_WIN_2SHIELD = Pattern("WinWith2ShieldsRemained.png").similar(0.85)
-MISSION_WIN_5 = Pattern("Win5Times-1.png").similar(0.85)
-MISSION_CREATURE_10 = Pattern("Summon10Creatures-1.png").similar(0.85)
-MISSION_CREATURE_18_LOWER5 = Pattern("Summon18Creatures-1.png").similar(0.85)
-MISSION_PLAY_50 = Pattern("Play50CostCards-1.png").similar(0.85)
-MISSION_BREAK_10 = Pattern("Break10Shields.png").similar(0.85)
-MISSION_DRAW_20 = Pattern("Draw20Cards.png").similar(0.85)
-MISSION_CHARGE_10 = Pattern("Charge10Manas.png").similar(0.85)
+MISSION_WIN_7TURNS={"GROUP":"SPEED","NAME":"MISSION_WIN_7TURNS","IMAGE":Pattern("WinIn7Turns.png").similar(0.85)}
+MISSION_WIN_10TURNS={"GROUP":"SPEED","NAME":"MISSION_WIN_10TURNS","IMAGE":Pattern("WinIn10Turns.png").similar(0.85)}
+MISSION_WIN_4SHIELD={"GROUP":"SPEED","NAME":"MISSION_WIN_4SHIELD","IMAGE":Pattern("WinWith4ShieldsRemained-1.png").similar(0.85)}
+MISSION_WIN_2SHIELD={"GROUP":"SPEED","NAME":"MISSION_WIN_2SHIELD","IMAGE":Pattern("WinWith2ShieldsRemained.png").similar(0.85)}
+MISSION_WIN_5={"GROUP":"SPEED","NAME":"MISSION_WIN_5","IMAGE":Pattern("Win5Times-1.png").similar(0.85)}
+MISSION_CREATURE_10={"GROUP":"SPEED","NAME":"MISSION_CREATURE_10","IMAGE":Pattern("Summon10Creatures-1.png").similar(0.85)}
+MISSION_CREATURE_18_LOWER5={"GROUP":"SPEED","NAME":"MISSION_CREATURE_18_LOWER5","IMAGE":Pattern("Summon18Creatures-1.png").similar(0.85)}
+MISSION_PLAY_50={"GROUP":"SPEED","NAME":"MISSION_PLAY_50","IMAGE":Pattern("Play50CostCards-1.png").similar(0.85)}
+MISSION_BREAK_10={"GROUP":"SPEED","NAME":"MISSION_BREAK_10","IMAGE":Pattern("1601262959306.png").similar(0.85)}
+MISSION_DRAW_20={"GROUP":"SPEED","NAME":"MISSION_DRAW_20","IMAGE":Pattern("Draw20Cards.png").similar(0.85)}
+MISSION_CHARGE_10={"GROUP":"SPEED","NAME":"MISSION_CHARGE_10","IMAGE":Pattern("Charge10Manas.png").similar(0.85)}
 
 #LARGE_CREATURE
-MISSION_CREATURE_6_HIGHER5 = Pattern("Summon6BigCreaturesCost5-1.png").similar(0.80)
-MISSION_CREATURE_6_HIGHER5000 = Pattern("Summon6BigCreaturesPower5000.png").similar(0.85)
-MISSION_BREAK_3 = Pattern("Break3ShieldsInOneTurn-1.png").similar(0.86)
+MISSION_CREATURE_6_HIGHER5={"GROUP":"LARGE","NAME":"MISSION_CREATURE_6_HIGHER5","IMAGE":Pattern("Summon6BigCreaturesCost5-1.png").similar(0.80)}
+MISSION_CREATURE_6_HIGHER5000={"GROUP":"LARGE","NAME":"MISSION_CREATURE_6_HIGHER5000","IMAGE":Pattern("Summon6BigCreaturesPower5000.png").similar(0.85)}
+MISSION_BREAK_3={"GROUP":"LARGE","NAME":"MISSION_BREAK_3","IMAGE":Pattern("Break3ShieldsInOneTurn-1.png").similar(0.86)}
 
 #BATTLE
-MISSION_DEST_4 = Pattern("1596881282876-1.png").similar(0.85)
-MISSION_BATTLE_5 = Pattern("FiveTimesBattleWithCreatures-1.png").similar(0.85)
+MISSION_DEST_4={"GROUP":"BATTLE","NAME":"MISSION_DEST_4","IMAGE":Pattern("1596881282876-1.png").similar(0.85)}
+MISSION_BATTLE_5={"GROUP":"BATTLE","NAME":"MISSION_BATTLE_5","IMAGE":Pattern("FiveTimesBattleWithCreatures-1.png").similar(0.85)}
 
 #ST
-MISSION_ST_5 = Pattern("FiveTimesST-1.png").similar(0.85)
+MISSION_ST_5={"GROUP":"ST","NAME":"MISSION_ST_5","IMAGE":Pattern("FiveTimesST-1.png").similar(0.85)}
 
 #RETIRE
-MISSION_DUEL_5 = Pattern("FiveTimesBattle-1.png").similar(0.86)
+MISSION_DUEL_5={"GROUP":"RETIRE","NAME":"MISSION_DUEL_5","IMAGE":Pattern("FiveTimesBattle-1.png").similar(0.86)}
 
 #SKIP
-MISSION_SUMMON_3_SHINKA = Pattern("1596776105685.png").similar(0.85)
-MISSION_SPELL_3_HIGHER5 = Pattern("FourTimesBigSpell-1.png").similar(0.85)
+MISSION_SUMMON_3_SHINKA={"GROUP":"SKIP","NAME":"MISSION_SUMMON_3_SHINKA","IMAGE":Pattern("1596776105685.png").similar(0.85)}
+MISSION_SPELL_3_HIGHER5={"GROUP":"SKIP","NAME":"MISSION_SPELL_3_HIGHER5","IMAGE":Pattern("FourTimesBigSpell-1.png").similar(0.85)}
 
-#Arrays
+
+GROUPS = ["SPELL","BATTLE","ST","LARGE","SPEED","RETIRE","SKIP"]
+MISSIONS = [
+        MISSION_SPELL_10,
+        MISSION_SPELL_12_LOWER5COST,
+        MISSION_WIN_7TURNS,
+        MISSION_WIN_10TURNS,
+        MISSION_WIN_4SHIELD,
+        MISSION_WIN_2SHIELD,
+        MISSION_WIN_5,
+        MISSION_CREATURE_10,
+        MISSION_CREATURE_18_LOWER5,
+        MISSION_PLAY_50,
+        MISSION_BREAK_10,
+        MISSION_DRAW_20,
+        MISSION_CHARGE_10,
+        MISSION_CREATURE_6_HIGHER5,
+        MISSION_CREATURE_6_HIGHER5000,
+        MISSION_BREAK_3,
+        MISSION_DEST_4,
+        MISSION_BATTLE_5,
+        MISSION_ST_5,
+        MISSION_DUEL_5,
+        MISSION_SUMMON_3_SHINKA,
+        MISSION_SPELL_3_HIGHER5
+        ]
+
 SPELL_MISSIONS = [MISSION_SPELL_10,MISSION_SPELL_12_LOWER5COST]
 SPEED_MISSIONS = [MISSION_WIN_7TURNS, MISSION_WIN_10TURNS,
         MISSION_WIN_2SHIELD, MISSION_WIN_5, MISSION_CREATURE_10,

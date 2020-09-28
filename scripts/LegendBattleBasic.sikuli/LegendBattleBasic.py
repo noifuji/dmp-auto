@@ -25,7 +25,7 @@ restart_count = 0
 
 #Pre-processing Start
 NoxDMLib.exitNox()
-CommonDMLib.updateDeckCodes()
+CommonDMLib.downloadDeckCodes()
 #Pre-processing End
 
 CommonDMLib.RestartApp(AndAppResources, DMApp)

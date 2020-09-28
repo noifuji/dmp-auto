@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import urllib2
+import copy
 from datetime import datetime
 from pytz import timezone
 sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
@@ -126,8 +127,29 @@ def getSetupAccountRef():
             break
     return result
 
-def appendStatistics(sheetname, statistics):
-    row = [statistics]
+STATISTICS_COMPUTERNAME = "COMPUTERNAME"
+STATISTICS_REF = "REF"
+STATISTICS_MISSION1 = "MISSION1"
+STATISTICS_MISSION2 = "MISSION2"
+STATISTICS_MISSION3 = "MISSION3"
+STATISTICS_STARTTIME = "STARTTIME"
+STATISTICS_ENDTIME = "ENDTIME"
+STATISTICS_EXCEPTION = "EXCEPTION"
+def uploadStatistics(sheetname, statistics):
+    row = None
+    if sheetname == "DailyMission":
+        row = [[statistics[STATISTICS_COMPUTERNAME], statistics[STATISTICS_REF], statistics[STATISTICS_MISSION1], 
+                statistics[STATISTICS_MISSION2], statistics[STATISTICS_MISSION3], statistics[STATISTICS_STARTTIME], 
+                statistics[STATISTICS_ENDTIME], statistics[STATISTICS_EXCEPTION]]]
+    elif sheetname == "MainStory":
+        row = [[statistics["COMPUTERNAME"], statistics["EPISODE"], statistics["STAGE"], 
+                statistics["STRATEGY"], statistics["RETRY"], statistics["STARTTIME"], 
+                statistics["ENDTIME"], statistics["EXCEPTION"]]]
+    else:
+        raise Exception()
+    
+    print row
+    
     f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
     strCredentials = f.read()
     f.close()
@@ -298,15 +320,15 @@ def getJsonFromDisk(path):
     f.close()
     return json_data
 
-def updateDeckCodes():
-    print "updateDeckCodes"
+def downloadDeckCodes():
+    print "downloadDeckCodes"
     saveFilePath = os.path.join(EnvSettings.DATA_DIR_PATH, EnvSettings.DECK_CODE_JSON_FILE)
     downloadFile(EnvSettings.DRIVE_DECK_CODE_JSON_URL, saveFilePath)
 
 def getDeckCode(DeckName):
     deckCodesJsonPath = os.path.join(EnvSettings.DATA_DIR_PATH, EnvSettings.DECK_CODE_JSON_FILE)
     if os.path.exists(deckCodesJsonPath) == False:
-        updateDeckCodes()
+        downloadDeckCodes()
 
     json_data = getJsonFromDisk(deckCodesJsonPath)
     if DeckName in json_data["deck_codes"].keys():
@@ -531,9 +553,12 @@ def addNewDeckByCode(resource, code):
 def skipStory(resource):
     print 'skipStory'
     if len(findAny(resource.BUTTON_SKIP)) > 0:
-        click(resource.BUTTON_SKIP)
-        wait(2)
-        click(resource.BUTTON_OK)
+        try:
+            click(resource.BUTTON_SKIP)
+            wait(2)
+            click(resource.BUTTON_OK)
+        except:
+            print "failed to click"
 
 def skipRewards(resource):
     print 'skipRewards'
@@ -606,55 +631,57 @@ def openMission(resource):
 
 def closeMission(resource):
     print "closeMission"
-    click(resource.BUTTON_CLOSE)
-    waitVanish(resource.TITLE_MISSION, 30)
+    if len(findAny(resource.BUTTON_CLOSE)) > 0:
+        click(resource.BUTTON_CLOSE)
+        waitVanish(resource.TITLE_MISSION, 30)
 
-def getMissionPattern(resource):
-    print "getMissionPattern"
-    spellResult = findAny(resource.SPELL_MISSIONS)
-    speedResult = findAny(resource.SPEED_MISSIONS)
-    battleResult = findAny(resource.BATTLE_MISSIONS)
-    STResult = findAny(resource.SHIELDTRRIGER_MISSIONS)
-    LargeResult = findAny(resource.LARGE_CREATURES)
-    retireResult = findAny(resource.RETIRE)
-    if len(spellResult) > 0:
-        print "Spell strategy"
-        return  resource.SPELL_MISSIONS[spellResult[0].getIndex()]
-    if len(battleResult) > 0:
-        print "Battle strategy"
-        return  resource.BATTLE_MISSIONS[battleResult[0].getIndex()]
-    if len(STResult) > 0:
-        print "ST strategy"
-        return  resource.SHIELDTRRIGER_MISSIONS[STResult[0].getIndex()]
-    if len(LargeResult) > 0:
-        print "Large strategy"
-        return  resource.LARGE_CREATURES[LargeResult[0].getIndex()]
-    if len(speedResult) > 0:
-        print "Speed strategy"
-        return  resource.SPEED_MISSIONS[speedResult[0].getIndex()]
-    if len(retireResult) > 0:
-        print "Retire strategy"
-        return  resource.RETIRE[retireResult[0].getIndex()]
-    return None
+def getTargetMissions(resource):
+    print "getTargetMissions"
+    resultImages = findAny([d.get("IMAGE") for d in resource.MISSIONS])
+    targetMissions = []
 
-def getMissionStrategy(resource, pattern):
+    for ri in resultImages:
+        temp = copy.copy(resource.MISSIONS[ri.getIndex()])
+        temp["SCORE"] = ri.getScore()
+        targetMissions.append(temp)
+        print resource.MISSIONS[ri.getIndex()]["NAME"] + ":" + str(ri.getScore())
+
+    #delete low score elements
+    targetMissionsHighConfidence = []
+    if len(targetMissions) > 0:
+        scores = [d.get("SCORE") for d in targetMissions]
+        maxScore = max(scores)
+        for tm in targetMissions:
+            if tm["SCORE"] >= (maxScore - 0.02):
+                targetMissionsHighConfidence.append(tm)
+                
+    results = []
+    #sort by mission group
+    for g in resource.GROUPS:
+        for t in targetMissionsHighConfidence:
+            if t["GROUP"] == g:
+                results.append(t)
+
+    return results
+
+def getMissionStrategy(resource, mission):
     print "getMissionStrategy"
-    if pattern in resource.SPELL_MISSIONS:
-        return 1
-    if pattern in resource.SPEED_MISSIONS:
-        return 2
-    if pattern in resource.BATTLE_MISSIONS:
-        return 3
-    if pattern in resource.SHIELDTRRIGER_MISSIONS:
-        return 4
-    if pattern in resource.LARGE_CREATURES:
-        return 5
-    if pattern in resource.RETIRE:
-        return 6
-    return 0
-
-
-
+    strategyCode = 0
+    
+    if mission["GROUP"] == "SPELL":
+        strategyCode = 1
+    elif mission["GROUP"] == "SPEED":
+        strategyCode = 2
+    elif mission["GROUP"] == "BATTLE":
+        strategyCode = 3
+    elif mission["GROUP"] == "ST":
+        strategyCode = 4
+    elif mission["GROUP"] == "LARGE":
+        strategyCode = 5
+    elif mission["GROUP"] == "RETIRE":
+        strategyCode = 6
+        
+    return strategyCode
 
 #return 0 正常にバトル開始
 #return -1 異常発生
@@ -685,6 +712,45 @@ def waitStartingGame(resource):
             break
         wait(1)
     return 0
+
+#Nox
+#OFFSET_X = -240
+#OFFSET_Y = 284
+#WIDTH = 118
+#HEIGHT = 70
+def getMainStoryStage(resource, offsetX, offsetY, width, height):
+    stage = 0
+    res = findAny(resource.TITLE_MAIN_STORY)
+    if len(res) > 0:
+        reg = Region(res[0].getX() + offsetX, res[0].getY()+offsetY, width, height)
+        reg.highlight(3)
+        scores = []
+        for image in [d.get("IMAGE") for d in resource.STAGES]:
+           detected = reg.findAny(image)
+           if len(detected) > 0:
+               scores.append(detected[0].getScore())
+               print detected[0].getScore()
+           else:
+               scores.append(0)
+               print 0
+               
+        max_value = max(scores)
+        max_index = scores.index(max_value)
+               
+        stage = resource.STAGES[max_index]["STAGE"]
+
+    return stage
+
+def getMainStoryEpisode(resource):
+    episode = 0
+    res = findAny(resource.TITLE_MAIN_STORY)
+    if len(res) > 0:
+        result = findBestList([d.get("IMAGE") for d in resource.EPISODES])
+        if result != None:
+            episode = resource.EPISODES[result.getIndex()]["EPISODE"]
+        else:
+            episode = 0
+    return episode
 
 def openMainStory(resource):
     print 'openAndStartMainStory'
@@ -793,13 +859,25 @@ def RestartApp(resource, app):
 
     skipUpdateFlag = True
     for num in range(180):
-        if len(findAny("1597912712276.png")) > 0:
-            print "An update is found."
-            skipUpdateFlag = False
-            break
+        print "loading opening page......" + str(num)
+        if resource.APP_ENGINE == "NOX":
+            if len(findAny("1597912712276.png")) > 0:
+                print "An update is found."
+                skipUpdateFlag = False
+                break
+            
+            if len(findAny(resource.MESSAGE_FAILED_TO_START_LAUNCHER)) > 0:
+                print "Android Error is detected."
+                try:
+                    click(resource.MESSAGE_FAILED_TO_START_LAUNCHER)
+                except:
+                    print "failed to click"
+                break
+        
         if len(findAny(resource.BUTTON_TAKEOVER)) > 0:
             print "The opening page is found."
             break
+        
         if num >= 179:
             print 'Too many retries.'
             raise Exception

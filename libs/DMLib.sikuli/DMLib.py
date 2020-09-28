@@ -330,9 +330,12 @@ def SummonBasic(currentMana):
         wait(1)
         type("f")
         if exists("1597466883152.png", 2) != None:
-            click("1597466883152.png")
-            wait(1)
-            click("1597466883152.png")
+            try:
+                click("1597466883152.png")
+                wait(1)
+                click("1597466883152.png")
+            except:
+                print "failed to click"
         count = 0
         
 def SummonKuwakiri(currentMana):

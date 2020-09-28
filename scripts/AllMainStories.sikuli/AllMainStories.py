@@ -20,22 +20,39 @@ Settings.DelayBeforeDrag = 0.5
 DMApp = App(AppPath)
 win_count =0
 retryCount = 0
+exceptionCout = 0
+statisticsData = {"EPISODE":0,"STAGE":0}
 
 #Pre-processing Start
 NoxDMLib.exitNox()
-CommonDMLib.updateDeckCodes()
+CommonDMLib.downloadDeckCodes()
 #Pre-processing End
 
-CommonDMLib.RestartApp(AndAppResources, DMApp)
-CommonDMLib.openMainStory(AndAppResources)
-strategy = CommonDMLib.getStrategyByMainStoryStage(AndAppResources)
-deck = CommonDMLib.getDeckByStrategy(AndAppResources, strategy)
-CommonDMLib.startMainStoryBattle(AndAppResources, deck[0], deck[1])
 
 #全体ループ
 entire_loop_flag = True
 for entire_loop in range(100):
     try:
+        CommonDMLib.RestartApp(AndAppResources, DMApp)
+        CommonDMLib.openMainStory(AndAppResources)
+        strategy = CommonDMLib.getStrategyByMainStoryStage(AndAppResources)
+        deck = CommonDMLib.getDeckByStrategy(AndAppResources, strategy)
+        episode = CommonDMLib.getMainStoryEpisode(AndAppResources)
+        stage = CommonDMLib.getMainStoryStage(AndAppResources, -200, 240, 110, 50)
+        #initialize statistics data
+        if statisticsData["STAGE"] != stage or statisticsData["EPISODE"] != episode :
+            print "Initializing Statistics Data"
+            statisticsData["COMPUTERNAME"] = os.environ["COMPUTERNAME"]
+            statisticsData["EPISODE"] = episode
+            statisticsData["STAGE"] = stage
+            statisticsData["STRATEGY"] = strategy
+            statisticsData["RETRY"] = 0
+            statisticsData["STARTTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            statisticsData["ENDTIME"] = ""
+            statisticsData["EXCEPTION"] = 0
+        
+        CommonDMLib.startMainStoryBattle(AndAppResources, deck[0], deck[1])
+        
         #バトルループ
         for battle_loop in range(2000):
             #バトル開始まで待機
@@ -145,11 +162,18 @@ for entire_loop in range(100):
                     except:
                         print "failed to click"
                     break
-                
+
+            ###Stage Cleared###
             if EnvSettings.RUN_MODE == "DEV":
                 wait(1)
                 CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Battle Loop Count : ' + str(retryCount), appname)
-                retryCount = 0
+            statisticsData["RETRY"] = retryCount
+            statisticsData["EXCEPTION"] = exceptionCout
+            statisticsData["ENDTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            CommonDMLib.uploadStatistics("MainStory" ,statisticsData)
+            retryCount = 0
+            exceptionCout = 0
+                
             if len(findAny(AndAppResources.TITLE_EP5_STAGE10)) > 0:
                 if len(findAny(AndAppResources.BUTTON_CONFIRM_REWARD)) > 0:
                     click(AndAppResources.BUTTON_CONFIRM_REWARD)
@@ -159,23 +183,32 @@ for entire_loop in range(100):
                         entire_loop_flag = False
                         break
                     click(AndAppResources.BUTTON_CLOSE)
-                
+
             strategy = CommonDMLib.getStrategyByMainStoryStage(AndAppResources)
             deck = CommonDMLib.getDeckByStrategy(AndAppResources, strategy)
+            episode = CommonDMLib.getMainStoryEpisode(AndAppResources)
+            stage = CommonDMLib.getMainStoryStage(AndAppResources, -200, 240, 110, 50)
+            #initialize statistics data
+            if statisticsData["STAGE"] != stage or statisticsData["EPISODE"] != episode :
+                print "Initializing Statistics Data"
+                statisticsData["COMPUTERNAME"] = os.environ["COMPUTERNAME"]
+                statisticsData["EPISODE"] = episode
+                statisticsData["STAGE"] = stage
+                statisticsData["STRATEGY"] = strategy
+                statisticsData["RETRY"] = 0
+                statisticsData["STARTTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+                statisticsData["ENDTIME"] = ""
+                statisticsData["EXCEPTION"] = 0
             CommonDMLib.startMainStoryBattle(AndAppResources, deck[0], deck[1])
    
         #バトルループエンド
         if entire_loop_flag == False:
             break
     except:
+        exceptionCout += 1
         e = sys.exc_info()
         for mes in e:
             print(mes)
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "Screenshot" , appname)
-        CommonDMLib.RestartApp(AndAppResources, DMApp)
-        CommonDMLib.openMainStory(AndAppResources)
-        strategy = CommonDMLib.getStrategyByMainStoryStage(AndAppResources)
-        deck = CommonDMLib.getDeckByStrategy(AndAppResources, strategy)
-        CommonDMLib.startMainStoryBattle(AndAppResources, deck[0], deck[1])

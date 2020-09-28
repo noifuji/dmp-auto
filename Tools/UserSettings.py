@@ -16,4 +16,4 @@ NoxDirPath = r""
 RUN_MODE = ""
 
 
-NOX_INSTANCES = [] #[Image, ref]
+NOX_INSTANCES2 = [] #[Image, ref]

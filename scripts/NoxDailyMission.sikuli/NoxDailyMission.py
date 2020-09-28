@@ -26,13 +26,39 @@ mode = EnvSettings.RUN_MODE
 #Pre-processing Start        
 App(EnvSettings.AppPath).close()
 App(EnvSettings.AndAppPath).close()
-CommonDMLib.updateDeckCodes()
+CommonDMLib.downloadDeckCodes()
 instances = CommonDMLib.removeCompletedInstances(instances)
 #Pre-processing End
 
+def finishMissions(instance, statisticsData):
+    CommonDMLib.sendMessagetoSlack(mentionUser, 'Account' + str(instances[instanceIndex]) + ' was completed.', appname)
+    CommonDMLib.closeMission(NoxResources)
+    CommonDMLib.getPresent(NoxResources)
+    res = CommonDMLib.scanAccountInfo(NoxResources)
+    CommonDMLib.updateAccountInfo(instance, res[0], res[1], res[2], res[3],res[4])
+    CommonDMLib.updateCompletedInstanceJson(instance)
+    statisticsData[CommonDMLib.STATISTICS_ENDTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+    CommonDMLib.uploadStatistics("DailyMission" ,statisticsData)
+
+statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_REF:"",
+        CommonDMLib.STATISTICS_MISSION1:"",CommonDMLib.STATISTICS_MISSION2:"",
+        CommonDMLib.STATISTICS_MISSION3:"",CommonDMLib.STATISTICS_STARTTIME:"",
+        CommonDMLib.STATISTICS_ENDTIME:"",CommonDMLib.STATISTICS_EXCEPTION:0}
 instanceIndex = 0
 retryCount = 0
 while instanceIndex < len(instances):
+    
+    if statisticsData[CommonDMLib.STATISTICS_REF] != str(instances[instanceIndex]):
+        print "Initializing Statistics Data"
+        statisticsData[CommonDMLib.STATISTICS_COMPUTERNAME] = os.environ["COMPUTERNAME"]
+        statisticsData[CommonDMLib.STATISTICS_REF] = str(instances[instanceIndex])
+        statisticsData[CommonDMLib.STATISTICS_MISSION1] = ""
+        statisticsData[CommonDMLib.STATISTICS_MISSION2] = ""
+        statisticsData[CommonDMLib.STATISTICS_MISSION3] = ""
+        statisticsData[CommonDMLib.STATISTICS_STARTTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        statisticsData[CommonDMLib.STATISTICS_ENDTIME] = ""
+        statisticsData[CommonDMLib.STATISTICS_EXCEPTION] = 0
+    
     if retryCount > 3:
         print "Too many retries. This instance will be skipped."
         retryCount = 0
@@ -47,23 +73,30 @@ while instanceIndex < len(instances):
         if mode == "DEV":
             wait(1)
             CommonDMLib.uploadScreenShotToSlack(mentionUser,'Account' + str(instances[instanceIndex]) + ' is in process.', appname)
-        mission = CommonDMLib.getMissionPattern(NoxResources)
-        if mission == None:
-            CommonDMLib.uploadScreenShotToSlack(mentionUser,'Account' + str(instances[instanceIndex]) + ' is completed. Going to the next.', appname)
-            NoxDMLib.closeMission()
-            CommonDMLib.getPresent(NoxResources)
-            res = CommonDMLib.scanAccountInfo(NoxResources)
-            CommonDMLib.updateAccountInfo(instances[instanceIndex], res[0], res[1], res[2], res[3],res[4])
-            CommonDMLib.updateCompletedInstanceJson(instances[instanceIndex]) 
+        
+        missions = CommonDMLib.getTargetMissions(NoxResources)
+        
+        if statisticsData[CommonDMLib.STATISTICS_MISSION1] == "":
+            for i in range(len(missions)):
+                if i == 0:
+                    statisticsData[CommonDMLib.STATISTICS_MISSION1] = missions[i]["NAME"]
+                elif i == 1:
+                    statisticsData[CommonDMLib.STATISTICS_MISSION2] = missions[i]["NAME"]
+                elif i == 2:
+                    statisticsData[CommonDMLib.STATISTICS_MISSION3] = missions[i]["NAME"]
+            print statisticsData
+            
+        if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("SCORE") for d in missions])):
+            finishMissions(instances[instanceIndex], statisticsData)
             instanceIndex += 1
             continue
-        strategy = CommonDMLib.getMissionStrategy(NoxResources,mission)
+        
+        strategy = CommonDMLib.getMissionStrategy(NoxResources,missions[0])
         CommonDMLib.closeMission(NoxResources)
         CommonDMLib.openMainStory(NoxResources)
         CommonDMLib.chooseMainStoryStage(NoxResources, 1, NoxResources.TITLE_EP1_STAGE1)
         deck = CommonDMLib.getDeckByStrategy(NoxResources, strategy)
         CommonDMLib.startMainStoryBattle(NoxResources, deck[0], deck[1])
-        
         
         #バトルループ
         for battle_loop in range(200):
@@ -122,8 +155,9 @@ while instanceIndex < len(instances):
                     exists("1596767585645.png",120)
                     
                 #  ターンエンド
-                if exists("1596773380235.png",10) != None:          
+                if exists("1596773380235.png",10) != None:
                     click(Pattern("1597036183485.png").similar(0.85).targetOffset(-100,206))
+                
                 wait(1)
                 #  イレギュラーループ
                 if NoxDMLib.irregularLoop() == 0:
@@ -147,7 +181,7 @@ while instanceIndex < len(instances):
                         click(Pattern("1596952408522.png").similar(0.85))
                     if len(findAny("1596952469317.png")) > 0:
                         break
-                if len(findAny("1596767585645.png")) > 0:
+                if len(findAny("1596767585645.png")) > 0 and dailyReward == 0:
                     try:
                         click("1596767585645.png")
                     except:
@@ -156,18 +190,15 @@ while instanceIndex < len(instances):
                     break
             if dailyReward > 0:
                 CommonDMLib.openMission(NoxResources)
-                mission = CommonDMLib.getMissionPattern(NoxResources)
+                
+                missions = CommonDMLib.getTargetMissions(NoxResources)
                 if mode == "DEV":
                     CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Mission', appname)
-                if mission == None:
-                    CommonDMLib.sendMessagetoSlack(mentionUser, 'Account' + str(instances[instanceIndex]) + ' was completed.', appname)
-                    CommonDMLib.closeMission(NoxResources)
-                    CommonDMLib.getPresent(NoxResources)
-                    res = CommonDMLib.scanAccountInfo(NoxResources)
-                    CommonDMLib.updateAccountInfo(instances[instanceIndex], res[0], res[1], res[2], res[3],res[4])
-                    CommonDMLib.updateCompletedInstanceJson(instances[instanceIndex])
+                
+                if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("SCORE") for d in missions])):
+                    finishMissions(instances[instanceIndex], statisticsData)
                     break
-                strategy = CommonDMLib.getMissionStrategy(NoxResources,mission)
+                strategy = CommonDMLib.getMissionStrategy(NoxResources,missions[0])
                 CommonDMLib.closeMission(NoxResources)
                 CommonDMLib.openMainStory(NoxResources)
                 CommonDMLib.chooseMainStoryStage(NoxResources, 1, NoxResources.TITLE_EP1_STAGE1)
@@ -179,6 +210,7 @@ while instanceIndex < len(instances):
         #バトルループエンド
         instanceIndex += 1
     except:
+        statisticsData["EXCEPTION"] += 1
         retryCount += 1
         Settings.MoveMouseDelay = 0.1
         e = sys.exc_info()

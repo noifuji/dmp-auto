@@ -23,7 +23,7 @@ OK2 = Pattern("OK2.png").similar(0.80)
 tutorial = "tutorial.png"
 
 
-CommonDMLib.updateDeckCodes()
+CommonDMLib.downloadDeckCodes()
 
 for count in range(100):
     ref = CommonDMLib.getSetupAccountRef()

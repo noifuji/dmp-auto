@@ -218,7 +218,7 @@ def exitNox():
     
     App(EnvSettings.NoxMultiPlayerPath).open()
     if exists(Pattern("1596962591946.png").targetOffset(92,154),120) == None:
-        killMultiPlayerManager()
+        CommonDMLib.killMultiPlayerManager()
         raise Exception("MultiPlayerManager has error. Please retry to launch.")
     for num in range(10):
         if exists(Pattern("1596777933938.png").similar(0.90), 1) == None:
@@ -240,7 +240,7 @@ def exitNox():
 def openNoxInstance(ref):
     App(EnvSettings.NoxMultiPlayerPath).open()
     if exists(Pattern("1596962591946.png").targetOffset(92,154),120) == None:
-        killMultiPlayerManager()
+        CommonDMLib.killMultiPlayerManager()
         raise Exception("MultiPlayerManager has error. Please retry to launch.")
     exists(Pattern("1601077335160.png").similar(0.95), 120)
     click(Pattern("1601077099284.png").similar(0.95).targetOffset(-59,2))
@@ -655,6 +655,8 @@ def directAttack(sheildImg):
                         wait(0.2)
                         if len(findAny("1596770360694.png")) == 0:
                             break
+                        if directAttackLoop > 8:
+                            print "Too many loops to select shields"
                 wait(1)
             except:
                 Settings.MoveMouseDelay = 0.1
