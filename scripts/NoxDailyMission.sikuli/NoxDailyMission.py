@@ -86,7 +86,7 @@ while instanceIndex < len(instances):
                     statisticsData[CommonDMLib.STATISTICS_MISSION3] = missions[i]["NAME"]
             print statisticsData
             
-        if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("SCORE") for d in missions])):
+        if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("GROUP") for d in missions])):
             finishMissions(instances[instanceIndex], statisticsData)
             instanceIndex += 1
             continue
@@ -195,7 +195,7 @@ while instanceIndex < len(instances):
                 if mode == "DEV":
                     CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Mission', appname)
                 
-                if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("SCORE") for d in missions])):
+                if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("GROUP") for d in missions])):
                     finishMissions(instances[instanceIndex], statisticsData)
                     break
                 strategy = CommonDMLib.getMissionStrategy(NoxResources,missions[0])
