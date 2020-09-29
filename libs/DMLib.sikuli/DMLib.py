@@ -913,7 +913,7 @@ def irregularLoop():
             print 'Dest.'          
             BZ = None
             for num in range(5):
-                BZ = findAny(Pattern("1597464166732.png").similar(0.85).targetOffset(0,51), Pattern("1598791717218.png").similar(0.85))
+                BZ = findAny(Pattern("1601365170781.png").similar(0.85).targetOffset(-1,50),Pattern("1597464166732.png").similar(0.85).targetOffset(0,51), Pattern("1598791717218.png").similar(0.85))
                 if len(BZ) > 0: 
                     click(BZ[0])
                     break

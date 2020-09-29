@@ -5,6 +5,7 @@ import os
 import sys
 import urllib2
 import copy
+import subprocess
 from datetime import datetime
 from pytz import timezone
 sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
@@ -567,27 +568,42 @@ def skipRewards(resource):
     print "checking rewards...."
     if len(findAny(resource.TITLE_REWARD_LEVEL_UP)) > 0:
         print 'Level up reward'
-        click(resource.BUTTON_OK)
+        try:
+            click(resource.BUTTON_OK)
+        except:
+            print "failed to click"
         results["levelup"] += 1
     #デイリー報酬スキップ
     if len(findAny(resource.TITLE_REWARD_DAILY)) > 0:
         print 'Daily reward'
         results["daily"] += 1
-        click(resource.BUTTON_OK)
+        try:
+            click(resource.BUTTON_OK)
+        except:
+            print "failed to click"
     #シークレットミッション報酬
     if len(findAny(resource.TITLE_REWARD_SECRET)) > 0:
         print 'Secret Mission reward'
-        click(resource.BUTTON_OK)
+        try:
+            click(resource.BUTTON_OK)
+        except:
+            print "failed to click"
         results["secret"] += 1
     #初回クリア
     if len(findAny(resource.TITLE_REWARD_CLEAR)) > 0:
         print 'The first clear reward'
-        click(resource.BUTTON_OK)
+        try:
+            click(resource.BUTTON_OK)
+        except:
+            print "failed to click"
         results["clear"] += 1
     #ポイント報酬
     if len(findAny(resource.TITLE_REWARD_POINT)) > 0:
         print 'Point reward'
-        click(resource.BUTTON_OK)
+        try:
+            click(resource.BUTTON_OK)
+        except:
+            print "failed to click"
         results["point"] += 1
     wait(1)
     return results
@@ -637,28 +653,36 @@ def closeMission(resource):
 
 def getTargetMissions(resource):
     print "getTargetMissions"
-    resultImages = findAny([d.get("IMAGE") for d in resource.MISSIONS])
+    offsetX1 = 180
+    offsetY1 = 190
+    offsetY2 = 360
+    offsetY3 = 530
+    width = 1065
+    height = 65
+    
+    missionTitle = findAny(resource.TITLE_MISSION)
+    if len(missionTitle) <= 0:
+        return
+    
+    missionRegs = [
+            Region(missionTitle[0].getX() + offsetX1, missionTitle[0].getY() + offsetY1, width, height),
+            Region(missionTitle[0].getX() + offsetX1, missionTitle[0].getY() + offsetY2, width, height),
+            Region(missionTitle[0].getX() + offsetX1, missionTitle[0].getY() + offsetY3, width, height)
+            ]
+
     targetMissions = []
-
-    for ri in resultImages:
-        temp = copy.copy(resource.MISSIONS[ri.getIndex()])
-        temp["SCORE"] = ri.getScore()
-        targetMissions.append(temp)
-        print resource.MISSIONS[ri.getIndex()]["NAME"] + ":" + str(ri.getScore())
-
-    #delete low score elements
-    targetMissionsHighConfidence = []
-    if len(targetMissions) > 0:
-        scores = [d.get("SCORE") for d in targetMissions]
-        maxScore = max(scores)
-        for tm in targetMissions:
-            if tm["SCORE"] >= (maxScore - 0.02):
-                targetMissionsHighConfidence.append(tm)
+    for reg in missionRegs:
+        reg.highlight(0.5)
+        best = reg.findBestList([d.get("IMAGE") for d in resource.MISSIONS])
+        if best != None:
+            print resource.MISSIONS[best.getIndex()]["NAME"] + " : " + str(best.getScore())
+            if best.getScore() > 0.9:
+                targetMissions.append(resource.MISSIONS[best.getIndex()])
                 
     results = []
     #sort by mission group
     for g in resource.GROUPS:
-        for t in targetMissionsHighConfidence:
+        for t in targetMissions:
             if t["GROUP"] == g:
                 results.append(t)
 

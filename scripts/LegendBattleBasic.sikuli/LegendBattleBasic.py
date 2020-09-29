@@ -56,7 +56,7 @@ for entire_loop in range(100):
                 click("1600700956975.png")
             elif len(findAny("1600697998210.png")) > 0:
                 level = 1
-                strategy = 100
+                strategy = 2
                 click("1600697998210.png")
 
             if len(findAny(AndAppResources.BUTTON_SMALL_BATTLE_START)) > 0:
@@ -142,6 +142,7 @@ for entire_loop in range(100):
             if winFlag == True:
                 win_count+=1
             if breakBattleLoopFlag == True or exitFlag == True:
+                win_count = 0
                 break
         #バトルループエンド
         if exitFlag == True:
