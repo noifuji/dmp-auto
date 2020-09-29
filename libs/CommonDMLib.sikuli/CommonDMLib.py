@@ -19,6 +19,22 @@ def killMultiPlayerManager():
     cmd = 'taskkill /im MultiPlayerManager.exe /t'
     returncode = subprocess.Popen(cmd, shell=True)
 
+def isUpdateAvailable():
+    command1 = 'git fetch https://github.com/noifuji/dmp-auto.git'
+    proc1 = subprocess.Popen(command1, shell  = True)
+    proc1.communicate()
+    
+    command2 = 'git diff --quiet HEAD FETCH_HEAD'
+    proc2 = subprocess.Popen(command2, shell  = True)
+    proc2.communicate()
+    
+    if proc2.returncode == 0:
+        return False
+    elif proc2.returncode == 1:
+        return True
+    else:
+        raise Exception("Invalid return code")
+
 def dragDropAtSpeed(fromImg, toImg, speed):
     currentSpeed = Settings.MoveMouseDelay
 
