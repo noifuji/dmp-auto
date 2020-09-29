@@ -53,14 +53,23 @@ for entire_loop in range(100):
             if len(findAny("1600700956975.png")) > 0:
                 level = 2
                 strategy = 2
-                click("1600700956975.png")
+                try:
+                    click("1600700956975.png")
+                except:
+                    print "failed to click"
             elif len(findAny("1600697998210.png")) > 0:
                 level = 1
                 strategy = 2
-                click("1600697998210.png")
+                try:
+                    click("1600697998210.png")
+                except:
+                    print "failed to click"
 
             if len(findAny(AndAppResources.BUTTON_SMALL_BATTLE_START)) > 0:
-                click(AndAppResources.BUTTON_SMALL_BATTLE_START)
+                try:
+                    click(AndAppResources.BUTTON_SMALL_BATTLE_START)
+                except:
+                    print "failed to click"
             if len(findAny(AndAppResources.BUTTON_LARGE_BATTLE_START)) > 0:
                 break
             CommonDMLib.skipRewards(AndAppResources)
