@@ -1,3 +1,7 @@
+
+
+
+
 setlocal enabledelayedexpansion
 cd %~dp0/..
 
@@ -36,6 +40,23 @@ set PIDFile=./data/pid.txt
 
 powershell "Get-WmiObject win32_process -filter processid=$pid | ForEach-Object{$_.parentprocessid;}" > %PIDFile%
 
+@REM デイリーミッション
 java -jar sikulixide-2.0.4.jar -r .\scripts\NoxDailyMission.sikuli
+if %ERRORLEVEL%==50 (
+ start .\Tools\auto_update.bat
+ exit
+)
+
+@REM レジェンド周回
 java -jar sikulixide-2.0.4.jar -r .\scripts\LegendBattleBasic.sikuli
+if %ERRORLEVEL%==50 (
+ start .\Tools\auto_update.bat
+ exit
+)
+
+@REM メインストーリー周回
 java -jar sikulixide-2.0.4.jar -r .\scripts\AllMainStories.sikuli
+if %ERRORLEVEL%==50 (
+ start .\Tools\auto_update.bat
+ exit
+)

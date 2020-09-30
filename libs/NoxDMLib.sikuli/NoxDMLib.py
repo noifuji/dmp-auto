@@ -234,7 +234,9 @@ def exitNox():
         click(Pattern("1596777933938.png").similar(0.90))
         if exists(Pattern("1596777989679.png").similar(0.90), 10) != None:
             click(Pattern("1596777989679.png").similar(0.90))
-        waitVanish(Pattern("1596777933938.png").similar(0.90), 120)
+        if waitVanish(Pattern("1596777933938.png").similar(0.90), 120) == False:
+            print "Nox instance stays."
+            exit(1)
     App(EnvSettings.NoxMultiPlayerPath).close()
 
 def openNoxInstance(ref):

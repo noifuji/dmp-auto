@@ -25,6 +25,9 @@ restart_count = 0
 
 #Pre-processing Start
 NoxDMLib.exitNox()
+
+if CommonDMLib.isNewVersionAvailable():
+    exit(50)
 CommonDMLib.downloadDeckCodes()
 #Pre-processing End
 

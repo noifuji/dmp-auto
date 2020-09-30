@@ -19,7 +19,7 @@ def killMultiPlayerManager():
     cmd = 'taskkill /im MultiPlayerManager.exe /t'
     returncode = subprocess.Popen(cmd, shell=True)
 
-def isUpdateAvailable():
+def isNewVersionAvailable():
     command1 = 'git fetch https://github.com/noifuji/dmp-auto.git'
     proc1 = subprocess.Popen(command1, shell  = True)
     proc1.communicate()

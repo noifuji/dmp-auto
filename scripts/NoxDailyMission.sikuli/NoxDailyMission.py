@@ -26,6 +26,9 @@ mode = EnvSettings.RUN_MODE
 #Pre-processing Start        
 App(EnvSettings.AppPath).close()
 App(EnvSettings.AndAppPath).close()
+
+if CommonDMLib.isNewVersionAvailable():
+    exit(50)
 CommonDMLib.downloadDeckCodes()
 instances = CommonDMLib.removeCompletedInstances(instances)
 #Pre-processing End
@@ -39,6 +42,8 @@ def finishMissions(instance, statisticsData):
     CommonDMLib.updateCompletedInstanceJson(instance)
     statisticsData[CommonDMLib.STATISTICS_ENDTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     CommonDMLib.uploadStatistics("DailyMission" ,statisticsData)
+    if CommonDMLib.isNewVersionAvailable():
+        exit(50)
 
 statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_REF:"",
         CommonDMLib.STATISTICS_MISSION1:"",CommonDMLib.STATISTICS_MISSION2:"",

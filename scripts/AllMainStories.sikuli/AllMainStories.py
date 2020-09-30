@@ -25,6 +25,8 @@ statisticsData = {"EPISODE":0,"STAGE":0}
 
 #Pre-processing Start
 NoxDMLib.exitNox()
+if CommonDMLib.isNewVersionAvailable():
+    exit(50)
 CommonDMLib.downloadDeckCodes()
 #Pre-processing End
 
@@ -183,6 +185,10 @@ for entire_loop in range(100):
                         entire_loop_flag = False
                         break
                     click(AndAppResources.BUTTON_CLOSE)
+
+            
+            if CommonDMLib.isNewVersionAvailable():
+                exit(50)
 
             strategy = CommonDMLib.getStrategyByMainStoryStage(AndAppResources)
             deck = CommonDMLib.getDeckByStrategy(AndAppResources, strategy)
