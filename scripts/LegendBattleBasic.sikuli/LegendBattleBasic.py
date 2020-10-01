@@ -6,7 +6,6 @@ import EnvSettings
 sys.path.append(EnvSettings.LIBS_DIR_PATH)
 sys.path.append(EnvSettings.RES_DIR_PATH)
 import GameLib
-import NoxDMLib
 import CommonDMLib
 import AndAppResources
 import NoxResources
@@ -25,9 +24,6 @@ instances = []
 resources = None
 
 #Pre-processing Start
-App(EnvSettings.AppPath).close()
-App(EnvSettings.AndAppPath).close()
-NoxDMLib.exitNox()
 
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
@@ -35,9 +31,12 @@ CommonDMLib.downloadDeckCodes()
 
 if EnvSettings.ENGINE_FOR_LEGEND == "ANDAPP":
     resources = AndAppResources
+    CommonDMLib.exitNox(resources)
     instances = [0]
 elif EnvSettings.ENGINE_FOR_LEGEND == "NOX":
     resources = NoxResources
+    App(EnvSettings.AppPath).close()
+    App(EnvSettings.AndAppPath).close()
     instances = EnvSettings.NOX_INSTANCES
     statuses = CommonDMLib.downloadQuestStatus()
     temp = []
@@ -60,7 +59,7 @@ instanceIndex = 0
 while instanceIndex < len(instances):
     try:
         if EnvSettings.ENGINE_FOR_MAIN == "NOX":
-            NoxDMLib.RestartNox(instances[instanceIndex])
+            CommonDMLib.RestartNox(resources, instances[instanceIndex])
         CommonDMLib.RestartApp(resources)
         click(resources.ICON_EXTRA)
         wait(3)
