@@ -799,6 +799,8 @@ def waitStartingGame(resource):
             return -1
         if len(findAny(resource.BUTTON_TURN_END)) > 0:
             break
+        if num >= 199:
+            raise Exception("Too many waitStartingGame loop")
         wait(1)
     return 0
 

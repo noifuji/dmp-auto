@@ -122,7 +122,6 @@ while instanceIndex < len(instances):
             winFlag = False
             for battleResultLoop in range(200):
                 print "battleResultLoop..." + str(battleResultLoop)
-                
                 CommonDMLib.skipRewards(resources)
                 if len(findAny(resources.ICON_TARGET_REWARD)) > 0:
                     targetRewardFlag = True
@@ -142,8 +141,10 @@ while instanceIndex < len(instances):
                 if len(findAny(resources.ICON_LOSE)) > 0:
                     click(resources.BUTTON_SMALL_BATTLE_START)
                     wait(2)
-                    if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) == 0:
-                        break
+                if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) == 0:
+                    break
+                if battleResultLoop >= 199:
+                    raise Exception("Too many battleResultLoop")
             if winFlag == True:
                 win_count+=1
             if breakBattleLoopFlag == True or exitFlag == True:
