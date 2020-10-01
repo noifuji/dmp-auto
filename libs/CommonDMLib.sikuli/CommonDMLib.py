@@ -122,7 +122,7 @@ def updateCardCount(ref, nameCount, cardCount):
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300", "ROWS")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
@@ -130,13 +130,58 @@ def updateCardCount(ref, nameCount, cardCount):
             break
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!Q" + str(rowIndex) + ":Z" + str(rowIndex), row, "ROWS")
 
+def downloadQuestStatus():
+    print "downloadQuestStatus"
+    
+    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
+    strCredentials = f.read()
+    f.close()
+    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
+    statusRaw = spreadsheet.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["Accounts!B3:C300", "Accounts!AB3:AD300"], "ROWS")
+
+    accounts = statusRaw[0]
+    statuses = statusRaw[1]
+    
+    status = []
+    for i in range(min([len(accounts), len(statuses)])):
+        if len(accounts[i]) > 1:
+            status.append({"REF":accounts[i][0], "MAIN":statuses[i][0], "LEGEND":statuses[i][1], "SP":statuses[i][2]})
+
+    return status
+
+def completeQuestStatus(ref, questname):
+    column = ""
+    if questname == "MAIN":
+        column = "AB"
+    elif questname == "LEGEND":
+        column = "AC"
+    elif questname == "SP":
+        column = "AD"
+    else:
+        raise Exception("Invalid Argument")
+    
+    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
+    strCredentials = f.read()
+    f.close()
+    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300", "ROWS")
+    rowIndex = None
+    for i in range(len(refs)):
+        if refs[i][0] == str(ref):
+            rowIndex = i + 3
+            break
+    if rowIndex == None:
+        return
+    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!" + column + str(rowIndex), [["complete"]], "ROWS")
+
+
 #return ref
 def getSetupAccountRef():
     f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:C300")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:C300", "ROWS")
     result = ""
     for ref in refs:
         if len(ref) == 1:
@@ -178,7 +223,7 @@ def updatePlayerId(ref, playerId, computername):
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300", "ROWS")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
@@ -196,7 +241,7 @@ def updateAccountInfo(ref, lv, dmp, gold, packs, srPack):
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300", "ROWS")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
@@ -529,17 +574,21 @@ def countAllCardsByRarity(resource, app):
     return {"VR" : cards[0], "SR" : cards[1]}
 
 def chooseDeck(resource, deckImage):
-    if exists(deckImage, 1) != None:
+    print "chooseDeck"
+    print deckImage
+    if len(findAny(deckImage)) > 0:
+        print "deckImage was found"
         click(deckImage)
         return True
     else:
         wheel(resource.TITLE_DECKLIST, Button.WHEEL_DOWN, 10)
-        if exists(deckImage, 1) != None:
+        if exists(deckImage, 3) != None:
+            print "deckImage was found"
             click(deckImage)
             return True
         else:
+            print "No deckImage"
             return False
-    click(deckImage)
 
 def addNewDeckByCode(resource, code):
     wheel(resource.TITLE_DECKLIST, Button.WHEEL_UP, 10)
@@ -838,17 +887,19 @@ def startMainStoryBattle(resource, deckImage, deckcode):
             addNewDeckByCode(resource, deckcode)
         click(resource.BUTTON_LARGE_BATTLE_START)
 
-def getStrategyByMainStoryStage(resource):
+def getStrategyByMainStoryStage(episode, stage):
     strategy = 100
-    if len(findAny(resource.TITLE_EP4_STAGE3)) > 0 and len(findAny(resource.TITLE_EP4_STAGE4)) == 0:
+    if episode == 4 and stage == 3:
         strategy = 2
-    elif len(findAny(resource.TITLE_EP4_STAGE9)) > 0 and len(findAny(resource.TITLE_EP4_STAGE10)) == 0:
+    elif episode == 4 and stage == 9:
         strategy = 2
-    elif len(findAny(resource.TITLE_EP3_STAGE2)) > 0 and len(findAny(resource.TITLE_EP3_STAGE3)) == 0:
+    elif episode == 3 and stage == 2:
         strategy = 100
-    elif len(findAny(resource.TITLE_EP2_STAGE21)) > 0 and len(findAny(resource.TITLE_EP2_STAGE22)) == 0:
+    elif episode == 2 and stage == 6:
         strategy = 2
-    elif len(findAny(resource.TITLE_EP2_STAGE28)) > 0 and len(findAny(resource.TITLE_EP2_STAGE29)) == 0:
+    elif episode == 2 and stage == 13:
+        strategy = 2
+    elif episode == 1 and stage >= 1 and stage <= 15:
         strategy = 2
     else:
         strategy = 100
@@ -881,19 +932,113 @@ def getPresent(resource):
         wait(3)
         click(resource.BUTTON_CLOSE)
 
-def RestartApp(resource, app):
+#True : On
+#False : Off
+def isNoxOn():
+    command1 = 'tasklist'
+    command2 = 'findstr Nox.exe'
+    proc1 = subprocess.Popen(
+        command1,
+        shell  = True,
+        stdin  = subprocess.PIPE,
+        stdout = subprocess.PIPE,
+        stderr = subprocess.PIPE)
+    
+    proc2 = subprocess.Popen(
+        command2,
+        shell  = True,
+        stdin  = proc1.stdout,
+        stdout = subprocess.PIPE,
+        stderr = subprocess.PIPE)
+    
+    stdout_data, stderr_data = proc2.communicate()
+    return stdout_data != ""
+
+def exitNox(resources):
+    if isNoxOn() == False:
+        print "closing Multiplayer"
+        App(EnvSettings.NoxMultiPlayerPath).close()
+        return
+    
+    App(EnvSettings.NoxMultiPlayerPath).open()
+    if exists(resources.TITLE_MULTI_PLAYER,120) == None:
+        killMultiPlayerManager()
+        raise Exception("MultiPlayerManager has error. Please retry to launch.")
+    for num in range(10):
+        if exists(resources.BUTTON_NOX_STOP, 1) == None:
+            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_DOWN, 1)
+        else:
+            break
+    for num in range(10):
+        if exists(resources.BUTTON_NOX_STOP, 1) == None:
+            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_UP, 2)
+        else:
+            break
+    if len(findAny(resources.BUTTON_NOX_STOP)) > 0:
+        click(resources.BUTTON_NOX_STOP)
+        if exists(resources.BUTTON_NOX_OK_BLUE, 10) != None:
+            click(resources.BUTTON_NOX_OK_BLUE)
+        if waitVanish(resources.BUTTON_NOX_STOP, 120) == False:
+            print "Nox instance stays."
+            exit(1)
+    App(EnvSettings.NoxMultiPlayerPath).close()
+
+def openNoxInstance(resources, ref):
+    App(EnvSettings.NoxMultiPlayerPath).open()
+    if exists(resources.TITLE_MULTI_PLAYER,120) == None:
+        killMultiPlayerManager()
+        raise Exception("MultiPlayerManager has error. Please retry to launch.")
+    exists(resources.BUTTON_NOX_PLAY, 120)
+    click(resources.ICON_SEARCH)
+    wait(2)
+    type(str(ref))
+    wait(1)
+    type(Key.ENTER)
+    wait(5)
+    if len(findAny(resources.BUTTON_NOX_PLAY)) > 0:
+        click(resources.BUTTON_NOX_PLAY)
+    else:
+        raise Exception("No instance : " + str(ref))
+    App(EnvSettings.NoxMultiPlayerPath).close()
+    
+def RestartNox(resources, ref):
+    print "restarting Nox player..."
+    exitNox(resources)
+    wait(3)
+    openNoxInstance(resources, ref)
+
+    for noxLaunchLoop in range(600):
+        print "noxLaunchLoop..." + str(noxLaunchLoop)
+        if len(findAny(resources.MESSAGE_FAILED_TO_START_LAUNCHER)) > 0:
+            try:
+                click(resources.MESSAGE_FAILED_TO_START_LAUNCHER)
+            except:
+                print "failed to click"
+        if len(findAny(resources.ICON_BROWSER)) > 0:
+            break
+        wait(1)
+    wait(30)
+    if len(findAny(resources.MESSAGE_BACKUP)) > 0:
+        click(resources.MESSAGE_BACKUP)
+        click(0.2)
+        click(resources.MESSAGE_BACKUP_NODISP)
+        wait(1)
+        click(resources.BUTTON_NOX_OK)
+
+
+def RestartApp(resource):
     print 'RestartApp'
     if resource.APP_ENGINE == "NOX":
         noxCallKillDMPApp()
         wait(3)
         noxCallStartDMPApp()
     elif resource.APP_ENGINE == "ANDAPP":
-        app.close()
+        App(EnvSettings.AppPath).close()
         App(EnvSettings.AndAppPath).close()
         wait(3)
         App(EnvSettings.AndAppPath).open()
         exists("1600609176253.png",120)
-        app.open()
+        App(EnvSettings.AppPath).open()
     else:
         raise Exception
 

@@ -21,7 +21,7 @@ mana4 = Pattern("mana4.png").similar(0.90)
 mana5 = Pattern("mana5.png").similar(0.94)
 mana6 = Pattern("mana6.png").similar(0.95)
 mana7 = Pattern("mana7.png").similar(0.91)
-mana8 = Pattern("mana8.png").similar(0.90)#"1597611229565.png"
+mana8 = Pattern("mana8.png").similar(0.90)#
 mana9 = Pattern("mana9.png").similar(0.95)
 mana10 = Pattern("mana10.png").similar(0.91)
 mana11 = Pattern("mana11.png").similar(0.90)
@@ -579,11 +579,12 @@ def SummonF30(currentMana):
 #手札の情報を取得する。
 #TODO:現状緑の1-5コスト、白の6コストのみ対象
 #return : 手札情報の配列
-def getHandInfo(DMApp):
+def getHandInfo():
     print 'getHandInfo'
     handInfo = []
     targetImages = [gcost1,gcost2,gcost3,gcost4,gcost5,gcost7,wcost2,wcost4,wcost6]
 
+    DMApp = App(EnvSettings.AppPath)
     region_of_DMApp = DMApp.window()
     f = Finder(SCREEN.capture(region_of_DMApp))
     
@@ -609,7 +610,7 @@ def ChargeMana(DMApp):
     #マナ取得
     mana = getManaNumBeforeCharge()
     print 'ManaZone(Before charge):' + str(mana)
-    hand = getHandSum(getHandInfo(DMApp))
+    hand = getHandSum(getHandInfo())
     print 'Hand:' + str(hand)
     wResult = findAny(Pattern("1595071897888-2.png").similar(0.85).targetOffset(43,49),Pattern("1596874764898.png").similar(0.90))
     if len(wResult) > 0 and mana > 0:
@@ -636,12 +637,12 @@ def ChargeMana(DMApp):
         wait(1)
     return mana + 1
 
-def ChargeManaBasic(DMApp):
+def ChargeManaBasic():
     print 'ChargeManaBasic'
     #マナ取得
     mana = getManaNumBeforeCharge()
     print 'ManaZone(Before charge):' + str(mana)
-    hand = getHandSum(getHandInfo(DMApp))
+    hand = getHandSum(getHandInfo())
     print 'Hand:' + str(hand)
     wResult = findAny(wcost4,wcost6,wcost2)
     if len(wResult) > 0 and mana == 0:
@@ -672,7 +673,7 @@ def ChargeManaKuwakiri(DMApp):
     #マナ取得
     mana = getManaNumBeforeCharge()
     print 'ManaZone(Before charge):' + str(mana)
-    hand = getHandSum(getHandInfo(DMApp))
+    hand = getHandSum(getHandInfo())
     print 'Hand:' + str(hand)
     wResult = findAny(Pattern("1595071897888-2.png").similar(0.85).targetOffset(43,49),Pattern("1596874764898.png").similar(0.90))
     if len(wResult) > 0 and mana > 0:
@@ -727,7 +728,7 @@ def ChargeManaF30(DMApp):
     #マナ取得
     mana = getManaNumBeforeCharge()
     print 'ManaZone(Before charge):' + str(mana)
-    hand = getHandSum(getHandInfo(DMApp))
+    hand = getHandSum(getHandInfo())
     print 'Hand:' + str(hand)
     #　チャージ
     if mana == 0:
@@ -765,7 +766,7 @@ def getSheildObj(DMApp, img):
 #U/UC/R/ダボラッシュに対応済み
 #TODO:VR/SRのアタックに対応する。
 #TODO:シールドトリガー発生時のクリーチャー選択、手札選択に対応する。
-def directAttack(DMApp, sheildImg):
+def directAttack():
     print 'directAttack'
     for num in range(3):
         print "checking W breaker...." + str(num)

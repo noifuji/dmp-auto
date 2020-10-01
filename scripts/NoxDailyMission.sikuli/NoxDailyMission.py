@@ -72,7 +72,7 @@ while instanceIndex < len(instances):
     
     try:
         NoxDMLib.RestartNox(instances[instanceIndex])
-        CommonDMLib.RestartApp(NoxResources, NoxApp)
+        CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
         NoxDMLib.changeMission()
         if mode == "DEV":
@@ -136,7 +136,7 @@ while instanceIndex < len(instances):
                     NoxDMLib.SummonRedBlack(currentMana)
                     wait(1)
                     #  攻撃
-                    NoxDMLib.directAttack("1596773359735.png")
+                    NoxDMLib.directAttack()
                 elif strategy == 3:
                     print "BATTLE_MISSIONS"
                     #  攻撃
@@ -153,7 +153,7 @@ while instanceIndex < len(instances):
                     wait(1)
                     #  攻撃
                     if random.random() < 0.5:
-                        NoxDMLib.directAttack("1596773359735.png")
+                        NoxDMLib.directAttack()
                 elif strategy == 6:
                     print "RETIRE"
                     NoxDMLib.retire()

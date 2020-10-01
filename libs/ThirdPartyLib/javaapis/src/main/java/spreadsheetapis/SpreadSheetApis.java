@@ -13,6 +13,7 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.api.services.sheets.v4.model.AppendValuesResponse;
+import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,6 +22,8 @@ import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 
 public class SpreadSheetApis {
@@ -50,12 +53,37 @@ public class SpreadSheetApis {
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
   }
 
-  public List<List<Object>> read(String spreadsheetId, String range) throws IOException  {
-    ValueRange response = service.spreadsheets().values()
-                        .get(spreadsheetId, range)
-                        .execute();
+  public List<List<Object>> read(String spreadsheetId, String range, String dimension) throws IOException  {
+    if (!dimension.equals("ROWS") && !dimension.equals("COLUMNS")) {
+      throw new IOException();
+    }
+    Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values()
+                                           .get(spreadsheetId, range);
+    request.setMajorDimension(dimension);
+                        
+    ValueRange response = request.execute();
     List<List<Object>> values = response.getValues();
     return values;
+  }
+	
+  public List<List<List<Object>>> batchRead(String spreadsheetId, List<String> ranges, String dimension) throws IOException  {
+    if (!dimension.equals("ROWS") && !dimension.equals("COLUMNS")) {
+      throw new IOException();
+    }
+    Sheets.Spreadsheets.Values.BatchGet request = service.spreadsheets().values()
+                                                .batchGet(spreadsheetId);
+    request.setRanges(ranges);
+    request.setMajorDimension(dimension);
+                        
+    BatchGetValuesResponse response = request.execute();
+    List<ValueRange> valueRanges = response.getValueRanges();
+    List<List<List<Object>>> result = new ArrayList<List<List<Object>>>();
+  	
+    Iterator<ValueRange> iterator = valueRanges.iterator();
+    while(iterator.hasNext()) {
+    	result.add(iterator.next().getValues());
+    }
+    return result;
   }
 	
   public void write(String spreadsheetId, String range, List<List<Object>> values, String dimension) throws IOException {

@@ -6,161 +6,156 @@ sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
 import EnvSettings
 sys.path.append(EnvSettings.LIBS_DIR_PATH)
 sys.path.append(EnvSettings.RES_DIR_PATH)
-import DMLib
-import NoxDMLib
+import GameLib
 import CommonDMLib
-import AndAppResources
 
-Avator = AndAppResources.AVATOR_DEFAULT_MALE
-mentionUser = EnvSettings.mentionUser
-AppPath = EnvSettings.AppPath
 appname = 'AllMainStories'
+mentionUser = EnvSettings.mentionUser
 Settings.MoveMouseDelay = 0.1
 Settings.DelayBeforeDrag = 0.5
-DMApp = App(AppPath)
-win_count =0
 retryCount = 0
 exceptionCout = 0
 statisticsData = {"EPISODE":0,"STAGE":0}
+instances = []
+stageRegionValues = []
+resources = None
 
 #Pre-processing Start
-NoxDMLib.exitNox()
+if EnvSettings.ENGINE_FOR_MAIN == "ANDAPP":
+    import AndAppResources
+    resources = AndAppResources
+    CommonDMLib.exitNox(resources)
+    stageRegionValues = [-200, 240, 110, 50]
+    instances = [0]
+elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
+    import NoxResources
+    resources = NoxResources
+    App(EnvSettings.AppPath).close()
+    App(EnvSettings.AndAppPath).close()
+    stageRegionValues = [-240, 284, 118, 70]
+    instances = EnvSettings.NOX_INSTANCES
+    statuses = CommonDMLib.downloadQuestStatus()
+    temp = []
+    for instance in instances:
+        for status in statuses:
+            if status["REF"] == str(instance) and status["MAIN"] == "incomplete":
+                temp.append(instance)
+    instances = temp
+
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
+    
 CommonDMLib.downloadDeckCodes()
 #Pre-processing End
 
 
 #全体ループ
-entire_loop_flag = True
-for entire_loop in range(100):
+instanceIndex = 0
+while instanceIndex < len(instances):
     try:
-        CommonDMLib.RestartApp(AndAppResources, DMApp)
-        CommonDMLib.openMainStory(AndAppResources)
-        strategy = CommonDMLib.getStrategyByMainStoryStage(AndAppResources)
-        deck = CommonDMLib.getDeckByStrategy(AndAppResources, strategy)
-        episode = CommonDMLib.getMainStoryEpisode(AndAppResources)
-        stage = CommonDMLib.getMainStoryStage(AndAppResources, -200, 240, 110, 50)
-        #initialize statistics data
-        if statisticsData["STAGE"] != stage or statisticsData["EPISODE"] != episode :
-            print "Initializing Statistics Data"
-            statisticsData["COMPUTERNAME"] = os.environ["COMPUTERNAME"]
-            statisticsData["EPISODE"] = episode
-            statisticsData["STAGE"] = stage
-            statisticsData["STRATEGY"] = strategy
-            statisticsData["RETRY"] = 0
-            statisticsData["STARTTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-            statisticsData["ENDTIME"] = ""
-            statisticsData["EXCEPTION"] = 0
-        
-        CommonDMLib.startMainStoryBattle(AndAppResources, deck[0], deck[1])
+        if EnvSettings.ENGINE_FOR_MAIN == "NOX":
+            CommonDMLib.RestartNox(resources, instances[instanceIndex])
+        CommonDMLib.RestartApp(resources)
+        CommonDMLib.openMainStory(resources)
         
         #バトルループ
         for battle_loop in range(2000):
+            episode = CommonDMLib.getMainStoryEpisode(resources)
+            stage = CommonDMLib.getMainStoryStage(resources, 
+                    stageRegionValues[0], 
+                    stageRegionValues[1],
+                    stageRegionValues[2],
+                    stageRegionValues[3])
+            strategy = CommonDMLib.getStrategyByMainStoryStage(episode, stage)
+            deck = CommonDMLib.getDeckByStrategy(resources, strategy)
+            CommonDMLib.startMainStoryBattle(resources, deck[0], deck[1])
+            
+            #initialize statistics data
+            if statisticsData["STAGE"] != stage or statisticsData["EPISODE"] != episode :
+                print "Initializing Statistics Data"
+                statisticsData["COMPUTERNAME"] = os.environ["COMPUTERNAME"]
+                statisticsData["EPISODE"] = episode
+                statisticsData["STAGE"] = stage
+                statisticsData["STRATEGY"] = strategy
+                statisticsData["RETRY"] = 0
+                statisticsData["STARTTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+                statisticsData["ENDTIME"] = ""
+                statisticsData["EXCEPTION"] = 0
+            
             #バトル開始まで待機
-            if CommonDMLib.waitStartingGame(AndAppResources) == -1:
+            if CommonDMLib.waitStartingGame(resources) == -1:
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
                 break
 
             wait(10)
             # ゲームループ
-            for game_loop in range(50):
-                print "Inside Game Loop"
-                if len(findAny(AndAppResources.ICON_ENEMY_CARD_COUNT)) > 0:
-                    click(AndAppResources.ICON_ENEMY_CARD_COUNT)
-                    wait(1)
-                #  手札選択
-                if len(findAny(Avator)) > 0:
-                    click(Avator)
-                    wait(1)
-                #  マナチャージ
-                if strategy == 100:
-                    currentMana = DMLib.ChargeManaBasic(DMApp)
-                elif strategy == 2:
-                    currentMana = DMLib.ChargeManaRedBlack()
-                wait(1)
-                #  召喚
-                if strategy == 100:
-                    DMLib.SummonBasic(currentMana)
-                elif strategy == 2:
-                    DMLib.SummonRedBlack(currentMana)
-                wait(1)
-                #  攻撃
-                DMLib.directAttack(DMApp, AndAppResources.DESIGN_CARD_BACKSIDE_NORMAL)
-                wait(1)
-                #  ターンエンド
-                if len(findAny(AndAppResources.BUTTON_TURN_END)) > 0:          
-                    keyDown(Key.SHIFT)
-                    type(Key.ENTER)
-                    keyUp(Key.SHIFT)
-                wait(1)
-                #  イレギュラーループ
-                if DMLib.irregularLoop() == 0:
-                    break
-
+            GameLib.gameLoop(resources, strategy)
             # ゲームループエンド
             winFlag = False
             for battleResultLoop in range(180):
-                CommonDMLib.skipRewards(AndAppResources)
-                if len(findAny(AndAppResources.ICON_WIN)) > 0:
+                print "battleResultLoop..." + str(battleResultLoop)
+                CommonDMLib.skipRewards(resources)
+                
+                if len(findAny(resources.ICON_WIN)) > 0:
                     try:
-                        click(AndAppResources.BUTTON_SMALL_OK)
+                        click(resources.BUTTON_SMALL_OK)
                     except:
                         print "failed to click"
                         
                     winFlag = True
-                if len(findAny(AndAppResources.ICON_LOSE)) > 0:
+                if len(findAny(resources.ICON_LOSE)) > 0:
                     try:
-                        click(AndAppResources.BUTTON_SMALL_BATTLE_START)
+                        click(resources.BUTTON_SMALL_BATTLE_START)
                     except:
                         print "failed to click"
                     winFlag = False
-                if len(findAny(AndAppResources.BUTTON_SMALL_BATTLE_START)) == 0:
+                if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) == 0:
                     break
             if winFlag == False:
                 retryCount += 1
                 continue
 
             for checkRewardLoop in range(180):
-                CommonDMLib.skipStory(AndAppResources)
+                print "checkRewardLoop..." + str(checkRewardLoop)
+                CommonDMLib.skipStory(resources)
                 #レベルアップ報酬のスキップ
-                CommonDMLib.skipRewards(AndAppResources)
+                CommonDMLib.skipRewards(resources)
 
                 #エピソード選択画面にいる場合の処理
-                if len(findAny(AndAppResources.BACKGROUND_EPISODE_LIST)) > 0:
-                    if len(findAny(AndAppResources.TITLE_EP5)) > 0:
+                if len(findAny(resources.BACKGROUND_EPISODE_LIST)) > 0:
+                    if len(findAny(resources.EPISODES[4]["IMAGE"])) > 0:
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode5 has started.', appname)
                         try:
-                            click(AndAppResources.TITLE_EP5)
+                            click(resources.EPISODES[4]["IMAGE"])
                         except:
                             print "failed to click"
-                    elif len(findAny(AndAppResources.TITLE_EP4)) > 0:#Pattern("1598197418579.png").similar(0.86).targetOffset(-51,-214)
+                    elif len(findAny(resources.EPISODES[3]["IMAGE"])) > 0:
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode4 has started.', appname)
                         try:
-                            click(AndAppResources.TITLE_EP4)#Pattern("1598197418579.png").similar(0.86).targetOffset(-51,-214)
+                            click(resources.EPISODES[3]["IMAGE"])
                         except:
                             print "failed to click"
-                    elif len(findAny(AndAppResources.TITLE_EP3)) > 0:#Pattern("1595243394444.png").similar(0.94)
+                    elif len(findAny(resources.EPISODES[2]["IMAGE"])) > 0:
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode3 has started.', appname)
                         try:
-                            click(AndAppResources.TITLE_EP3)#Pattern("1595243394444.png").similar(0.94).targetOffset(3,-65)
+                            click(resources.EPISODES[2]["IMAGE"])
                         except:
                             print "failed to click"
-                    elif len(findAny(AndAppResources.TITLE_EP2)) > 0:#Pattern("1595243419652.png").similar(0.95)
+                    elif len(findAny(resources.EPISODES[1]["IMAGE"])) > 0:
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode2 has started.', appname)
                         try:
-                            click(AndAppResources.TITLE_EP2)#Pattern("1595243419652.png").similar(0.95).targetOffset(1,-57)
+                            click(resources.EPISODES[1]["IMAGE"])
                         except:
                             print "failed to click"
-                if len(findAny(AndAppResources.BUTTON_CONFIRM_REWARD)) > 0:
+                if len(findAny(resources.BUTTON_CONFIRM_REWARD)) > 0:
                     try:
-                        click(AndAppResources.BUTTON_CONFIRM_REWARD)
+                        click(resources.BUTTON_CONFIRM_REWARD)
                     except:
                         print "failed to click"
                     wait(0.5)
-                if len(findAny(AndAppResources.TITLE_REWARD_INFO)) > 0:
+                if len(findAny(resources.TITLE_REWARD_INFO)) > 0:
                     try:
-                        click(AndAppResources.BUTTON_CLOSE)
+                        click(resources.BUTTON_CLOSE)
                     except:
                         print "failed to click"
                     break
@@ -176,40 +171,21 @@ for entire_loop in range(100):
             retryCount = 0
             exceptionCout = 0
                 
-            if len(findAny(AndAppResources.TITLE_EP5_STAGE10)) > 0:
-                if len(findAny(AndAppResources.BUTTON_CONFIRM_REWARD)) > 0:
-                    click(AndAppResources.BUTTON_CONFIRM_REWARD)
-                    exists(AndAppResources.TITLE_REWARD_INFO,60)
-                    if len(findAny(AndAppResources.ICON_CLEARED)) > 0:
+            if len(findAny(resources.TITLE_EP5_STAGE10)) > 0:
+                if len(findAny(resources.BUTTON_CONFIRM_REWARD)) > 0:
+                    click(resources.BUTTON_CONFIRM_REWARD)
+                    exists(resources.TITLE_REWARD_INFO,60)
+                    if len(findAny(resources.ICON_CLEARED)) > 0:
                         CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories are cleared!', appname)
-                        entire_loop_flag = False
+                        CommonDMLib.completeQuestStatus(instances[instanceIndex], "MAIN")
+                        instanceIndex += 1
                         break
-                    click(AndAppResources.BUTTON_CLOSE)
+                    click(resources.BUTTON_CLOSE)
 
             
             if CommonDMLib.isNewVersionAvailable():
                 exit(50)
-
-            strategy = CommonDMLib.getStrategyByMainStoryStage(AndAppResources)
-            deck = CommonDMLib.getDeckByStrategy(AndAppResources, strategy)
-            episode = CommonDMLib.getMainStoryEpisode(AndAppResources)
-            stage = CommonDMLib.getMainStoryStage(AndAppResources, -200, 240, 110, 50)
-            #initialize statistics data
-            if statisticsData["STAGE"] != stage or statisticsData["EPISODE"] != episode :
-                print "Initializing Statistics Data"
-                statisticsData["COMPUTERNAME"] = os.environ["COMPUTERNAME"]
-                statisticsData["EPISODE"] = episode
-                statisticsData["STAGE"] = stage
-                statisticsData["STRATEGY"] = strategy
-                statisticsData["RETRY"] = 0
-                statisticsData["STARTTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-                statisticsData["ENDTIME"] = ""
-                statisticsData["EXCEPTION"] = 0
-            CommonDMLib.startMainStoryBattle(AndAppResources, deck[0], deck[1])
-   
         #バトルループエンド
-        if entire_loop_flag == False:
-            break
     except:
         exceptionCout += 1
         e = sys.exc_info()

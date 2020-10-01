@@ -94,7 +94,7 @@ wcost3 = Pattern("wcost3.png").similar(0.95).targetOffset(51,50)
 wcost4 = Pattern("wcost4.png").similar(0.90).targetOffset(89,77)
 wcost6 = Pattern("wcost6.png").similar(0.85).targetOffset(56,57)
 wcost7 = Pattern("wcost7.png").similar(0.85).targetOffset(59,69)
-gcost2 = Pattern("gcost2.png").similar(0.90).targetOffset(83,55)
+gcost2 = Pattern("gcost2.png").similar(0.90).targetOffset(68,68)
 gcost3 = Pattern("gcost3.png").similar(0.90).targetOffset(70,67)
 gcost4 = Pattern("gcost4.png").similar(0.90).targetOffset(75,72)
 gcost5 = Pattern("gcost5.png").similar(0.90).targetOffset(92,56)
@@ -210,74 +210,74 @@ def isNoxOn():
     stdout_data, stderr_data = proc2.communicate()
     return stdout_data != ""
 
-def exitNox():
+def exitNox(resources):
     if isNoxOn() == False:
         print "closing Multiplayer"
         App(EnvSettings.NoxMultiPlayerPath).close()
         return
     
     App(EnvSettings.NoxMultiPlayerPath).open()
-    if exists(Pattern("1596962591946.png").targetOffset(92,154),120) == None:
+    if exists(resources.TITLE_MULTI_PLAYER,120) == None:
         CommonDMLib.killMultiPlayerManager()
         raise Exception("MultiPlayerManager has error. Please retry to launch.")
     for num in range(10):
-        if exists(Pattern("1596777933938.png").similar(0.90), 1) == None:
-            wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_DOWN, 1)
+        if exists(resources.BUTTON_NOX_STOP, 1) == None:
+            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_DOWN, 1)
         else:
             break
     for num in range(10):
-        if exists(Pattern("1596777933938.png").similar(0.90), 1) == None:
-            wheel(Pattern("1596962591946.png").targetOffset(92,154), Button.WHEEL_UP, 2)
+        if exists(resources.BUTTON_NOX_STOP, 1) == None:
+            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_UP, 2)
         else:
             break
-    if len(findAny(Pattern("1596777933938.png").similar(0.90))) > 0:
-        click(Pattern("1596777933938.png").similar(0.90))
-        if exists(Pattern("1596777989679.png").similar(0.90), 10) != None:
-            click(Pattern("1596777989679.png").similar(0.90))
-        if waitVanish(Pattern("1596777933938.png").similar(0.90), 120) == False:
+    if len(findAny(resources.BUTTON_NOX_STOP)) > 0:
+        click(resources.BUTTON_NOX_STOP)
+        if exists(resources.BUTTON_NOX_OK, 10) != None:
+            click(resources.BUTTON_NOX_OK)
+        if waitVanish(resources.BUTTON_NOX_STOP, 120) == False:
             print "Nox instance stays."
             exit(1)
     App(EnvSettings.NoxMultiPlayerPath).close()
 
-def openNoxInstance(ref):
+def openNoxInstance(resources, ref):
     App(EnvSettings.NoxMultiPlayerPath).open()
-    if exists(Pattern("1596962591946.png").targetOffset(92,154),120) == None:
+    if exists(resources.TITLE_MULTI_PLAYER,120) == None:
         CommonDMLib.killMultiPlayerManager()
         raise Exception("MultiPlayerManager has error. Please retry to launch.")
-    exists(Pattern("1601077335160.png").similar(0.95), 120)
-    click(Pattern("1601077099284.png").similar(0.95).targetOffset(-59,2))
+    exists(resources.BUTTON_NOX_PLAY, 120)
+    click(resources.BUTTON_NOX_PLAY)
     wait(0.5)
     type(str(ref))
     type(Key.ENTER)
     wait(5)
-    if len(findAny(Pattern("1601077335160.png").similar(0.95))) > 0:
-        click(Pattern("1601077335160.png").similar(0.95))
+    if len(findAny(resources.BUTTON_NOX_PLAY)) > 0:
+        click(resources.BUTTON_NOX_PLAY)
     else:
         raise Exception("No instance : " + str(ref))
     App(EnvSettings.NoxMultiPlayerPath).close()
     
-def RestartNox(ref):
-    exitNox()
+def RestartNox(resources, ref):
+    exitNox(resources)
     wait(3)
-    openNoxInstance(ref)
+    openNoxInstance(resources, ref)
 
     for noxLaunchLoop in range(600):
         print "noxLaunchLoop..." + str(noxLaunchLoop)
-        if len(findAny(NoxResources.MESSAGE_FAILED_TO_START_LAUNCHER)) > 0:
+        if len(findAny(resources.MESSAGE_FAILED_TO_START_LAUNCHER)) > 0:
             try:
-                click(NoxResources.MESSAGE_FAILED_TO_START_LAUNCHER)
+                click(resources.MESSAGE_FAILED_TO_START_LAUNCHER)
             except:
                 print "failed to click"
-        if len(findAny(NoxResources.ICON_BROWSER)) > 0:
+        if len(findAny(resources.ICON_BROWSER)) > 0:
             break
         wait(1)
     wait(30)
-    if len(findAny(NoxResources.MESSAGE_BACKUP)) > 0:
-        click(NoxResources.MESSAGE_BACKUP)
+    if len(findAny(resources.MESSAGE_BACKUP)) > 0:
+        click(resources.MESSAGE_BACKUP)
         click(0.2)
-        click(NoxResources.MESSAGE_BACKUP_NODISP)
+        click(resources.MESSAGE_BACKUP_NODISP)
         wait(1)
-        click(NoxResources.BUTTON_NOX_OK)
+        click(resources.BUTTON_NOX_OK)
 
 
     
@@ -517,6 +517,91 @@ def Summon1(currentMana):
                     click("1596934406657.png")
                 else:
                     click("1596934685736.png")
+
+def SummonBasic(currentMana):
+    print 'SummonBasic'
+    availableMana = currentMana
+    print 'Available Mana : ' + str(availableMana)
+    count = 0
+    for num in range(10):
+        count += 1
+        summon_creature = None
+        res = findAny(gcost2,gcost3,gcost5,gcost7,wcost2,wcost4,wcost6)
+        g2 = None
+        g3 = None
+        g5 = None
+        g7 = None
+        w2 = None
+        w4 = None
+        w6 = None
+        for r in res:
+            if r.getIndex() == 0:
+                print 'Green Cost2 is detected.'
+                g2 = gcost2
+            elif r.getIndex() == 1:
+                print 'Green Cost3 is detected.'
+                g3 = gcost3
+            elif r.getIndex() == 2:
+                print 'Green Cost5 is detected.'
+                g5 = gcost5
+            elif r.getIndex() == 3:
+                print 'Green Cost7 is detected.'
+                g7 = gcost7
+            elif r.getIndex() == 4:
+                print 'White Cost2 is detected.'
+                w2 = wcost2
+            elif r.getIndex() == 5:
+                print 'White Cost4 is detected.'
+                w4 = wcost4
+            elif r.getIndex() == 6:
+                print 'White Cost6 is detected.'
+                w6 = wcost6
+
+        if g7 != None and availableMana >= 7:
+            print 'Summon Green Cost7.'
+            summon_creature = g7
+            availableMana-=7
+        elif w6 != None and availableMana >= 6:
+            print 'Summon White Cost6.'
+            summon_creature = w6
+            availableMana-=6
+        elif g5 != None and availableMana >= 5:
+            print 'Summon Green Cost5.'
+            summon_creature = g5
+            availableMana-=5
+        elif g3 != None and availableMana >= 3:
+            print 'Summon Green Cost3.'
+            summon_creature = g3
+            availableMana-=2
+        elif g2 != None and availableMana >= 2:
+            print 'Summon Green Cost2.'
+            summon_creature = g2
+            availableMana-=1
+        elif w2 != None and availableMana >= 2:
+            print 'Summon White Cost2.'
+            summon_creature = w2
+            availableMana-=2
+        elif w4 != None and availableMana >= 4:
+            print 'Summon White Cost4.'
+            summon_creature = w4
+            availableMana-=4
+        else:
+            print 'Couldnt find a summonable creature. Break loop.'
+            break
+        
+        try:
+            CommonDMLib.dragDropAtSpeed(summon_creature, Pattern("1596771916374.png").targetOffset(-430,221), 1.2)
+        except:
+            Settings.MoveMouseDelay = 0.1
+        if exists("1596934406657.png", 2) != None:
+            try:
+                click("1596934406657.png")
+                wait(1)
+                click("1596934406657.png")
+            except:
+                print "failed to click"
+        wait(1)
+
         
 
 
@@ -542,7 +627,7 @@ def getHandInfo():
 def getHandSum(handInfo):
     sum = 0
     for hand in handInfo:
-        sum+=hand
+        sum += hand
     return sum
 
 #手札からマナへチャージする。
@@ -623,6 +708,34 @@ def ChargeManaRedBlack():
         mana += 1
     return mana
 
+def ChargeManaBasic():
+    print 'ChargeManaBasic'
+    #マナ取得
+    mana = getManaNumBeforeCharge()
+    print 'ManaZone(Before charge):' + str(mana)
+    hand = getHandSum(getHandInfo())
+    print 'Hand:' + str(hand)
+    wResult = findAny(wcost4,wcost6,wcost2)
+    if len(wResult) > 0 and mana == 0:
+        Hand = wResult
+    else:
+        #マナ0-2
+        #　チャージ　大きい順にチャージ
+        if mana >= 0 and mana <=3:
+            Hand = findAny(gcost5,wcost4,gcost7,wcost6,gcost3,wcost2,gcost2)
+        elif mana >= 4 and mana <= 5:
+            Hand = findAny(wcost4,gcost5,gcost7,gcost3,wcost2,gcost2,wcost6)
+        #　手札が3枚以上ならチャージ
+        elif mana >= 5 and mana <= 6 and hand >= 3:
+            Hand = findAny(wcost4,gcost3,gcost5,wcost2,gcost2,gcost7,wcost6)
+        else:
+            return mana
+        
+    if len(Hand) > 0:         
+        CommonDMLib.dragDropAtSpeed(Hand[0], Pattern("1596771322109.png").targetOffset(25,-78), 1.2)
+        mana += 1
+    return mana
+
 #シールド数を取得する。
 #追加シールド(黄色)も対応済み
 def getSheildObj(img):
@@ -640,7 +753,7 @@ def getSheildObj(img):
 #U/UC/R/ダボラッシュに対応済み
 #TODO:VR/SRのアタックに対応する。
 #TODO:シールドトリガー発生時のクリーチャー選択、手札選択に対応する。
-def directAttack(sheildImg):
+def directAttack():
     print 'directAttack'
     for num in range(7):
         print "directAttack..." + str(num)

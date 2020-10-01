@@ -45,6 +45,9 @@ burstshot = "burstshot.png"
 surfer = "surfer.png"
 daemonhand = "daemonhand.png"
 extreme = "extreme.png"
+naga = 
+quakes =
+aqua = 
 skip = Pattern("skip.png").similar(0.90)
 OK = Pattern("OK.png").similar(0.90)
 OK2 = Pattern("OK2.png").similar(0.80)
@@ -335,13 +338,13 @@ for num in range(100):
             click("1596590612922.png")
             wait(3)
             if i == 0:
-                countKeyCard["VR"] = getTargetCount([burstshot, surfer, daemonhand, extreme])
+                countKeyCard["VR"] = getTargetCount([daemonhand])
             elif i == 1:
                 countKeyCard["SR"] = getTargetCount([bolbalzarkSec,bolbalzark,sabaki,kuchiyose])
         
         score = countKeyCard["VR"] * 800 + countKeyCard["SR"] * 2400
         
-        if score >= 7200:
+        if score >= 4800:
             CommonDMLib.sendMessagetoSlack(mentionUser,'Target SRs are detected!!', appname)
             CommonDMLib.uploadScreenShotToSlack(mentionUser,"Screenshot" , appname)
             break

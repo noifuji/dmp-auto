@@ -18,7 +18,7 @@ win_count =0
 restart_count = 0
 Settings.MoveMouseDelay = 0.1
 
-CommonDMLib.RestartApp(AndAppResources,DMApp)
+CommonDMLib.RestartApp(AndAppResources)
 DMLib.openAndStartSPBattle(AndAppResources, EnvSettings.DECKCODE_SPBATTLE)
 
 entireLoopFlag = True
@@ -76,5 +76,5 @@ for entire_loop in range(1000):
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
         restart_count+=1
-        CommonDMLib.RestartApp(AndAppResources, DMApp)
+        CommonDMLib.RestartApp(AndAppResources)
         DMLib.openAndStartSPBattle(AndAppResources, EnvSettings.DECKCODE_SPBATTLE)
