@@ -59,7 +59,7 @@ NoxDirPath = userSettings["NOX_BIN_PATH"]
 RUN_MODE = userSettings["RUN_MODE"]
 ENGINE_FOR_MAIN = userSettings["ENGINE_FOR_MAIN"]
 ENGINE_FOR_LEGEND = userSettings["ENGINE_FOR_LEGEND"]
-ENGINE_FOR_DAILY = userSettings["ENGINE_FOR_DAILY"]
+ENGINE_FOR_SP = userSettings["ENGINE_FOR_SP"]
 
 
 NOX_INSTANCES = UserSettings.NOX_INSTANCES2

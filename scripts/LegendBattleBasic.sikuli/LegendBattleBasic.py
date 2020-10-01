@@ -33,10 +33,10 @@ if CommonDMLib.isNewVersionAvailable():
     exit(50)
 CommonDMLib.downloadDeckCodes()
 
-if EnvSettings.ENGINE_FOR_MAIN == "ANDAPP":
+if EnvSettings.ENGINE_FOR_LEGEND == "ANDAPP":
     resources = AndAppResources
     instances = [0]
-elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
+elif EnvSettings.ENGINE_FOR_LEGEND == "NOX":
     resources = NoxResources
     instances = EnvSettings.NOX_INSTANCES
     statuses = CommonDMLib.downloadQuestStatus()
