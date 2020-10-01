@@ -224,3 +224,5 @@ while instanceIndex < len(instances):
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(instances[instanceIndex]) + '. Retrying....', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser,"Screenshot" , appname)
+        if CommonDMLib.isNewVersionAvailable():
+            exit(50)
