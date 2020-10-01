@@ -338,6 +338,7 @@ def irregularLoop(resources):
             for b in BZ:
                 click(b)
                 if exists(resources.BUTTON_OK2, 1) != None:
+                    click(resources.BUTTON_OK2)
                     break
             wait(0.5)
             if exists(resources.MESSAGE_NO_CREATURE_SELECTED,5) != None:
