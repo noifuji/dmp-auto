@@ -71,7 +71,7 @@ while instanceIndex < len(instances):
         continue
     
     try:
-        NoxDMLib.RestartNox(instances[instanceIndex])
+        CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
         NoxDMLib.changeMission()
