@@ -141,8 +141,9 @@ while instanceIndex < len(instances):
                         click(resources.BUTTON_SMALL_BATTLE_START)
                 if len(findAny(resources.ICON_LOSE)) > 0:
                     click(resources.BUTTON_SMALL_BATTLE_START)
-                if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) == 0:
-                    break
+                    wait(2)
+                    if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) == 0:
+                        break
             if winFlag == True:
                 win_count+=1
             if breakBattleLoopFlag == True or exitFlag == True:
