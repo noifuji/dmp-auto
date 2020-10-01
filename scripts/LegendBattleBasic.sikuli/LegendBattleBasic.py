@@ -127,9 +127,7 @@ while instanceIndex < len(instances):
                 CommonDMLib.skipRewards(resources)
                 if len(findAny(resources.ICON_TARGET_REWARD)) > 0:
                     targetRewardFlag = True
-                if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 
-                        and targetRewardFlag == True) 
-                or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
+                if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
                     CommonDMLib.sendMessagetoSlack(mentionUser, 'A target reward was acquired.', appname)
                     CommonDMLib.completeQuestStatus(instances[instanceIndex], "LEGEND")
                     instanceIndex += 1
