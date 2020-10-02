@@ -8,7 +8,7 @@ powershell "Get-WmiObject win32_process -filter processid=$pid | ForEach-Object{
 
 java -jar sikulixide-2.0.4.jar -r ./scripts/LegendBattleBasic.sikuli
 if %ERRORLEVEL%==50 (
- start .\Tools\auto_update.bat %~n0%~x0
+ start .\Tools\auto_update.bat %0
  exit
 )
 pause

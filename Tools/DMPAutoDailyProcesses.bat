@@ -43,20 +43,20 @@ powershell "Get-WmiObject win32_process -filter processid=$pid | ForEach-Object{
 @REM デイリーミッション
 java -jar sikulixide-2.0.4.jar -r .\scripts\NoxDailyMission.sikuli
 if %ERRORLEVEL%==50 (
- start .\Tools\auto_update.bat
+ start .\Tools\auto_update.bat %0
  exit
 )
 
 @REM レジェンド周回
 java -jar sikulixide-2.0.4.jar -r .\scripts\LegendBattleBasic.sikuli
 if %ERRORLEVEL%==50 (
- start .\Tools\auto_update.bat
+ start .\Tools\auto_update.bat %0
  exit
 )
 
 @REM メインストーリー周回
 java -jar sikulixide-2.0.4.jar -r .\scripts\AllMainStories.sikuli
 if %ERRORLEVEL%==50 (
- start .\Tools\auto_update.bat
+ start .\Tools\auto_update.bat %0
  exit
 )
