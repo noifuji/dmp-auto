@@ -142,11 +142,14 @@ while instanceIndex < len(instances):
                 targetRewardFlag = True
                 
             if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
-                CommonDMLib.sendMessagetoSlack(mentionUser, 'A target reward was acquired.', appname)
+                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A target reward was acquired.', appname)
                 CommonDMLib.completeQuestStatus(instances[instanceIndex], "LEGEND")
                 targetRewardFlag = False
                 instanceIndex += 1
                 break
+
+            if CommonDMLib.isNewVersionAvailable():
+                exit(50)
             
             if len(findAny(resources.ICON_WIN)) > 0:
                 if level < LOOP_LEVEL:
@@ -164,6 +167,7 @@ while instanceIndex < len(instances):
             
         #バトルループエンド
     except SystemExit as e:
+        CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
     except:
         e = sys.exc_info()
