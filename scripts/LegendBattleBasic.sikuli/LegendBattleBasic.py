@@ -123,33 +123,44 @@ while instanceIndex < len(instances):
             for battleResultLoop in range(200):
                 print "battleResultLoop..." + str(battleResultLoop)
                 CommonDMLib.skipRewards(resources)
-                if len(findAny(resources.ICON_TARGET_REWARD)) > 0:
-                    targetRewardFlag = True
-                if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
-                    CommonDMLib.sendMessagetoSlack(mentionUser, 'A target reward was acquired.', appname)
-                    CommonDMLib.completeQuestStatus(instances[instanceIndex], "LEGEND")
-                    instanceIndex += 1
-                    exitFlag = True
-                    break
-                if len(findAny(resources.ICON_WIN)) > 0:
-                    winFlag = True
-                    if level < LOOP_LEVEL:
-                        click(resources.BUTTON_SMALL_OK)
-                        breakBattleLoopFlag = True
-                    else:
-                        click(resources.BUTTON_SMALL_BATTLE_START)
-                if len(findAny(resources.ICON_LOSE)) > 0:
-                    click(resources.BUTTON_SMALL_BATTLE_START)
-                    wait(2)
-                if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) == 0:
-                    break
+                if len(findAny(resources.BUTTON_DUEL_HISTORY)) > 0:
+                    try:
+                        click(resources.BUTTON_DUEL_HISTORY)
+                    except:
+                        print "failed to click"
+                if len(findAny(resources.TITLE_DUEL_HISTORY)) > 0:
+                    try:
+                        click(resources.BUTTON_RESULT)
+                        wait(0.5)
+                        break
+                    except:
+                        print "failed to click"
                 if battleResultLoop >= 199:
                     raise Exception("Too many battleResultLoop")
-            if winFlag == True:
-                win_count+=1
-            if breakBattleLoopFlag == True or exitFlag == True:
-                win_count = 0
+                
+            if len(findAny(resources.ICON_TARGET_REWARD)) > 0:
+                targetRewardFlag = True
+            if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
+                CommonDMLib.sendMessagetoSlack(mentionUser, 'A target reward was acquired.', appname)
+                CommonDMLib.completeQuestStatus(instances[instanceIndex], "LEGEND")
+                instanceIndex += 1
+                exitFlag = True
                 break
+            
+            if len(findAny(resources.ICON_WIN)) > 0:
+                if level < LOOP_LEVEL:
+                    click(resources.BUTTON_SMALL_OK)
+                    win_count = 0
+                    break
+                else:
+                    click(resources.BUTTON_SMALL_BATTLE_START)
+                    win_count += 1
+                    continue
+                
+            if len(findAny(resources.ICON_LOSE)) > 0:
+                click(resources.BUTTON_SMALL_BATTLE_START)
+                continue
+            
         #バトルループエンド
         if exitFlag == True:
             break
