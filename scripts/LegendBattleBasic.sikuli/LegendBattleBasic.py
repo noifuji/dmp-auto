@@ -131,7 +131,7 @@ while instanceIndex < len(instances):
                 if len(findAny(resources.TITLE_DUEL_HISTORY)) > 0:
                     try:
                         click(resources.BUTTON_RESULT)
-                        wait(0.5)
+                        wait(2)
                         break
                     except:
                         print "failed to click"
@@ -140,11 +140,11 @@ while instanceIndex < len(instances):
                 
             if len(findAny(resources.ICON_TARGET_REWARD)) > 0:
                 targetRewardFlag = True
+                
             if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'A target reward was acquired.', appname)
                 CommonDMLib.completeQuestStatus(instances[instanceIndex], "LEGEND")
                 instanceIndex += 1
-                exitFlag = True
                 break
             
             if len(findAny(resources.ICON_WIN)) > 0:
@@ -162,8 +162,6 @@ while instanceIndex < len(instances):
                 continue
             
         #バトルループエンド
-        if exitFlag == True:
-            break
     except SystemExit as e:
         exit(e)
     except:
