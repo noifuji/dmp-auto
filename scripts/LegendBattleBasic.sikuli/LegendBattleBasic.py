@@ -42,7 +42,7 @@ elif EnvSettings.ENGINE_FOR_LEGEND == "NOX":
     temp = []
     for instance in instances:
         for status in statuses:
-            if status["REF"] == str(instance) and status["MAIN"] == "incomplete":
+            if status["REF"] == str(instance) and status["LEGEND"] == "incomplete":
                 temp.append(instance)
     instances = temp
 #Pre-processing End
@@ -58,7 +58,7 @@ strategy = 100
 instanceIndex = 0
 while instanceIndex < len(instances):
     try:
-        if EnvSettings.ENGINE_FOR_MAIN == "NOX":
+        if EnvSettings.ENGINE_FOR_LEGEND == "NOX":
             CommonDMLib.RestartNox(resources, instances[instanceIndex])
         CommonDMLib.RestartApp(resources)
         click(resources.ICON_EXTRA)
@@ -153,6 +153,8 @@ while instanceIndex < len(instances):
         #バトルループエンド
         if exitFlag == True:
             break
+    except SystemExit as e:
+        exit(e)
     except:
         e = sys.exc_info()
         for mes in e:

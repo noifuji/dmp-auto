@@ -186,6 +186,8 @@ while instanceIndex < len(instances):
             if CommonDMLib.isNewVersionAvailable():
                 exit(50)
         #バトルループエンド
+    except SystemExit as e:
+        exit(e)
     except:
         exceptionCout += 1
         e = sys.exc_info()

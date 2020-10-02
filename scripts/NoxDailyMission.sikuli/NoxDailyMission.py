@@ -214,6 +214,8 @@ while instanceIndex < len(instances):
                 CommonDMLib.startMainStoryBattle(NoxResources, deck[0], deck[1])
         #バトルループエンド
         instanceIndex += 1
+    except SystemExit as e:
+        exit(e)
     except:
         statisticsData["EXCEPTION"] += 1
         retryCount += 1
