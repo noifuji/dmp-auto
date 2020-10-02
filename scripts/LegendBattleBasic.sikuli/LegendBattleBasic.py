@@ -108,7 +108,7 @@ while instanceIndex < len(instances):
         #バトルループ
         for battle_loop in range(200):
             if total_duel_count % 10 == 0:
-                CommonDMLib.sendMessagetoSlack(mentionUser, 'win/total = ' + str(win_count) + "/" + str(total_duel_count), appname)
+                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']win/total = ' + str(win_count) + "/" + str(total_duel_count), appname)
             #バトル開始まで待機
             if CommonDMLib.waitStartingGame(resources) == -1:
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
