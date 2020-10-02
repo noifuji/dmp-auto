@@ -1,5 +1,5 @@
 version3.1.1
--bug fix 1
+-bug fix
 
 version3.1.0
 -統計情報を取得する。
