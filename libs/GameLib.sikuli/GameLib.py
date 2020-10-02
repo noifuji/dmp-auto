@@ -118,10 +118,9 @@ def ChargeManaRedBlack(resources):
                 resources.ICON_COST_BLACK_2)
     elif mana == 1:
         Hand = findAny(
-                resources.ICON_COST_BLACK_4,resources.ICON_COST_BLACK_3,
+                resources.ICON_COST_BLACK_4,resources.ICON_COST_BLACK_3,resources.ICON_COST_BLACK_2,
                 resources.ICON_COST_RED_5,resources.ICON_COST_RED_4,
-                resources.ICON_COST_RED_3,resources.ICON_COST_RED_2,
-                resources.ICON_COST_BLACK_2)
+                resources.ICON_COST_RED_3,resources.ICON_COST_RED_2)
     elif mana >= 2 and mana <=3:
         Hand = findAny(
                 resources.ICON_COST_RED_5,resources.ICON_COST_BLACK_4,
@@ -214,11 +213,11 @@ def SummonRedBlack(resources, currentMana):
 
 
         if availableMana == 2:
-            if len(k2) > 0:
-                summon_creature = k2[0]
-                availableMana-=2
-            elif len(r2) > 0:
+            if len(r2) > 0:
                 summon_creature = r2[0]
+                availableMana-=2
+            elif len(k2) > 0:
+                summon_creature = k2[0]
                 availableMana-=2
             else:
                 break
@@ -229,11 +228,11 @@ def SummonRedBlack(resources, currentMana):
             elif len(r3) > 0:
                 summon_creature = r3[0]
                 availableMana-=3
-            elif len(k2) > 0:
-                summon_creature = k2[0]
-                availableMana-=2
             elif len(r2) > 0:
                 summon_creature = r2[0]
+                availableMana-=2
+            elif len(k2) > 0:
+                summon_creature = k2[0]
                 availableMana-=2
             else:
                 break
