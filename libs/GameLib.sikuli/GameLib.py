@@ -332,9 +332,11 @@ def irregularLoop(resources):
             wait(0.5)
         if len(findAny(resources.MESSAGE_TAP))   > 0 or len(findAny(resources.MESSAGE_DEST))   > 0:
             print 'Tap or Dest'   
-            BZ = findAny(resources.ICON_ENEMY_UNTAPPED_BLOCKER, 
+            BZ = findAny(
+                    resources.ICON_ENEMY_UNTAPPED_BLOCKER, 
                     resources.ICON_ENEMY_UNTAPPED_CREATURE,
-                    resources.ICON_ENEMY_TAPPED_CREATURE_1)
+                    resources.ICON_ENEMY_TAPPED_CREATURE_1,
+                    resources.ICON_ENEMY_TAPPED_CREATURE_2)
             for b in BZ:
                 click(b)
                 if exists(resources.BUTTON_OK2, 1) != None:
