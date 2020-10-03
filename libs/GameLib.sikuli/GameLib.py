@@ -287,23 +287,22 @@ def directAttack(resources):
                 break
         else:
             break
-    for num in range(7):
+    for num in range(5):
         print "checking Single breaker...." + str(num)
         BZ = findAny(resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2)
-        if len(BZ) > 0:
+        for b in BZ:
             try:
-                CommonDMLib.dragDropAtSpeed(BZ[0],resources.TARGET_POSITION_DIRECT_ATTACK,1)
+                CommonDMLib.dragDropAtSpeed(b,resources.TARGET_POSITION_DIRECT_ATTACK,1)
 
                 if exists(resources.MESSAGE_SELECT_BREAK_ENEMY_SHIELD, 2) != None:
                     click(resources.TARGET_POSITION_FIRST_SHIELD)
                     click(resources.TARGET_POSITION_SECOND_SHIELD)
                     click(resources.BUTTON_OK2)
-                wait(2)
             except:
                 Settings.MoveMouseDelay = 0.1
+                print "exception was occured"
                 break
-        else:
-            break
+        wait(2)
 
 #ゲーム中のイレギュラーの処理
 #return 0 ゲームの正常終了

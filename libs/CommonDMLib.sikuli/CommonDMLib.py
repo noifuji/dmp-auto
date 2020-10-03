@@ -718,12 +718,12 @@ def closeMission(resource):
 
 def getTargetMissions(resource):
     print "getTargetMissions"
-    offsetX1 = 180
-    offsetY1 = 190
-    offsetY2 = 360
-    offsetY3 = 530
-    width = 1065
-    height = 65
+    offsetX1 = 175
+    offsetY1 = 185
+    offsetY2 = 355
+    offsetY3 = 525
+    width = 1070
+    height = 70
     
     missionTitle = findAny(resource.TITLE_MISSION)
     if len(missionTitle) <= 0:

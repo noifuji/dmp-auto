@@ -215,6 +215,7 @@ while instanceIndex < len(instances):
         #バトルループエンド
         instanceIndex += 1
     except SystemExit as e:
+        CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
     except:
         statisticsData["EXCEPTION"] += 1
