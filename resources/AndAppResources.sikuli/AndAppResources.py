@@ -183,6 +183,7 @@ TARGET_POSITION_FIRST_SHIELD = Pattern("1594948424162.png").targetOffset(-170,-3
 TARGET_POSITION_SECOND_SHIELD = Pattern("1594948424162-1.png").targetOffset(185,-379)
 ICON_W_BREAKER = Pattern("1597610313690.png").similar(0.80).targetOffset(-53,30)
 ICON_MY_UNTAPPED_CREATURE = Pattern("1594978601821.png").similar(0.97).targetOffset(1,63)
+ICON_MY_UNTAPPED_CREATURE2 =Pattern("1601704247474.png").similar(0.95).targetOffset(-1,54)
 ICON_MY_UNTAPPED_BLOCKER = Pattern("1597156496305.png").similar(0.80).targetOffset(0,26)
 ICON_MY_TAPPED_CREATURE = Pattern("1598096217499.png").similar(0.90).targetOffset(1,64)
 ICON_ENEMY_UNTAPPED_CREATURE = Pattern("1597464166732.png").similar(0.85).targetOffset(0,51)

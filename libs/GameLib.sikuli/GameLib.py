@@ -240,11 +240,11 @@ def SummonRedBlack(resources, currentMana):
             if len(r4) > 0:
                 summon_creature = r4[0]
                 availableMana-=4
-            elif len(k2) > 0:
-                summon_creature = k2[0]
-                availableMana-=2
             elif len(r2) > 0:
                 summon_creature = r2[0]
+                availableMana-=2
+            elif len(k2) > 0:
+                summon_creature = k2[0]
                 availableMana-=2
             elif len(k3) > 0:
                 summon_creature = k3[0]
@@ -289,7 +289,7 @@ def directAttack(resources):
             break
     for num in range(7):
         print "checking Single breaker...." + str(num)
-        BZ = findAny(resources.ICON_MY_UNTAPPED_CREATURE)
+        BZ = findAny(resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2)
         if len(BZ) > 0:
             try:
                 CommonDMLib.dragDropAtSpeed(BZ[0],resources.TARGET_POSITION_DIRECT_ATTACK,1)
