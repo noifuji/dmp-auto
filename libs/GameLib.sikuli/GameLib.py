@@ -188,7 +188,7 @@ def SummonBasic(resources, currentMana):
         except:
             Settings.MoveMouseDelay = 0.1
             break
-        wait(1)
+        wait(2)
         if exists(resources.BUTTON_OK2, 2) != None:
             try:
                 click(resources.BUTTON_OK2)
@@ -264,7 +264,7 @@ def SummonRedBlack(resources, currentMana):
         except:
             Settings.MoveMouseDelay = 0.1
             break
-        wait(1)
+        wait(2)
 
 
 
