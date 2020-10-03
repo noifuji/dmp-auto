@@ -20,6 +20,11 @@ instances = []
 stageRegionValues = []
 resources = None
 
+###################Settings######################
+LAST_EPISODE = 5
+LAST_STAGE = 10
+###################Settings######################
+
 #Pre-processing Start
 if EnvSettings.ENGINE_FOR_MAIN == "ANDAPP":
     import AndAppResources
@@ -58,8 +63,7 @@ while instanceIndex < len(instances):
         CommonDMLib.RestartApp(resources)
         CommonDMLib.openMainStory(resources)
         
-        #バトルループ
-        for battle_loop in range(2000):
+        for stage_loop in range(200):
             episode = CommonDMLib.getMainStoryEpisode(resources)
             stage = CommonDMLib.getMainStoryStage(resources, 
                     stageRegionValues[0], 
@@ -82,38 +86,48 @@ while instanceIndex < len(instances):
                 statisticsData["ENDTIME"] = ""
                 statisticsData["EXCEPTION"] = 0
             
-            #バトル開始まで待機
-            if CommonDMLib.waitStartingGame(resources) == -1:
-                CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
-                break
-
-            wait(10)
-            # ゲームループ
-            GameLib.gameLoop(resources, strategy)
-            # ゲームループエンド
-            winFlag = False
-            for battleResultLoop in range(180):
-                print "battleResultLoop..." + str(battleResultLoop)
-                CommonDMLib.skipRewards(resources)
-                
-                if len(findAny(resources.ICON_WIN)) > 0:
-                    try:
-                        click(resources.BUTTON_SMALL_OK)
-                    except:
-                        print "failed to click"
-                        
-                    winFlag = True
-                if len(findAny(resources.ICON_LOSE)) > 0:
-                    try:
-                        click(resources.BUTTON_SMALL_BATTLE_START)
-                    except:
-                        print "failed to click"
-                    winFlag = False
-                if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) == 0:
+            for battle_loop in range(200):
+                #バトル開始まで待機
+                if CommonDMLib.waitStartingGame(resources) == -1:
+                    CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
                     break
-            if winFlag == False:
-                retryCount += 1
-                continue
+    
+                wait(10)
+                # ゲームループ
+                GameLib.gameLoop(resources, strategy)
+                # ゲームループエンド
+                for battleResultLoop in range(200):
+                    print "battleResultLoop..." + str(battleResultLoop)
+                    CommonDMLib.skipRewards(resources)
+                    if len(findAny(resources.BUTTON_DUEL_HISTORY)) > 0:
+                        try:
+                            click(resources.BUTTON_DUEL_HISTORY)
+                        except:
+                            print "failed to click"
+                    if len(findAny(resources.TITLE_DUEL_HISTORY)) > 0:
+                        try:
+                            click(resources.BUTTON_RESULT)
+                            wait(2)
+                            break
+                        except:
+                            print "failed to click"
+                    if battleResultLoop >= 199:
+                        raise Exception("Too many battleResultLoop")
+                #battleResultLoop End
+    
+                if CommonDMLib.isNewVersionAvailable():
+                    exit(50)
+                    
+                if len(findAny(resources.ICON_WIN)) > 0:
+                    click(resources.BUTTON_SMALL_OK)
+                    break
+                elif len(findAny(resources.ICON_LOSE)) > 0:
+                    click(resources.BUTTON_SMALL_BATTLE_START)
+                    retryCount += 1
+                    continue
+                else:
+                    raise Exception("No results. restarting...")
+            # battle_loop End
 
             for checkRewardLoop in range(180):
                 print "checkRewardLoop..." + str(checkRewardLoop)
@@ -159,8 +173,8 @@ while instanceIndex < len(instances):
                     except:
                         print "failed to click"
                     break
+            #checkRewardLoop End
 
-            ###Stage Cleared###
             if EnvSettings.RUN_MODE == "DEV":
                 wait(1)
                 CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Battle Loop Count : ' + str(retryCount), appname)
@@ -170,8 +184,14 @@ while instanceIndex < len(instances):
             CommonDMLib.uploadStatistics("MainStory" ,statisticsData)
             retryCount = 0
             exceptionCout = 0
-                
-            if len(findAny(resources.TITLE_EP5_STAGE10)) > 0:
+
+            episode = CommonDMLib.getMainStoryEpisode(resources)
+            stage = CommonDMLib.getMainStoryStage(resources, 
+                    stageRegionValues[0], 
+                    stageRegionValues[1],
+                    stageRegionValues[2],
+                    stageRegionValues[3])
+            if episode == LAST_EPISODE and stage == LAST_STAGE:
                 if len(findAny(resources.BUTTON_CONFIRM_REWARD)) > 0:
                     click(resources.BUTTON_CONFIRM_REWARD)
                     exists(resources.TITLE_REWARD_INFO,60)
@@ -182,10 +202,7 @@ while instanceIndex < len(instances):
                         break
                     click(resources.BUTTON_CLOSE)
 
-            
-            if CommonDMLib.isNewVersionAvailable():
-                exit(50)
-        #バトルループエンド
+        #stage_loop End
     except SystemExit as e:
         exit(e)
     except:
