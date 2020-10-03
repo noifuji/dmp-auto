@@ -145,6 +145,8 @@ while instanceIndex < len(instances):
                 CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A target reward was acquired.', appname)
                 CommonDMLib.completeQuestStatus(instances[instanceIndex], "LEGEND")
                 targetRewardFlag = False
+                total_duel_count = 0
+                win_count =0
                 instanceIndex += 1
                 break
 
