@@ -168,9 +168,9 @@ ICON_COST_BLUE_1 = "ICON_COST_WHITE_1.png"
 ICON_COST_BLUE_2 = "ICON_COST_WHITE_1.png"
 ICON_COST_BLUE_3 = "ICON_COST_WHITE_1.png"
 ICON_COST_BLUE_4 = "ICON_COST_WHITE_1.png"
-ICON_COST_RED_2 = Pattern("rcost2-1.png").similar(0.90).targetOffset(64,59)
+ICON_COST_RED_2 = Pattern("1601810200586.png").similar(0.90).targetOffset(65,60)
 ICON_COST_RED_3 = Pattern("rcost3-1.png").similar(0.90).targetOffset(67,54)
-ICON_COST_RED_4 = Pattern("rcost4-1.png").similar(0.90).targetOffset(66,56)
+ICON_COST_RED_4 = Pattern("1601810366219.png").similar(0.90).targetOffset(70,69)
 ICON_COST_RED_5 = Pattern("1601596117607.png").similar(0.90).targetOffset(62,65)
 
 ICON_COST_BLACK_2 = Pattern("kcost2-1.png").similar(0.90).targetOffset(61,61)
