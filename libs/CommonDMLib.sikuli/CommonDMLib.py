@@ -122,13 +122,21 @@ def updateCardCount(ref, nameCount, cardCount):
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300", "ROWS")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW +":" +
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_END_ROW,
+            "ROWS")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
             rowIndex = i + 3
             break
-    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!Q" + str(rowIndex) + ":Z" + str(rowIndex), row, "ROWS")
+    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+            EnvSettings.ACCOUNT_INFO_CARDCOUNT_START_COL + str(rowIndex) + ":" + 
+            EnvSettings.ACCOUNT_INFO_CARDCOUNT_END_COL + str(rowIndex), 
+            row, "ROWS")
 
 def downloadQuestStatus():
     print "downloadQuestStatus"
@@ -137,7 +145,15 @@ def downloadQuestStatus():
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    statusRaw = spreadsheet.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["Accounts!B3:C300", "Accounts!AB3:AD300"], "ROWS")
+    statusRaw = spreadsheet.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            [
+                EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+                EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+                EnvSettings.ACCOUNT_INFO_PLAYERID_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
+                EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+                EnvSettings.ACCOUNT_INFO_MAIN_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+                EnvSettings.ACCOUNT_INFO_SP_END_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
+                ], "ROWS")
 
     accounts = statusRaw[0]
     statuses = statusRaw[1]
@@ -152,11 +168,11 @@ def downloadQuestStatus():
 def completeQuestStatus(ref, questname):
     column = ""
     if questname == "MAIN":
-        column = "AB"
+        column = EnvSettings.ACCOUNT_INFO_MAIN_COL
     elif questname == "LEGEND":
-        column = "AC"
+        column = EnvSettings.ACCOUNT_INFO_LEGEND_COL
     elif questname == "SP":
-        column = "AD"
+        column = EnvSettings.ACCOUNT_INFO_SP_END_COL
     else:
         raise Exception("Invalid Argument")
     
@@ -164,7 +180,11 @@ def completeQuestStatus(ref, questname):
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300", "ROWS")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
+            "ROWS")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
@@ -172,7 +192,7 @@ def completeQuestStatus(ref, questname):
             break
     if rowIndex == None:
         return
-    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!" + column + str(rowIndex), [["complete"]], "ROWS")
+    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, EnvSettings.ACCOUNT_INFO_SHEET_NAME +"!" + column + str(rowIndex), [["complete"]], "ROWS")
 
 
 #return ref
@@ -181,7 +201,11 @@ def getSetupAccountRef():
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:C300", "ROWS")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+            EnvSettings.ACCOUNT_INFO_PLAYERID_COL + EnvSettings.ACCOUNT_INFO_END_ROW,
+            "ROWS")
     result = ""
     for ref in refs:
         if len(ref) == 1:
@@ -223,31 +247,46 @@ def updatePlayerId(ref, playerId, computername):
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300", "ROWS")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
+            "ROWS")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
             rowIndex = i + 3
             break
-    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!C" + str(rowIndex), [[playerId]], "ROWS")
-    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!AA" + str(rowIndex), [[computername]], "ROWS")
+    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+            EnvSettings.ACCOUNT_INFO_PLAYERID_COL + str(rowIndex), [[playerId]], "ROWS")
+    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
+            EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(rowIndex), [[computername]], "ROWS")
 
-def updateAccountInfo(ref, lv, dmp, gold, packs, srPack):
+def updateAccountInfo(ref, lv, dmp, gold, packs, srPack, bestPack):
     row = [[lv, dmp, gold]]
     row[0].extend(packs)
     row[0].append(srPack)
+    row[0].append(bestPack)
     
     f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!B3:B300", "ROWS")
+    refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_END_ROW, "ROWS")
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
             rowIndex = i + 3
             break
-    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, "Accounts!D" + str(rowIndex) + ":P" + str(rowIndex), row, "ROWS")
+    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID,
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+            EnvSettings.ACCOUNT_INFO_START_COL + str(rowIndex) + ":" + 
+            EnvSettings.ACCOUNT_INFO_END_COL + str(rowIndex), row, "ROWS")
 
 #Only for less 999,999
 def isNumber(str):
@@ -306,7 +345,8 @@ def scanNumberChangeWidth(targetImage, offsetX, offsetY, width, height, RightLef
 def scanAccountInfo(resource):
     ts = [resource.TITLE_PACK1,resource.TITLE_PACK2,
             resource.TITLE_PACK3,resource.TITLE_PACK4,
-            resource.TITLE_PACK5,resource.TITLE_PACK5SR]
+            resource.TITLE_PACK5,resource.TITLE_PACK5SR,
+            resource.TICKET_BEST]
 
     dmp = 0
     gold = 0
@@ -365,8 +405,9 @@ def scanAccountInfo(resource):
     for i in range(len(tempPacks)-1):
         packs[i] = tempPacks[i]
 
-    srPack = tempPacks[len(tempPacks)-1]
-    return [lv, dmp, gold, packs, srPack]
+    srPack = tempPacks[len(tempPacks)-2]
+    bestPack = tempPacks[len(tempPacks)-1]
+    return [lv, dmp, gold, packs, srPack, bestPack]
 
 def downloadFile(url, dest):
     print "downloadFile"

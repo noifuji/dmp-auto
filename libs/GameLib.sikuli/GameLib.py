@@ -270,12 +270,14 @@ def SummonRedBlack(resources, currentMana):
 
 def directAttack(resources):
     print 'directAttack'
+    creaturePositions = []
     for num in range(3):
         print "checking W breaker...." + str(num)
         BZ = findAny(resources.ICON_W_BREAKER)
         if len(BZ) > 0:
             try:
                 CommonDMLib.dragDropAtSpeed(BZ[0],resources.TARGET_POSITION_DIRECT_ATTACK,1)
+                creaturePositions.append([b.getX(),b.getY()])
 
                 if exists(resources.MESSAGE_SELECT_BREAK_ENEMY_SHIELD, 5) != None:
                     click(resources.TARGET_POSITION_FIRST_SHIELD)
@@ -292,22 +294,29 @@ def directAttack(resources):
         BZ = findAny(resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2)
         for b in BZ:
             try:
-                CommonDMLib.dragDropAtSpeed(b,resources.TARGET_POSITION_DIRECT_ATTACK,1)
-
-                if exists(resources.MESSAGE_SELECT_BREAK_ENEMY_SHIELD, 2) != None:
-                    click(resources.TARGET_POSITION_FIRST_SHIELD)
-                    click(resources.TARGET_POSITION_SECOND_SHIELD)
-                    click(resources.BUTTON_OK2)
+                attackFlag = True
+                for cp in creaturePositions:
+                    if b.getX() <= (cp[0]+10) and b.getX() >= (cp[0]-10) and b.getY() <= (cp[1]+10) and b.getY() >= (cp[1]-10):
+                        attackFlag = False
+                        break
+                if attackFlag:
+                    CommonDMLib.dragDropAtSpeed(b,resources.TARGET_POSITION_DIRECT_ATTACK,1)
+                    creaturePositions.append([b.getX(),b.getY()])
+    
+                    if exists(resources.MESSAGE_SELECT_BREAK_ENEMY_SHIELD, 2) != None:
+                        click(resources.TARGET_POSITION_FIRST_SHIELD)
+                        click(resources.TARGET_POSITION_SECOND_SHIELD)
+                        click(resources.BUTTON_OK2)
             except:
                 Settings.MoveMouseDelay = 0.1
                 print "exception was occured"
                 break
-        wait(2)
+        wait(1)
 
 #ゲーム中のイレギュラーの処理
 #return 0 ゲームの正常終了
 #return 1 ゲーム継続
-def irregularLoop(resources):
+def irregularLoop(resources, appname):
     print 'irregularLoop'
 #  イレギュラーループ
     for enemyturn_loop in range(50):
@@ -324,7 +333,7 @@ def irregularLoop(resources):
             click(resources.BUTTON_ST)
             wait(0.5)
         #   シールド確認
-        if len(findAny(resources.MESSAGE_SHIELD))   > 0:
+        if len(findAny(resources.MESSAGE_SHIELD)) > 0:
             print 'My sheild is broken.'
             click(resources.BUTTON_OK2)
             wait(0.5)
@@ -344,41 +353,45 @@ def irregularLoop(resources):
             if exists(resources.MESSAGE_NO_CREATURE_SELECTED,5) != None:
                 click(resources.BUTTON_OK2)
             wait(0.5)
-        if len(findAny(resources.MESSAGE_BLOCK)) > 0 or len(findAny(resources.MESSAGE_CHOOSE_BLOCKER)) > 0:
-            print 'Block?'
-            if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
-                click(resources.ICON_MY_UNTAPPED_BLOCKER)
-                click(resources.BUTTON_BLOCK)
-            else:
-                click(resources.BUTTON_NOBLOCK)
-            wait(1)
-        #   対戦開始を検知→ゲームループをbreak
+            
         if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) > 0:
             print 'Game has Finished.'
             return 0
-        if len(findAny(resources.BUTTON_RETRY)) > 0:
-            #game_loopを終了する。
-            click(resources.BUTTON_RETRY)
-        #死の宣告、デスモーリー等
-        if len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE)) > 0 or len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE2)) > 0:
-            print 'Player need to select his creature.'                       
-            BZ = findAny(
-                    resources.ICON_MY_UNTAPPED_CREATURE,
-                    resources.ICON_MY_TAPPED_CREATURE,
-                    resources.ICON_MY_UNTAPPED_BLOCKER)
-            for b in BZ:
-                click(b)
-                if exists(resources.BUTTON_OK2,1) != None:
-                    click(resources.BUTTON_OK2)
-                    break
-            wait(0.5)
-        #デモニックバイス
-        if len(findAny(resources.TITLE_HAND1)) > 0:
-            print 'Player need to select his hands.'
-            click(resources.TITLE_HAND1)
-            click(resources.TITLE_HAND2)
-            click(resources.BUTTON_OK2)
-            wait(1)
+
+        #レジェンドではスルーする
+        if appname not in ["LEGEND"]:
+            if len(findAny(resources.MESSAGE_BLOCK)) > 0 or len(findAny(resources.MESSAGE_CHOOSE_BLOCKER)) > 0:
+                print 'Block?'
+                if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
+                    click(resources.ICON_MY_UNTAPPED_BLOCKER)
+                    click(resources.BUTTON_BLOCK)
+                else:
+                    click(resources.BUTTON_NOBLOCK)
+                wait(1)
+        
+            if len(findAny(resources.BUTTON_RETRY)) > 0:
+                #game_loopを終了する。
+                click(resources.BUTTON_RETRY)
+            #死の宣告、デスモーリー等
+            if len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE)) > 0 or len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE2)) > 0:
+                print 'Player need to select his creature.'                       
+                BZ = findAny(
+                        resources.ICON_MY_UNTAPPED_CREATURE,
+                        resources.ICON_MY_TAPPED_CREATURE,
+                        resources.ICON_MY_UNTAPPED_BLOCKER)
+                for b in BZ:
+                    click(b)
+                    if exists(resources.BUTTON_OK2,1) != None:
+                        click(resources.BUTTON_OK2)
+                        break
+                wait(0.5)
+            #デモニックバイス
+            if len(findAny(resources.TITLE_HAND1)) > 0:
+                print 'Player need to select his hands.'
+                click(resources.TITLE_HAND1)
+                click(resources.TITLE_HAND2)
+                click(resources.BUTTON_OK2)
+                wait(1)
         
         if  enemyturn_loop == 49:
             print 'Irregular loop is over 50. Restart is necessary.'
@@ -386,7 +399,7 @@ def irregularLoop(resources):
     
     return 1
 
-def gameLoop(resources, strategy):
+def gameLoop(resources, strategy, appname):
     for game_loop in range(50):
         print "Inside Game Loop"
         if len(findAny(resources.ICON_ENEMY_CARD_COUNT)) > 0:
@@ -416,5 +429,5 @@ def gameLoop(resources, strategy):
             turnEnd(resources)
         wait(1)
         #  イレギュラーループ
-        if irregularLoop(resources) == 0:
+        if irregularLoop(resources, appname) == 0:
             break

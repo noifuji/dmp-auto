@@ -9,7 +9,7 @@ sys.path.append(EnvSettings.RES_DIR_PATH)
 import GameLib
 import CommonDMLib
 
-appname = 'AllMainStories'
+appname = 'MAIN'
 mentionUser = EnvSettings.mentionUser
 Settings.MoveMouseDelay = 0.1
 Settings.DelayBeforeDrag = 0.5
@@ -94,7 +94,7 @@ while instanceIndex < len(instances):
     
                 wait(10)
                 # ゲームループ
-                GameLib.gameLoop(resources, strategy)
+                GameLib.gameLoop(resources, strategy, appname)
                 # ゲームループエンド
                 for battleResultLoop in range(200):
                     print "battleResultLoop..." + str(battleResultLoop)

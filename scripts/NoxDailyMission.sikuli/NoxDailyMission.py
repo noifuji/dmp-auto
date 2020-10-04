@@ -38,7 +38,7 @@ def finishMissions(instance, statisticsData):
     CommonDMLib.closeMission(NoxResources)
     CommonDMLib.getPresent(NoxResources)
     res = CommonDMLib.scanAccountInfo(NoxResources)
-    CommonDMLib.updateAccountInfo(instance, res[0], res[1], res[2], res[3],res[4])
+    CommonDMLib.updateAccountInfo(instance, res[0], res[1], res[2], res[3],res[4], res[5])
     CommonDMLib.updateCompletedInstanceJson(instance)
     statisticsData[CommonDMLib.STATISTICS_ENDTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     CommonDMLib.uploadStatistics("DailyMission" ,statisticsData)

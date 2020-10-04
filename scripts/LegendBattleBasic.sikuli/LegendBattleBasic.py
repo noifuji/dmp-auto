@@ -15,7 +15,7 @@ LOOP_LEVEL = 2
 #####Settings####
 
 mentionUser = EnvSettings.mentionUser
-appname = 'LegendBattle'
+appname = 'LEGEND'
 Settings.MoveMouseDelay = 0.1
 Settings.DelayBeforeDrag = 0.5
 total_duel_count = 0
@@ -115,7 +115,7 @@ while instanceIndex < len(instances):
                 continue
             wait(10)
             # ゲームループ
-            GameLib.gameLoop(resources, strategy)
+            GameLib.gameLoop(resources, strategy, appname)
             # ゲームループエンド
             total_duel_count+=1
             breakBattleLoopFlag = False
