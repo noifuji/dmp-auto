@@ -197,8 +197,8 @@ while instanceIndex < len(instances):
                 CommonDMLib.openMission(NoxResources)
                 
                 missions = CommonDMLib.getTargetMissions(NoxResources)
-                if mode == "DEV":
-                    CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Mission', appname)
+                #if mode == "DEV":
+                    #CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Mission', appname)
                 
                 if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("GROUP") for d in missions])):
                     finishMissions(instances[instanceIndex], statisticsData)
@@ -224,8 +224,7 @@ while instanceIndex < len(instances):
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(instances[instanceIndex]) + '. Retrying....', appname)
+        CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(instances[instanceIndex]) + '. Retrying....' , appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
-        CommonDMLib.uploadScreenShotToSlack(mentionUser,"Screenshot" , appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
