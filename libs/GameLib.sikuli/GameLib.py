@@ -211,6 +211,7 @@ def SummonRedBlack(resources, currentMana):
         k3 = findAny(resources.ICON_COST_BLACK_3)
         k4 = findAny(resources.ICON_COST_BLACK_4)
 
+        print "r2:" + len(r2) + ",r3:" + len(r3) + ",r4:" + len(r4) + ",k2:" + len(k2) + ",k3:" + len(k3) + ",k4:" + len(k4)
 
         if availableMana == 2:
             if len(r2) > 0:

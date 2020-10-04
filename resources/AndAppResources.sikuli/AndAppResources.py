@@ -173,7 +173,7 @@ ICON_COST_RED_3 = Pattern("rcost3-1.png").similar(0.90).targetOffset(67,54)
 ICON_COST_RED_4 = Pattern("1601810366219.png").similar(0.90).targetOffset(70,69)
 ICON_COST_RED_5 = Pattern("1601596117607.png").similar(0.90).targetOffset(62,65)
 
-ICON_COST_BLACK_2 = Pattern("1601810645824.png").similar(0.85).targetOffset(64,60)
+ICON_COST_BLACK_2 = Pattern("1601810645824.png").similar(0.90).targetOffset(64,60)
 ICON_COST_BLACK_3 = Pattern("1601810827895.png").similar(0.90).targetOffset(63,62)
 ICON_COST_BLACK_4 = Pattern("kcost4-1.png").similar(0.90).targetOffset(61,53)
 ICON_ENEMY_CARD_COUNT = Pattern("1594957113274.png").targetOffset(11,1)
