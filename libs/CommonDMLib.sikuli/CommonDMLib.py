@@ -1197,7 +1197,7 @@ def RestartApp(resource):
         wait(1)
     for skipLoop in range(120):
         if skipNotifications(resource) == -1:
-            eixsts(resource.BUTTON_SMALL_OK, 60)
+            exists(resource.BUTTON_SMALL_OK, 60)
             for backLoop in range(60):
                 if len(findAny(resource.BUTTON_SMALL_OK)) > 0:
                     click(resource.BUTTON_SMALL_OK)

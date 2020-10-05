@@ -148,7 +148,9 @@ while instanceIndex < len(instances):
                 win_count += 1
 
             click(resources.BUTTON_SMALL_BATTLE_START)
-            
+    except SystemExit as e:
+        CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
+        exit(e)        
     except:
         e = sys.exc_info()
         for mes in e:
@@ -156,3 +158,5 @@ while instanceIndex < len(instances):
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
+        if CommonDMLib.isNewVersionAvailable():
+            exit(50)

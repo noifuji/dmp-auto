@@ -147,7 +147,7 @@ STAGES = [{"STAGE":1, "IMAGE":"1601267258379.png"},
             {"STAGE":15, "IMAGE":"1601269712707.png"}]
 ##################Messages################
 MESSAGE_RESTART_DUEL = Pattern("1596765847719.png").similar(0.86)
-MESSAGE_LAST_SP_BATTLE = "MESSAGE_LAST_SP_BATTLE.png"
+MESSAGE_LAST_SP_BATTLE = "1601901320202.png"
 MESSAGE_LAST_BATTLE = "1598356619089.png"
 #AD = Pattern("1596767400207.png").similar(0.85)
 AD = Pattern("AD2.png").similar(0.80)
