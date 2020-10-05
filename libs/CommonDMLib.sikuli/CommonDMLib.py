@@ -843,7 +843,8 @@ def getMissionStrategy(resource, mission):
 #return -1 異常発生
 def waitStartingGame(resource):
     print 'waitStartingGame'
-    for num in range(200):
+    for num in range(150):
+        print "waiting game start..." + str(num) + "/150"
         #ストーリースキップ
         skipStory(resource)
         #マッチングしなかった場合
@@ -865,7 +866,7 @@ def waitStartingGame(resource):
             return -1
         if len(findAny(resource.BUTTON_TURN_END)) > 0:
             break
-        if num >= 199:
+        if num >= 149:
             raise Exception("Too many waitStartingGame loop")
         wait(1)
     return 0
