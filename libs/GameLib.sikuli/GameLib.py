@@ -412,8 +412,6 @@ def retire(resources):
        if exists(resources.MESSAGE_RETIRE, 10) != None:
            click(resources.BUTTON_OK3)
            break
-       if retireLoop == 4:
-           raise Exception
 
 #ゲーム中のイレギュラーの処理
 #return 0 ゲームの正常終了
