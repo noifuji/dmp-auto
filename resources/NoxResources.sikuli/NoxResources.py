@@ -7,7 +7,7 @@ DECKIMAGE_RED_BLACK = Pattern("1598939664217.png").similar(0.85)
 DECKIMAGE_ST = Pattern("1596892120520-1.png").similar(0.90)
 DECKIMAGE_LARGE_CREATURE = "1599784444953.png"#Pattern("1596892035465.png").similar(0.90)
 DECKIMAGE_STSPELL = "1598831170897.png"
-DECKIMAGE_SPBATTLE = "MESSAGE_LAST_SP_BATTLE.png"
+DECKIMAGE_SPBATTLE = "1601891857285.png"
 DECKIMAGE_MAIN = "1601457706210.png"
 ##############NoxPlayer Home#################
 TITLE_MULTI_PLAYER = Pattern("1596962591946.png").targetOffset(92,154)
@@ -31,6 +31,7 @@ BUTTON_TAKEOVER = Pattern("1596765489772.png").targetOffset(-257,83)
 BUTTON_SKIP = Pattern("skip.png").similar(0.91)
 BUTTON_OK = Pattern("OK.png").similar(0.81)
 BUTTON_OK2 = Pattern("1601521147368.png").similar(0.81)
+BUTTON_OK3 =Pattern("1601873579981.png").similar(0.88) 
 BUTTON_RETRY = "1596901274897.png"
 BUTTON_AGREE = "1597913007417.png"
 BUTTON_SMALL_OK = Pattern("smallOK.png").similar(0.84)
@@ -55,6 +56,7 @@ ICON_PRESENT_WITH_SIGN = Pattern("ICON_PRESENT_SIGN.png").similar(0.95).targetOf
 ICON_OTHER = "1600519768850.png"
 BUTTON_MAIN_STORY = "1596767702129.png"
 BUTTON_LEGEND_BATTLE = Pattern("BUTTON_LEGEND_BATTLE.png").similar(0.78)
+BUTTON_SP_BATTLE = Pattern("1601885213479.png").similar(0.84)
 BUTTON_PROFILE = "BUTTON_PROFILE.png"
 ################PRESENT#################
 TITLE_PRESENT = "TITLE_PRESENT.png"
@@ -79,6 +81,7 @@ TITLE_GOLD = Pattern("1600525512184.png").similar(0.85)
 TITLE_DMPOINT = "1600525496880.png"
 #################LegendBattle####################
 ICON_TARGET_REWARD = Pattern("1601645476931.png").similar(0.90)
+ICON_SP_TARGET_REWARD = "MESSAGE_LAST_SP_BATTLE.png"
 ICON_NEXT_REWARD_OF_TARGET = "ICON_NEXT_REWARD_OF_TARGET.png"
 ICON_REWARD_COMPLETED = "1601643940453.png"
 TITLE_LEGEND_STAGE1 = Pattern("1601517613543.png").similar(0.80)
@@ -169,7 +172,7 @@ MISSION_WIN_7TURNS={"GROUP":"SPEED","NAME":"MISSION_WIN_7TURNS","IMAGE":Pattern(
 MISSION_WIN_10TURNS={"GROUP":"SPEED","NAME":"MISSION_WIN_10TURNS","IMAGE":Pattern("WinIn10Turns.png").similar(0.85)}
 MISSION_WIN_4SHIELD={"GROUP":"SPEED","NAME":"MISSION_WIN_4SHIELD","IMAGE":Pattern("WinWith4ShieldsRemained-1.png").similar(0.85)}
 MISSION_WIN_2SHIELD={"GROUP":"SPEED","NAME":"MISSION_WIN_2SHIELD","IMAGE":Pattern("WinWith2ShieldsRemained.png").similar(0.85)}
-MISSION_WIN_5={"GROUP":"SPEED","NAME":"MISSION_WIN_5","IMAGE":Pattern("Win5Times-1.png").similar(0.85)}
+MISSION_WIN_5={"GROUP":"SPEED","NAME":"MISSION_WIN_5","IMAGE":Pattern("Win5Times-2.png").similar(0.85).targetOffset(514,73)}
 MISSION_CREATURE_10={"GROUP":"SPEED","NAME":"MISSION_CREATURE_10","IMAGE":Pattern("Summon10Creatures-1.png").similar(0.85)}
 MISSION_CREATURE_18_LOWER5={"GROUP":"SPEED","NAME":"MISSION_CREATURE_18_LOWER5","IMAGE":Pattern("Summon18Creatures-1.png").similar(0.85)}
 MISSION_CREATURE_18_LOWER5000={"GROUP":"SPEED","NAME":"MISSION_CREATURE_18_LOWER5000","IMAGE":Pattern("1601359075431.png").similar(0.85)}
@@ -191,12 +194,12 @@ MISSION_BATTLE_5={"GROUP":"BATTLE","NAME":"MISSION_BATTLE_5","IMAGE":Pattern("Fi
 MISSION_ST_5={"GROUP":"ST","NAME":"MISSION_ST_5","IMAGE":Pattern("FiveTimesST-1.png").similar(0.85)}
 
 #RETIRE
-MISSION_DUEL_3={"GROUP":"RETIRE","NAME":"MISSION_DUEL_3","IMAGE":""}
+MISSION_DUEL_3={"GROUP":"RETIRE","NAME":"MISSION_DUEL_3","IMAGE":Pattern("1601865228012.png").similar(0.86)}
 MISSION_DUEL_5={"GROUP":"RETIRE","NAME":"MISSION_DUEL_5","IMAGE":Pattern("FiveTimesBattle-1.png").similar(0.86)}
 
 #SKIP
-MISSION_SUMMON_3_SHINKA={"GROUP":"SKIP","NAME":"MISSION_SUMMON_3_SHINKA","IMAGE":Pattern("1596776105685.png").similar(0.85)}
-MISSION_SPELL_3_HIGHER5={"GROUP":"SKIP","NAME":"MISSION_SPELL_3_HIGHER5","IMAGE":Pattern("FourTimesBigSpell-1.png").similar(0.85)}
+MISSION_SUMMON_3_SHINKA={"GROUP":"SKIP","NAME":"MISSION_SUMMON_3_SHINKA","IMAGE":Pattern("1596776105685-1.png").similar(0.91).targetOffset(414,63)}
+MISSION_SPELL_4_HIGHER5={"GROUP":"SKIP","NAME":"MISSION_SPELL_4_HIGHER5","IMAGE":Pattern("FourTimesBigSpell-2.png").similar(0.85).targetOffset(464,66)}
 
 
 GROUPS = ["SPELL","BATTLE","ST","LARGE","SPEED","RETIRE","SKIP"]
@@ -221,9 +224,10 @@ MISSIONS = [
         MISSION_DEST_4,
         MISSION_BATTLE_5,
         MISSION_ST_5,
+        MISSION_DUEL_3,
         MISSION_DUEL_5,
         MISSION_SUMMON_3_SHINKA,
-        MISSION_SPELL_3_HIGHER5
+        MISSION_SPELL_4_HIGHER5
         ]
 
 SPELL_MISSIONS = [MISSION_SPELL_10,MISSION_SPELL_12_LOWER5COST]
@@ -257,6 +261,7 @@ ICON_CARD_COUNT = [Pattern("x1.png").similar(0.85),Pattern("x2.png").similar(0.9
 TITLE_CARD_LIST = Pattern("TITLE_CARD_LIST.png").targetOffset(44,164)
 ################DUEL#################
 BUTTON_TURN_END = "turnEnd.png"
+BUTTON_ENEMY_TURN = Pattern("1601886511079.png").similar(0.82)
 AVATOR_DEFAULT_MALE = Pattern("Avator-1.png").targetOffset(376,-12)
 ICON_MANA_0 = Pattern("mana0_beforeCharge.png").similar(0.95)
 ICON_MANA_1 = Pattern("1601507068495.png").similar(0.90)#Pattern("mana1.png").similar(0.95)
@@ -277,6 +282,7 @@ ICON_COST_WHITE_2 = Pattern("1601509713697.png").similar(0.87).targetOffset(69,6
 ICON_COST_WHITE_3 = Pattern("wcost3.png").similar(0.95).targetOffset(51,50)
 ICON_COST_WHITE_4 = Pattern("ICON_COST_WHITE_4.png").similar(0.90).targetOffset(67,73)
 ICON_COST_WHITE_6 = Pattern("1601540414332.png").similar(0.87).targetOffset(76,69)
+ICON_COST_WHITE_7 = Pattern("1601878254557.png").similar(0.91).targetOffset(81,72)
 ICON_COST_GREEN_2 = Pattern("gcost2-1.png").similar(0.90).targetOffset(68,68)
 ICON_COST_GREEN_3 = Pattern("gcost3.png").similar(0.90).targetOffset(70,67)
 ICON_COST_GREEN_4 = Pattern("gcost4.png").similar(0.90).targetOffset(75,72)
@@ -326,10 +332,11 @@ MESSAGE_RETIRE = "1598228582187.png"
 MESSAGE_BLOCK = "1596775378272.png"
 MESSAGE_ST = "1596770856485.png"
 MESSAGE_SHIELD = "1596770897993.png"
-MESSAGE_SELECT_BREAK_ENEMY_SHIELD = Pattern("MESSAGE_SELECT_BREAK_ENEMY_SHIELD.png").similar(0.85)
+MESSAGE_SELECT_BREAK_ENEMY_SHIELD = Pattern("1601881682724.png").similar(0.92)
 BUTTON_BLOCK = "1596903354174.png"
 BUTTON_NOBLOCK = "1596775410348.png"
 BUTTON_ST = Pattern("1596770865154.png").targetOffset(221,-1)
+BUTTON_NOST = Pattern("1596770865154.png").targetOffset(-213,0)
 TITLE_HAND1 = Pattern("1601545045624.png").similar(0.90).targetOffset(224,213)
 TITLE_HAND2 = Pattern("1601545045624.png").similar(0.90).targetOffset(438,217)
 ################BATTLE RESULT#################

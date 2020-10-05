@@ -283,6 +283,10 @@ def updateAccountInfo(ref, lv, dmp, gold, packs, srPack, bestPack):
         if refs[i][0] == str(ref):
             rowIndex = i + 3
             break
+        
+    if rowIndex == None:
+        return
+    
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID,
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
             EnvSettings.ACCOUNT_INFO_START_COL + str(rowIndex) + ":" + 
@@ -333,7 +337,7 @@ def scanNumberChangeWidth(targetImage, offsetX, offsetY, width, height, RightLef
             if RightLeft == 0:
                 reg = Region(res[0].getX()+offsetX, res[0].getY()+offsetY, WIDTH_CONFIRM - dW*num, height)
             elif RightLeft == 1:
-                reg = Region(res[0].getX()+offsetX + dW*num, res[0].getY()+offsetY, WIDTH_CONFIRM - dW*num, height)
+                reg = Region(res[0].getX()+offsetX + WIDTH_INIT - WIDTH_CONFIRM + dW*num, res[0].getY()+offsetY, WIDTH_CONFIRM - dW*num, height)
             else:
                 raise Exception("Illegal argumant RightLeft : " + str(RightLeft))
             reg.highlight(0.1)
@@ -751,6 +755,28 @@ def openMission(resource):
         if len(findAny(resource.TITLE_MISSION)) > 0:
             break
 
+def changeMission(resource):
+    print "changeMission"
+    if exists(resource.MISSION_WIN_5["IMAGE"], 1) != None:
+        click(resource.MISSION_WIN_5["IMAGE"])
+        wait(3)
+        if exists(resource.BUTTON_OK, 10) != None:
+            click(resource.BUTTON_OK)
+            wait(1)
+    if exists(resource.MISSION_SUMMON_3_SHINKA["IMAGE"], 1) != None:
+        click(resource.MISSION_SUMMON_3_SHINKA["IMAGE"])
+        wait(3)
+        if exists(resource.BUTTON_OK, 10) != None:
+            click(resource.BUTTON_OK)
+            wait(1)
+    if exists(resource.MISSION_SPELL_4_HIGHER5["IMAGE"], 1) != None:
+        click(resource.MISSION_SPELL_4_HIGHER5["IMAGE"])
+        wait(3)
+        if exists(resource.BUTTON_OK, 10) != None:
+            click(resource.BUTTON_OK)
+            wait(1)
+    wait(5)
+
 def closeMission(resource):
     print "closeMission"
     if len(findAny(resource.BUTTON_CLOSE)) > 0:
@@ -836,7 +862,6 @@ def waitStartingGame(resource):
         if len(findAny(resource.MESSAGE_CONNECTION_LOST)) >0 :
             click(resource.BUTTON_OK)
             exists(resource.ICON_EXTRA,120)
-            openAndStartSPBattle(resource, getDeckCode("DECKCODE_SPBATTLE"))
             return -1
         if len(findAny(resource.BUTTON_TURN_END)) > 0:
             break
@@ -961,7 +986,7 @@ def getDeckByStrategy(resource, strategy):
     elif strategy == 100:
         return [resource.DECKIMAGE_MAIN, getDeckCode("DECKCODE_MAIN")]
     elif strategy == 101:
-        return [resource.DECKIMAGE_SPBATTLE, getDeckCode("DECKCODE_SPBATTLE")]
+        return [resource.DECKIMAGE_SPBATTLE, getDeckCode("DECKCODE_SP")]
     else:
         return None
 

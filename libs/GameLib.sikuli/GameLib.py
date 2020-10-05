@@ -2,6 +2,7 @@
 from sikuli import *
 import sys
 import traceback
+import random
 from datetime import datetime
 
 sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
@@ -136,6 +137,32 @@ def ChargeManaRedBlack(resources):
         mana += 1
     return mana
 
+def ChargeManaLarge(resources):
+    print 'ChargeLarge'
+    #マナ取得
+    mana = getManaNumBeforeCharge(resources)
+    print 'ManaZone(Before charge):' + str(mana)
+    Hand = None
+    #　チャージ
+    if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
+        Hand = findAny(
+                resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_3,
+                resources.ICON_COST_WHITE_4,resources.ICON_COST_WHITE_1,
+                resources.ICON_COST_GREEN_3,resources.ICON_COST_WHITE_2,
+                resources.ICON_COST_GREEN_2)
+    else:
+        Hand = findAny(
+                resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_3,
+                resources.ICON_COST_WHITE_4,
+                resources.ICON_COST_GREEN_3,
+                resources.ICON_COST_GREEN_2)
+        
+    if len(Hand) > 0:         
+        charge(resources,Hand[0])
+        mana += 1
+        
+    return mana
+
 def SummonBasic(resources, currentMana):
     print 'SummonBasic'
     availableMana = currentMana
@@ -267,6 +294,57 @@ def SummonRedBlack(resources, currentMana):
             break
         wait(2)
 
+def SummonLarge(resources, currentMana):
+    print 'SummonLarge'
+    availableMana = currentMana
+    print 'Available Mana : ' + str(availableMana)
+    for num in range(5):
+        summon_creature = None
+        w1 = findAny(resources.ICON_COST_WHITE_1)
+        w2 = findAny(resources.ICON_COST_WHITE_2)
+        w6 = findAny(resources.ICON_COST_WHITE_6)
+        w7 = findAny(resources.ICON_COST_WHITE_7)
+        g2 = findAny(resources.ICON_COST_GREEN_2)
+        g3 = findAny(resources.ICON_COST_GREEN_3)
+        g7 = findAny(resources.ICON_COST_GREEN_7)
+                
+        if len(w2) > 0 and availableMana >= 2 and len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) == 0:
+            print 'Summon White Cost2'
+            summon_creature = w2[0]
+            availableMana-=2
+        elif len(w1) > 0 and availableMana >= 1 and len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) == 0:
+            print 'Summon White Cost1'
+            summon_creature = w1[0]
+            availableMana-=1
+        elif len(g2) > 0 and availableMana >= 2 and availableMana <= 6:
+            print 'Summon Green Cost2'
+            summon_creature = g2[0]
+            availableMana-=1
+        elif len(g3) > 0 and availableMana >= 3 and availableMana <= 5:
+            print 'Summon Green Cost3'
+            summon_creature = g3[0]
+            availableMana-=2
+        elif len(w6) > 0 and availableMana >= 6:
+            print 'Summon White Cost6'
+            summon_creature = w6[0]
+            availableMana-=6
+        elif len(g7) > 0 and availableMana >= 7:
+            print 'Summon Green Cost7'
+            summon_creature = g7[0]
+            availableMana-=7
+        elif len(w7) > 0 and availableMana >= 7:
+            print 'Summon White Cost7'
+            summon_creature = w7[0]
+            availableMana-=7
+        else:
+            break
+
+        try:
+            CommonDMLib.dragDropAtSpeed(summon_creature, resources.TARGET_POSITION_SUMMON, 1.2)
+        except:
+            Settings.MoveMouseDelay = 0.1
+            break
+        wait(1)
 
 
 def directAttack(resources):
@@ -277,19 +355,20 @@ def directAttack(resources):
         BZ = findAny(resources.ICON_W_BREAKER)
         if len(BZ) > 0:
             try:
+                print "attacking shield...."
                 CommonDMLib.dragDropAtSpeed(BZ[0],resources.TARGET_POSITION_DIRECT_ATTACK,1)
-                creaturePositions.append([b.getX(),b.getY()])
-
-                if exists(resources.MESSAGE_SELECT_BREAK_ENEMY_SHIELD, 5) != None:
+                creaturePositions.append([BZ[0].getX(),BZ[0].getY()])
+    
+                if exists(resources.MESSAGE_SELECT_BREAK_ENEMY_SHIELD, 2) != None:
+                    print "shields were detected"
                     click(resources.TARGET_POSITION_FIRST_SHIELD)
                     click(resources.TARGET_POSITION_SECOND_SHIELD)
                     click(resources.BUTTON_OK2)
-                wait(2)
+                wait(1)
             except:
                 Settings.MoveMouseDelay = 0.1
                 break
-        else:
-            break
+        
     for num in range(5):
         print "checking Single breaker...." + str(num)
         BZ = findAny(resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2)
@@ -300,11 +379,14 @@ def directAttack(resources):
                     if b.getX() <= (cp[0]+10) and b.getX() >= (cp[0]-10) and b.getY() <= (cp[1]+10) and b.getY() >= (cp[1]-10):
                         attackFlag = False
                         break
+                    
                 if attackFlag:
+                    print "attacking shield...."
                     CommonDMLib.dragDropAtSpeed(b,resources.TARGET_POSITION_DIRECT_ATTACK,1)
                     creaturePositions.append([b.getX(),b.getY()])
     
                     if exists(resources.MESSAGE_SELECT_BREAK_ENEMY_SHIELD, 2) != None:
+                        print "shields were detected"
                         click(resources.TARGET_POSITION_FIRST_SHIELD)
                         click(resources.TARGET_POSITION_SECOND_SHIELD)
                         click(resources.BUTTON_OK2)
@@ -312,7 +394,26 @@ def directAttack(resources):
                 Settings.MoveMouseDelay = 0.1
                 print "exception was occured"
                 break
-        wait(1)
+            wait(1)
+
+def battle(resources):
+    print "Battle"
+    for num in range(7):
+        BZ = findAny(resources.ICON_MY_UNTAPPED_CREATURE)
+        if len(BZ) > 0:
+            c = findAny(resources.ICON_ENEMY_TAPPED_CREATURE_1)
+            if len(c) > 0:
+                CommonDMLib.dragDropAtSpeed(BZ[0],c[0], 1.5)
+                wait(0.5)
+
+def retire(resources):
+    for retireLoop in range(5):
+       type(Key.ESC)
+       if exists(resources.MESSAGE_RETIRE, 10) != None:
+           click(resources.BUTTON_OK3)
+           break
+       if retireLoop == 4:
+           raise Exception
 
 #ゲーム中のイレギュラーの処理
 #return 0 ゲームの正常終了
@@ -326,40 +427,51 @@ def irregularLoop(resources, appname):
         #   自分のターンを検知
         if len(findAny(resources.BUTTON_TURN_END)) > 0:
             print 'My Turn is detected.'
-            wait(3)
+            wait(1)
             break
+        
         #   トリガー発動 
-        if len(findAny(resources.BUTTON_ST)) > 0:
-            print 'My ST is triggered.'
-            click(resources.BUTTON_ST)
-            wait(0.5)
+        if appname not in ["SP"]:
+            if len(findAny(resources.BUTTON_ST)) > 0:
+                print 'My ST is triggered.'
+                try:
+                    click(resources.BUTTON_ST)
+                except:
+                    print "failed to click"
+                wait(0.5)
+
         #   シールド確認
         if len(findAny(resources.MESSAGE_SHIELD)) > 0:
             print 'My sheild is broken.'
-            click(resources.BUTTON_OK2)
-            wait(0.5)
-        if len(findAny(resources.MESSAGE_TAP))   > 0 or len(findAny(resources.MESSAGE_DEST))   > 0:
-            print 'Tap or Dest'   
-            BZ = findAny(
-                    resources.ICON_ENEMY_UNTAPPED_BLOCKER, 
-                    resources.ICON_ENEMY_UNTAPPED_CREATURE,
-                    resources.ICON_ENEMY_TAPPED_CREATURE_1,
-                    resources.ICON_ENEMY_TAPPED_CREATURE_2)
-            for b in BZ:
-                click(b)
-                if exists(resources.BUTTON_OK2, 1) != None:
-                    click(resources.BUTTON_OK2)
-                    break
-            wait(0.5)
-            if exists(resources.MESSAGE_NO_CREATURE_SELECTED,5) != None:
+            try:
                 click(resources.BUTTON_OK2)
+            except:
+                print "failed to click"
             wait(0.5)
+
+        if appname not in ["SP"]:
+            if len(findAny(resources.MESSAGE_TAP))   > 0 or len(findAny(resources.MESSAGE_DEST))   > 0:
+                print 'Tap or Dest'   
+                BZ = findAny(
+                        resources.ICON_ENEMY_UNTAPPED_BLOCKER, 
+                        resources.ICON_ENEMY_UNTAPPED_CREATURE,
+                        resources.ICON_ENEMY_TAPPED_CREATURE_1,
+                        resources.ICON_ENEMY_TAPPED_CREATURE_2)
+                for b in BZ:
+                    click(b)
+                    if exists(resources.BUTTON_OK2, 1) != None:
+                        click(resources.BUTTON_OK2)
+                        break
+                wait(0.5)
+                if exists(resources.MESSAGE_NO_CREATURE_SELECTED,5) != None:
+                    click(resources.BUTTON_OK2)
+                wait(0.5)
             
         if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) > 0:
             print 'Game has Finished.'
             return 0
 
-        #レジェンドではスルーする
+        #レジェンド、デイリーではスルーする
         if appname not in ["LEGEND"]:
             if len(findAny(resources.MESSAGE_BLOCK)) > 0 or len(findAny(resources.MESSAGE_CHOOSE_BLOCKER)) > 0:
                 print 'Block?'
@@ -369,10 +481,14 @@ def irregularLoop(resources, appname):
                 else:
                     click(resources.BUTTON_NOBLOCK)
                 wait(1)
+
         
+        if appname not in ["LEGEND", "DAILY"]:
             if len(findAny(resources.BUTTON_RETRY)) > 0:
                 #game_loopを終了する。
                 click(resources.BUTTON_RETRY)
+                
+        if appname not in ["LEGEND", "DAILY", "SP"]:
             #死の宣告、デスモーリー等
             if len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE)) > 0 or len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE2)) > 0:
                 print 'Player need to select his creature.'                       
@@ -386,6 +502,8 @@ def irregularLoop(resources, appname):
                         click(resources.BUTTON_OK2)
                         break
                 wait(0.5)
+                
+        if appname not in ["LEGEND", "DAILY"]:
             #デモニックバイス
             if len(findAny(resources.TITLE_HAND1)) > 0:
                 print 'Player need to select his hands.'
@@ -411,19 +529,43 @@ def gameLoop(resources, strategy, appname):
             click(resources.AVATOR_DEFAULT_MALE)
             wait(1)
         #  マナチャージ
-        if strategy == 100:
-            currentMana = ChargeManaBasic(resources)
+        if strategy in [1,3,4,6]:
+            print "no charge"
         elif strategy == 2:
             currentMana = ChargeManaRedBlack(resources)
+        elif strategy == 5:
+            currentMana = ChargeManaLarge(resources)
+        elif strategy == 100:
+            currentMana = ChargeManaBasic(resources)
         wait(1)
+        
         #  召喚
-        if strategy == 100:
-            SummonBasic(resources,currentMana)
+        if strategy in [1,3,4,6]:
+            print "no summon"
         elif strategy == 2:
             SummonRedBlack(resources,currentMana)
+        elif strategy == 5:
+            SummonLarge(resources,currentMana)
+        elif strategy == 100:
+            SummonBasic(resources,currentMana)
         wait(1)
+        
         #  攻撃
-        directAttack(resources)
+        if strategy in [1,4,6]:
+            print "no attack"
+        elif strategy in [2,100]:
+            directAttack(resources)
+        elif strategy == 3:
+            battle(resources)
+        elif strategy == 5:
+            if random.random() < 0.5:
+                directAttack(resources)
+
+        #その他
+        if strategy == 6:
+            retire(resources)
+            exists(resources.BUTTON_SMALL_BATTLE_START,120)
+        
         wait(1)
         #  ターンエンド
         if len(findAny(resources.BUTTON_TURN_END)) > 0:          

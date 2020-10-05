@@ -141,6 +141,12 @@ def getMissionStrategy(pattern):
 
 def changeMission():
     print "changeMission"
+    if exists(Pattern("Win5Times-2.png").similar(0.91), 1) != None:
+        click(Pattern("Win5Times-2.png").similar(0.85).targetOffset(514,73))
+        wait(3)
+        if exists(OK, 10) != None:
+            click(OK)
+            wait(1)
     if exists(Pattern("1596776105685.png").similar(0.85), 1) != None:
         click(Pattern("1596776105685.png").similar(0.85).targetOffset(414,63))
         wait(3)

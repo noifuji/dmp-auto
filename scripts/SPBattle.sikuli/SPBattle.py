@@ -1,73 +1,154 @@
 import sys
 import traceback
-sys.path.append("DMLib.sikuli")
-sys.path.append("CommonDMLib.sikuli")
-sys.path.append("AndAppResources.sikuli")
-sys.path.append("EnvSettings.sikuli")
-import DMLib
+
+sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
+import EnvSettings
+sys.path.append(EnvSettings.LIBS_DIR_PATH)
+sys.path.append(EnvSettings.RES_DIR_PATH)
+import GameLib
 import CommonDMLib
 import AndAppResources
+import NoxResources
 import EnvSettings
 
 mentionUser = EnvSettings.mentionUser
-AppPath = EnvSettings.AppPath
-appname = 'SPBattle'
-DMApp = App(AppPath)
+appname = 'SP'
 total_duel_count = 0
 win_count =0
 restart_count = 0
 Settings.MoveMouseDelay = 0.1
+instances = []
+resources = None
+targetRewardFlag = False
+strategy = 101
 
-CommonDMLib.RestartApp(AndAppResources)
-DMLib.openAndStartSPBattle(AndAppResources, EnvSettings.DECKCODE_SPBATTLE)
+#Pre-processing Start
 
-entireLoopFlag = True
-for entire_loop in range(1000):
+if CommonDMLib.isNewVersionAvailable():
+    exit(50)
+CommonDMLib.downloadDeckCodes()
+
+if EnvSettings.ENGINE_FOR_SP == "ANDAPP":
+    resources = AndAppResources
+    CommonDMLib.exitNox(resources)
+    instances = [0]
+elif EnvSettings.ENGINE_FOR_SP == "NOX":
+    resources = NoxResources
+    App(EnvSettings.AppPath).close()
+    App(EnvSettings.AndAppPath).close()
+    instances = EnvSettings.NOX_INSTANCES
+    statuses = CommonDMLib.downloadQuestStatus()
+    temp = []
+    for instance in instances:
+        for status in statuses:
+            if status["REF"] == str(instance) and status["SP"] == "incomplete":
+                temp.append(instance)
+    instances = temp
+#Pre-processing End
+
+instanceIndex = 0
+while instanceIndex < len(instances):
     try:
-        #マッチングを待つ
-        if CommonDMLib.waitStartingGame(AndAppResources) == -1:
-            if EnvSettings.RUN_MODE == "DEV":
-                CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
-            continue
+        if EnvSettings.ENGINE_FOR_SP == "NOX":
+            CommonDMLib.RestartNox(resources, instances[instanceIndex])
+        CommonDMLib.RestartApp(resources)
+        click(resources.ICON_EXTRA)
+        wait(3)
+        click(resources.BUTTON_SP_BATTLE)
 
-        turn_count = 0
-        for game_loop in range(1000):
-
-            if len(findAny("1595317856423.png")) > 0:
-                print 'click turnend'
-                for turnendLoop in range(180):
-                    keyDown(Key.SHIFT)
-                    type(Key.ENTER)
-                    keyUp(Key.SHIFT)
-                    if len(findAny("1599193822994.png","1595254158740.png")) > 0:
-                        break
-                
-                turn_count += 1
-                if turn_count >= 3 :
-                    print 'retire'
-                    DMLib.retire()
-            
-            if DMLib.irregularLoopForSP() == 0:
-                total_duel_count+=1
+        for battleStartLoop in range(200):
+            print "battleStartLoop..." + str(battleStartLoop)
+            if len(findAny(resources.BUTTON_BACK2)) > 0:
+                for skipTutorialLoop in range(10):
+                    try:
+                        click(resources.BUTTON_BACK2)
+                    except:
+                        print "failed to click"
+                    wait(0.2)
+            if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) > 0:
+                try:
+                    click(resources.BUTTON_SMALL_BATTLE_START)
+                except:
+                    print "failed to click"
+            if len(findAny(resources.BUTTON_LARGE_BATTLE_START)) > 0:
+                deck = CommonDMLib.getDeckByStrategy(resources, strategy)
+                if CommonDMLib.chooseDeck(resources, deck[0]) == False:
+                    CommonDMLib.addNewDeckByCode(resources, deck[1])
+                click(resources.BUTTON_LARGE_BATTLE_START)
+                break
+        
+        #バトルループ
+        for battle_loop in range(2000):
+        
+            #マッチングを待つ
+            if CommonDMLib.waitStartingGame(resources) == -1:
                 if EnvSettings.RUN_MODE == "DEV":
-                    if total_duel_count % 5 == 0:
-                        CommonDMLib.sendMessagetoSlack(mentionUser,'SP Battle Count : ' + str(total_duel_count), appname)
+                    CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
+                continue
+    
+            turn_count = 0
+            for game_loop in range(1000):
+    
+                if len(findAny(resources.BUTTON_TURN_END)) > 0:
+                    print 'click turnend'
+                    for turnendLoop in range(180):
+                        GameLib.turnEnd(resources)
+                        if len(findAny(resources.BUTTON_ENEMY_TURN, resources.BUTTON_SMALL_BATTLE_START)) > 0:
+                            break
+                    
+                    turn_count += 1
+                    if turn_count >= 3 :
+                        print 'retire'
+                        GameLib.retire(resources)
+                
+                if GameLib.irregularLoop(resources, appname) == 0:
+                    break
+                
+            #ゲームループエンド
+            total_duel_count+=1
+            if EnvSettings.RUN_MODE == "DEV":
+                if total_duel_count % 5 == 0:
+                    CommonDMLib.sendMessagetoSlack(mentionUser,'SP Battle Count : ' + str(total_duel_count), appname)
+         
+            for battleResultLoop in range(200):
+                print "battleResultLoop..." + str(battleResultLoop)
+                CommonDMLib.skipRewards(resources)
+                if len(findAny(resources.BUTTON_DUEL_HISTORY)) > 0:
+                    try:
+                        click(resources.BUTTON_DUEL_HISTORY)
+                    except:
+                        print "failed to click"
+                if len(findAny(resources.TITLE_DUEL_HISTORY)) > 0:
+                    try:
+                        click(resources.BUTTON_RESULT)
+                        wait(2)
+                        break
+                    except:
+                        print "failed to click"
+                if battleResultLoop >= 199:
+                    raise Exception("Too many battleResultLoop")
+
+            if len(findAny(resources.ICON_SP_TARGET_REWARD)) > 0:
+                targetRewardFlag = True
+                CommonDMLib.sendMessagetoSlack(mentionUser, "A target reward was detected.", appname)
+                
+            if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
+                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A target reward was acquired.', appname)
+                CommonDMLib.completeQuestStatus(instances[instanceIndex], "SP")
+                targetRewardFlag = False
+                total_duel_count = 0
+                win_count =0
+                instanceIndex += 1
                 break
 
-        #報酬獲得
-        for battleResultLoop in range(180):
-            if len(findAny("1599211042677.png")) > 0:
-                CommonDMLib.sendMessagetoSlack(mentionUser, 'SR Ticket was acquired.', appname)
-                #entireLoopFlag = False
-                #break
-            if len(findAny("1595254158740.png")) > 0:
-                click("1595254158740.png")
-            else:
-                break
-            CommonDMLib.skipRewards(AndAppResources)
+            if CommonDMLib.isNewVersionAvailable():
+                exit(50)
+
+            if len(findAny(resources.ICON_WIN)) > 0:
+                win_count += 1
+
+            click(resources.BUTTON_SMALL_BATTLE_START)
             
-        if entireLoopFlag == False:
-            break
     except:
         e = sys.exc_info()
         for mes in e:
@@ -75,6 +156,3 @@ for entire_loop in range(1000):
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
-        restart_count+=1
-        CommonDMLib.RestartApp(AndAppResources)
-        DMLib.openAndStartSPBattle(AndAppResources, EnvSettings.DECKCODE_SPBATTLE)

@@ -6,19 +6,16 @@ sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
 import EnvSettings
 sys.path.append(EnvSettings.LIBS_DIR_PATH)
 sys.path.append(EnvSettings.RES_DIR_PATH)
-import NoxDMLib
+import GameLib
 import CommonDMLib
 import NoxResources
 
 ####################Settings####################
-Avator = Pattern("Avator.png").targetOffset(376,-12)
 instances = EnvSettings.NOX_INSTANCES
 ####################Settings####################
 
 mentionUser = EnvSettings.mentionUser
-NoxAppPath = EnvSettings.NoxAppPath
-NoxApp = App(NoxAppPath)
-appname = 'NoxDailyMission'
+appname = 'DAILY'
 Settings.MoveMouseDelay = 0.1
 Settings.DelayBeforeDrag = 0.5
 mode = EnvSettings.RUN_MODE
@@ -49,6 +46,7 @@ statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_
         CommonDMLib.STATISTICS_MISSION1:"",CommonDMLib.STATISTICS_MISSION2:"",
         CommonDMLib.STATISTICS_MISSION3:"",CommonDMLib.STATISTICS_STARTTIME:"",
         CommonDMLib.STATISTICS_ENDTIME:"",CommonDMLib.STATISTICS_EXCEPTION:0}
+
 instanceIndex = 0
 retryCount = 0
 while instanceIndex < len(instances):
@@ -74,7 +72,7 @@ while instanceIndex < len(instances):
         CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
-        NoxDMLib.changeMission()
+        CommonDMLib.changeMission(NoxResources)
         if mode == "DEV":
             wait(1)
             CommonDMLib.uploadScreenShotToSlack(mentionUser,'Account' + str(instances[instanceIndex]) + ' is in process.', appname)
@@ -112,62 +110,7 @@ while instanceIndex < len(instances):
     
             wait(10)
             # ゲームループ
-            for game_loop in range(50):
-                print "Inside Game Loop : " + str(game_loop)
-                try:
-                    click("1598831333684.png")
-                except:
-                    print "failed to click card count"
-                wait(0.5)
-                #  手札選択
-                if len(findAny(Avator)) > 0:
-                    click(Avator)
-                    wait(1)
-    
-                if strategy == 1:
-                    print "SPELL_MISSIONS"
-                    
-                elif strategy == 2:
-                    print "SPEED_MISSIONS"
-                    #  マナチャージ
-                    currentMana = NoxDMLib.ChargeManaRedBlack()
-                    wait(1)
-                    #  召喚
-                    NoxDMLib.SummonRedBlack(currentMana)
-                    wait(1)
-                    #  攻撃
-                    NoxDMLib.directAttack()
-                elif strategy == 3:
-                    print "BATTLE_MISSIONS"
-                    #  攻撃
-                    NoxDMLib.battle()
-                elif strategy == 4:
-                    print "SHIELDTRRIGER_MISSIONS"
-                elif strategy == 5:
-                    print "LARGE_CREATURES"
-                    #  マナチャージ
-                    currentMana = NoxDMLib.ChargeMana5()
-                    wait(1)
-                    #  召喚
-                    NoxDMLib.Summon5(currentMana)
-                    wait(1)
-                    #  攻撃
-                    if random.random() < 0.5:
-                        NoxDMLib.directAttack()
-                elif strategy == 6:
-                    print "RETIRE"
-                    NoxDMLib.retire()
-                    exists("1596767585645.png",120)
-                    
-                #  ターンエンド
-                if exists("1596773380235.png",10) != None:
-                    click(Pattern("1597036183485.png").similar(0.85).targetOffset(-100,206))
-                
-                wait(1)
-                #  イレギュラーループ
-                if NoxDMLib.irregularLoop() == 0:
-                    break
-    
+            GameLib.gameLoop(NoxResources, strategy, appname)
             # ゲームループエンド
             #レベルアップ報酬のスキップ
             for battleResultLoop in range(180):
@@ -195,10 +138,9 @@ while instanceIndex < len(instances):
                     break
             if dailyReward > 0:
                 CommonDMLib.openMission(NoxResources)
-                
                 missions = CommonDMLib.getTargetMissions(NoxResources)
-                #if mode == "DEV":
-                    #CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Mission', appname)
+                if mode == "DEV":
+                    CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Mission', appname)
                 
                 if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("GROUP") for d in missions])):
                     finishMissions(instances[instanceIndex], statisticsData)
