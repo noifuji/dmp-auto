@@ -130,7 +130,6 @@ while instanceIndex < len(instances):
 
             if len(findAny(resources.ICON_SP_TARGET_REWARD)) > 0:
                 targetRewardFlag = True
-                CommonDMLib.sendMessagetoSlack(mentionUser, "A target reward was detected.", appname)
                 
             if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
                 CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A target reward was acquired.', appname)
