@@ -49,6 +49,7 @@ elif EnvSettings.ENGINE_FOR_SP == "NOX":
 instanceIndex = 0
 while instanceIndex < len(instances):
     try:
+        CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']launching instance...', appname)
         if EnvSettings.ENGINE_FOR_SP == "NOX":
             CommonDMLib.RestartNox(resources, instances[instanceIndex])
         CommonDMLib.RestartApp(resources)

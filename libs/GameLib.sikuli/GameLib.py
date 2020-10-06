@@ -470,7 +470,7 @@ def irregularLoop(resources, appname):
             return 0
 
         #レジェンド、デイリーではスルーする
-        if appname not in ["LEGEND"]:
+        if appname not in ["LEGEND", "SP"]:
             if len(findAny(resources.MESSAGE_BLOCK)) > 0 or len(findAny(resources.MESSAGE_CHOOSE_BLOCKER)) > 0:
                 print 'Block?'
                 if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:

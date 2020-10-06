@@ -875,8 +875,9 @@ def getMissionStrategy(resource, mission):
 #return -1 異常発生
 def waitStartingGame(resource):
     print 'waitStartingGame'
-    for num in range(30):
-        print "waiting game start..." + str(num) + "/30"
+    WAIT_TIME = 50
+    for num in range(WAIT_TIME):
+        print "waiting game start..." + str(num) + "/" + str(WAIT_TIME)
         #ストーリースキップ
         skipStory(resource)
         #マッチングしなかった場合
@@ -898,7 +899,7 @@ def waitStartingGame(resource):
             return -1
         if len(findAny(resource.BUTTON_TURN_END)) > 0:
             break
-        if num >= 29:
+        if num >= (WAIT_TIME-1):
             raise Exception("Too many waitStartingGame loop")
         wait(1)
     return 0
@@ -1233,9 +1234,15 @@ def RestartApp(resource):
             exists(resource.BUTTON_SMALL_OK, 60)
             for backLoop in range(60):
                 if len(findAny(resource.BUTTON_SMALL_OK)) > 0:
-                    click(resource.BUTTON_SMALL_OK)
+                    try:
+                        click(resource.BUTTON_SMALL_OK)
+                    except:
+                        print "failed to click"
                 if len(findAny(resource.BUTTON_BACK)) > 0:
-                    click(resource.BUTTON_BACK)
+                    try:
+                        click(resource.BUTTON_BACK)
+                    except:
+                        print "failed to click"
                 if len(findAny(resource.ICON_HOME)) > 0:
                     break
         skipRewards(resource)
