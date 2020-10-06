@@ -409,7 +409,7 @@ def battle(resources):
 def retire(resources):
     for retireLoop in range(5):
        type(Key.ESC)
-       if exists(resources.MESSAGE_RETIRE, 10) != None:
+       if exists(resources.MESSAGE_RETIRE, 3) != None:
            click(resources.BUTTON_OK3)
            break
 

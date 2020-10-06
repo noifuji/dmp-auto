@@ -20,20 +20,38 @@ def killMultiPlayerManager():
     returncode = subprocess.Popen(cmd, shell=True)
 
 def isNewVersionAvailable():
-    command1 = 'git fetch https://github.com/noifuji/dmp-auto.git'
-    proc1 = subprocess.Popen(command1, shell  = True)
-    proc1.communicate()
+    x = 10
+    delay = 1.0
+    timeout = int(x / delay)
     
-    command2 = 'git diff --quiet HEAD FETCH_HEAD'
-    proc2 = subprocess.Popen(command2, shell  = True)
-    proc2.communicate()
+    #command1 = ['git', 'fetch', 'https://github.com/noifuji/dmp-auto.git']
+    command1 = ['git', 'remote', 'add', 'origin', 'https://github.com/noifuji/dmp-auto.git']
+    proc1 = subprocess.Popen(command1, shell  = False)
+    #proc1.communicate()
+    timeout = int(x / delay)
+    while proc1.poll() is None and timeout > 0:
+        time.sleep(delay)
+        timeout -= delay
+        if timeout == 0:
+            print "timeout1"
+    proc1.terminate()
     
-    if proc2.returncode == 0:
-        return False
-    elif proc2.returncode == 1:
+    #command2 = ['git', 'diff', '--quiet', 'HEAD', 'FETCH_HEAD']
+    command2 = ['git', 'diff', '--quiet', 'HEAD..origin/master']
+    proc2 = subprocess.Popen(command2, shell  = False)
+    #proc2.communicate()
+    timeout = int(x / delay)
+    while proc2.poll() is None and timeout > 0:
+        time.sleep(delay)
+        timeout -= delay
+        if timeout == 0:
+            print "timeout2"
+    proc2.terminate()
+    
+    if proc2.returncode == 1:
         return True
     else:
-        raise Exception("Invalid return code")
+        return False
 
 def dragDropAtSpeed(fromImg, toImg, speed):
     currentSpeed = Settings.MoveMouseDelay
@@ -843,8 +861,8 @@ def getMissionStrategy(resource, mission):
 #return -1 異常発生
 def waitStartingGame(resource):
     print 'waitStartingGame'
-    for num in range(150):
-        print "waiting game start..." + str(num) + "/150"
+    for num in range(100):
+        print "waiting game start..." + str(num) + "/100"
         #ストーリースキップ
         skipStory(resource)
         #マッチングしなかった場合
@@ -866,7 +884,7 @@ def waitStartingGame(resource):
             return -1
         if len(findAny(resource.BUTTON_TURN_END)) > 0:
             break
-        if num >= 149:
+        if num >= 99:
             raise Exception("Too many waitStartingGame loop")
         wait(1)
     return 0
