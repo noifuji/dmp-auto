@@ -24,29 +24,43 @@ def isNewVersionAvailable():
     delay = 1.0
     timeout = int(x / delay)
     
-    #command1 = ['git', 'fetch', 'https://github.com/noifuji/dmp-auto.git']
-    command1 = ['git', 'remote', 'add', 'origin', 'https://github.com/noifuji/dmp-auto.git']
-    proc1 = subprocess.Popen(command1, shell  = False)
-    #proc1.communicate()
+    command1 = ['git', 'fetch', 'https://github.com/noifuji/dmp-auto.git']
+    proc1 = subprocess.Popen(command1,stdout = subprocess.PIPE, stderr=subprocess.STDOUT, shell  = False)
     timeout = int(x / delay)
     while proc1.poll() is None and timeout > 0:
+        output = proc1.stdout.readline()
+        if output:
+            print output.strip()
         time.sleep(delay)
         timeout -= delay
         if timeout == 0:
-            print "timeout1"
-    proc1.terminate()
+            raise Exception("Command Timeout")
+
+    while True:
+        output = proc1.stdout.readline()
+        if output:
+            print output.strip()
+        else:
+            break
     
-    #command2 = ['git', 'diff', '--quiet', 'HEAD', 'FETCH_HEAD']
-    command2 = ['git', 'diff', '--quiet', 'HEAD..origin/master']
-    proc2 = subprocess.Popen(command2, shell  = False)
-    #proc2.communicate()
+    command2 = ['git', 'diff', '--quiet', 'HEAD', 'FETCH_HEAD']
+    proc2 = subprocess.Popen(command2,stdout = subprocess.PIPE, stderr=subprocess.STDOUT, shell  = False)
     timeout = int(x / delay)
     while proc2.poll() is None and timeout > 0:
+        output = proc2.stdout.readline()
+        if output:
+            print output.strip()
         time.sleep(delay)
         timeout -= delay
         if timeout == 0:
-            print "timeout2"
-    proc2.terminate()
+            raise Exception("Command Timeout")
+
+    while True:
+        output = proc2.stdout.readline()
+        if output:
+            print output.strip()
+        else:
+            break
     
     if proc2.returncode == 1:
         return True
