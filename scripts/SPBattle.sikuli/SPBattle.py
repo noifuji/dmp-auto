@@ -92,7 +92,7 @@ while instanceIndex < len(instances):
     
                 if len(findAny(resources.BUTTON_TURN_END)) > 0:
                     print 'click turnend'
-                    for turnendLoop in range(180):
+                    for turnendLoop in range(80):
                         GameLib.turnEnd(resources)
                         if len(findAny(resources.BUTTON_ENEMY_TURN, resources.BUTTON_SMALL_BATTLE_START)) > 0:
                             break
@@ -109,7 +109,7 @@ while instanceIndex < len(instances):
             total_duel_count+=1
             if EnvSettings.RUN_MODE == "DEV":
                 if total_duel_count % 5 == 0:
-                    CommonDMLib.sendMessagetoSlack(mentionUser,'SP Battle Count : ' + str(total_duel_count), appname)
+                    CommonDMLib.sendMessagetoSlack(mentionUser,'WIN/TOTAL = ' + str(win_count) + "/" + str(total_duel_count), appname)
          
             for battleResultLoop in range(200):
                 print "battleResultLoop..." + str(battleResultLoop)
