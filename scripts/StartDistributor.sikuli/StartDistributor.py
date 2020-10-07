@@ -57,7 +57,7 @@ while instanceIndex < len(instances):
         wait(3)
         click(resources.BUTTON_SP_BATTLE)
 
-        for battleStartLoop in range(200):
+        for battleStartLoop in range(2000):
             print "battleStartLoop..." + str(battleStartLoop)
             if len(findAny(resources.BUTTON_BACK2)) > 0:
                 for skipTutorialLoop in range(10):
@@ -129,17 +129,6 @@ while instanceIndex < len(instances):
                 if battleResultLoop >= 199:
                     raise Exception("Too many battleResultLoop")
 
-            if len(findAny(resources.ICON_SP_TARGET_REWARD)) > 0:
-                targetRewardFlag = True
-                
-            if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
-                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A target reward was acquired.', appname)
-                CommonDMLib.completeQuestStatus(instances[instanceIndex], "SP")
-                targetRewardFlag = False
-                total_duel_count = 0
-                win_count =0
-                instanceIndex += 1
-                break
 
             if CommonDMLib.isNewVersionAvailable():
                 exit(50)
