@@ -410,7 +410,10 @@ def retire(resources):
     for retireLoop in range(5):
        type(Key.ESC)
        if exists(resources.MESSAGE_RETIRE, 3) != None:
-           click(resources.BUTTON_OK3)
+           try:
+               click(resources.BUTTON_OK3)
+           except:
+               print "failed to click"
            break
 
 #ゲーム中のイレギュラーの処理

@@ -762,7 +762,7 @@ def skipNotifications(resource):
         click(resource.BUTTON_CANCEL)
     #前回のリザルト表示
     if len(findAny(resource.MESSAGE_LAST_SP_BATTLE)) > 0 :
-        print 'The last duel result detected.'
+        print 'The last SP duel result detected.'
         click(resource.BUTTON_OK)
         return -1
     #前回のリザルト表示
@@ -1233,6 +1233,7 @@ def RestartApp(resource):
         if skipNotifications(resource) == -1:
             exists(resource.BUTTON_SMALL_OK, 60)
             for backLoop in range(60):
+                print "backLoop"
                 if len(findAny(resource.BUTTON_SMALL_OK)) > 0:
                     try:
                         click(resource.BUTTON_SMALL_OK)

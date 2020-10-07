@@ -48,7 +48,7 @@ BUTTON_CLOSE = "1596776234501.png"
 BUTTON_TAP_AND_NEXT = "TAP_AND_NEXT.png"
 
 #################HOME####################
-ICON_HOME = Pattern("1596765614417.png").similar(0.85)
+ICON_HOME = Pattern("1602026836624.png").similar(0.86)
 ICON_EXTRA = Pattern("ICON_EXTRA.png").similar(0.76)
 ICON_SOLO_PLAY = Pattern("1596767681008.png").similar(0.80)
 ICON_MISSION = "1596775980978.png"
