@@ -422,7 +422,7 @@ def retire(resources):
 def irregularLoop(resources, appname):
     print 'irregularLoop'
 #  イレギュラーループ
-    for enemyturn_loop in range(50):
+    for enemyturn_loop in range(70):
         print 'This is ' + str(enemyturn_loop) + ' times loop.'
         
         #   自分のターンを検知
@@ -513,8 +513,8 @@ def irregularLoop(resources, appname):
                 click(resources.BUTTON_OK2)
                 wait(1)
         
-        if  enemyturn_loop == 49:
-            print 'Irregular loop is over 50. Restart is necessary.'
+        if  enemyturn_loop == 69:
+            print 'Irregular loop is over 70. Restart is necessary.'
             raise Exception
     
     return 1
