@@ -98,9 +98,14 @@ while instanceIndex < len(instances):
                             break
                     
                     turn_count += 1
-                    if turn_count >= 3 :
-                        print 'retire'
-                        GameLib.retire(resources)
+                    if total_duel_count >= 60:
+                        if turn_count >= 3 :
+                            print 'retire'
+                            GameLib.retire(resources)
+                    else:
+                        if turn_count >= 0 :
+                            print 'retire'
+                            GameLib.retire(resources)
                 
                 if GameLib.irregularLoop(resources, appname) == 0:
                     break

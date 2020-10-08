@@ -109,34 +109,33 @@ while instanceIndex < len(instances):
             total_duel_count+=1
             if EnvSettings.RUN_MODE == "DEV":
                 if total_duel_count % 5 == 0:
-                    CommonDMLib.sendMessagetoSlack(mentionUser,'SP Battle Count : ' + str(total_duel_count), appname)
-         
+                    CommonDMLib.sendMessagetoSlack(mentionUser,'WIN/TOTAL = ' + str(win_count) + "/" + str(total_duel_count), appname)
+            
+            if CommonDMLib.isNewVersionAvailable():
+                exit(50)
+                
             for battleResultLoop in range(200):
                 print "battleResultLoop..." + str(battleResultLoop)
                 CommonDMLib.skipRewards(resources)
-                if len(findAny(resources.BUTTON_DUEL_HISTORY)) > 0:
+                
+                if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) > 0:
                     try:
-                        click(resources.BUTTON_DUEL_HISTORY)
+                        click(resources.BUTTON_SMALL_BATTLE_START)
                     except:
                         print "failed to click"
-                if len(findAny(resources.TITLE_DUEL_HISTORY)) > 0:
-                    try:
-                        click(resources.BUTTON_RESULT)
-                        wait(2)
-                        break
-                    except:
-                        print "failed to click"
+                else:
+                    break
+                        
                 if battleResultLoop >= 199:
                     raise Exception("Too many battleResultLoop")
 
+            if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) > 0:
+                    try:
+                        click(resources.BUTTON_SMALL_BATTLE_START)
+                    except:
+                        print "failed to click"
 
-            if CommonDMLib.isNewVersionAvailable():
-                exit(50)
 
-            if len(findAny(resources.ICON_WIN)) > 0:
-                win_count += 1
-
-            click(resources.BUTTON_SMALL_BATTLE_START)
     except SystemExit as e:
         CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)        
