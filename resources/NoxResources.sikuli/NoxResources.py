@@ -28,6 +28,8 @@ BUTTON_ALLOW_BLUE = "BUTTON_ALLOW_BLUE.png"
 AVIRA = "AVIRA.png"
 #################DMP Common###############
 BUTTON_TAKEOVER = Pattern("1596765489772.png").targetOffset(-257,83)
+BUTTON_MENU = "1602164343414.png"
+BUTTON_CLEAR_CACHE = Pattern("1602164939945.png").targetOffset(144,-66)
 BUTTON_SKIP = Pattern("skip.png").similar(0.91)
 BUTTON_OK = Pattern("OK.png").similar(0.81)
 BUTTON_OK2 = Pattern("1601521147368.png").similar(0.81)

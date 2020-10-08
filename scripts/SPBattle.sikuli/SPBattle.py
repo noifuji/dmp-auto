@@ -30,7 +30,7 @@ CommonDMLib.downloadDeckCodes()
 
 if EnvSettings.ENGINE_FOR_SP == "ANDAPP":
     resources = AndAppResources
-    CommonDMLib.exitNox(resources)
+    CommonDMLib.exitNox(NoxResources)
     instances = [0]
 elif EnvSettings.ENGINE_FOR_SP == "NOX":
     resources = NoxResources

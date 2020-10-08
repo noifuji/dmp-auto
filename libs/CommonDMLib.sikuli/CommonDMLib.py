@@ -1180,6 +1180,15 @@ def RestartApp(resource):
             click(resource.BUTTON_AGREE)
     
     exists(resource.BUTTON_TAKEOVER,180)
+    click(resource.BUTTON_MENU)
+    exists(resource.BUTTON_CLEAR_CACHE,180)
+    click(resource.BUTTON_CLEAR_CACHE)
+    exists(resource.BUTTON_OK,180)
+    click(resource.BUTTON_OK)
+    wait(0.5)
+    exists(resource.BUTTON_OK,180)
+    click(resource.BUTTON_OK)
+    wait(0.5)
     click(resource.BUTTON_TAKEOVER)
     skipDownloadFlag = False
     for num in range(180):
