@@ -88,24 +88,20 @@ while instanceIndex < len(instances):
                 continue
     
             turn_count = 0
-            for game_loop in range(1000):
+            for game_loop in range(15):
     
                 if len(findAny(resources.BUTTON_TURN_END)) > 0:
                     print 'click turnend'
-                    for turnendLoop in range(80):
+                    for turnendLoop in range(20):
                         GameLib.turnEnd(resources)
                         if len(findAny(resources.BUTTON_ENEMY_TURN, resources.BUTTON_SMALL_BATTLE_START)) > 0:
                             break
                     
                     turn_count += 1
-                    if total_duel_count >= 60:
-                        if turn_count >= 3 :
-                            print 'retire'
-                            GameLib.retire(resources)
-                    else:
-                        if turn_count >= 0 :
-                            print 'retire'
-                            GameLib.retire(resources)
+                    
+                    if turn_count >= 0 :
+                        print 'retire'
+                        GameLib.retire(resources)
                 
                 if GameLib.irregularLoop(resources, appname) == 0:
                     break
