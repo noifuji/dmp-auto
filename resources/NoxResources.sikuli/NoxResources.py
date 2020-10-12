@@ -52,6 +52,7 @@ BUTTON_TAP_AND_NEXT = "TAP_AND_NEXT.png"
 #################HOME####################
 ICON_HOME = Pattern("1602026836624.png").similar(0.86)
 ICON_EXTRA = Pattern("ICON_EXTRA.png").similar(0.76)
+ICON_SHOP = "1602494935748.png"
 ICON_SOLO_PLAY = Pattern("1596767681008.png").similar(0.80)
 ICON_MISSION = "1596775980978.png"
 ICON_PRESENT_WITH_SIGN = Pattern("ICON_PRESENT_SIGN.png").similar(0.95).targetOffset(-16,20)

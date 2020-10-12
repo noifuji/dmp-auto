@@ -1,51 +1,68 @@
 import sys
 import traceback
 import random
-sys.path.append("NoxDMLib.sikuli")
-sys.path.append("EnvSettings.sikuli")
-import NoxDMLib
+sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
 import EnvSettings
+sys.path.append(EnvSettings.LIBS_DIR_PATH)
+sys.path.append(EnvSettings.RES_DIR_PATH)
+import NoxDMLib
+import CommonDMLib
+import NoxResources
 
 ####################Settings####################
-Avator = Pattern("Avator.png").targetOffset(376,-12)
-instances = EnvSettings.NOX_INSTANCES
+instances = [1078,1081,
+    1082,1083,1084,1085,1086,
+    1087]
 ####################Settings####################
 
-slack_url = EnvSettings.slack_url
 mentionUser = EnvSettings.mentionUser
-NoxAppPath = EnvSettings.NoxAppPath
-NoxApp = App(NoxAppPath)
-appname = 'NoxDailyLogin'
+appname = 'BWD'
 Settings.MoveMouseDelay = 0.1
 Settings.DelayBeforeDrag = 0.5
 mode = EnvSettings.RUN_MODE
 
-for instance in instances:
+#Pre-processing Start        
+App(EnvSettings.AppPath).close()
+App(EnvSettings.AndAppPath).close()
+
+if CommonDMLib.isNewVersionAvailable():
+    exit(50)
+#Pre-processing End
+
+instanceIndex = 0
+retryCount = 0
+while instanceIndex < len(instances):
     try:
-        NoxDMLib.RestartNox(instance)
-        NoxDMLib.RestartApp()
-        click("1598940054059.png")
+        CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
+        CommonDMLib.RestartApp(NoxResources)
+        click(NoxResources.ICON_SHOP)
+        for skipTutorialLoop in range(10):
+            click(Pattern("1602495018278.png").targetOffset(93,-44))
+            wait(0.5)
+        click(Pattern("1602495063341.png").targetOffset(-6,-199))
         wait(3)
-        click("1596780592222.png")
-        exists("1596780703269.png",60)
-        #Delete Decks
-        for d in ["1598940153267.png", "1598940248022.png"]:
-            if exists(d, 1) != None:
-                click(d)
-                click("1598940187305.png")
-                click("1598940201680.png")
-                wait(10)
-        #Add new Decks
-        for d in [["1598940308442.png",EnvSettings.DECKCODE_RED_BLACK], ["1598940317392.png",EnvSettings.DECKCODE_STSPELL]]:
-            if exists(d[0], 1) == None:
-                CommonDMLib.addNewDeckByCode(NoxResources, d[1])
-                wait(5)
-        NoxDMLib.sendMessagetoSlack(mentionUser, 'Instance ' + str(instance[1]) + 'was completed.', appname)
+        click(Pattern("1602495086836.png").targetOffset(-14,-221))
+        exists("1602495132908.png",60)
+        click(Pattern("1602495164024.png").targetOffset(148,78))
+        exists("1602495190769.png", 60)
+        click("1602495200056.png")
+        exists("1602495225721.png", 60)
+        click(Pattern("1602495388492.png").targetOffset(-221,-42))
+        wait(3)
+        click(Pattern("1602495273120.png").targetOffset(3,53))
+        exists("1602495190769.png", 60)
+        click("1602495200056.png")
+        exists("1602495225721.png", 60)
+        click(Pattern("1602495388492.png").targetOffset(-221,-42))
+        
+        CommonDMLib.sendMessagetoSlack(mentionUser, 'Instance ' + str(instances[instanceIndex]) + 'was completed.', appname)
+        instanceIndex += 1
     except:
         Settings.MoveMouseDelay = 0.1
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        NoxDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(instance[1]) + '. This instance was skipped.', appname)
-        NoxDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
-        NoxDMLib.uploadScreenShotToSlack(mentionUser, "Screenshot" ,appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(instances[instanceIndex]) + '. This instance was skipped.', appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser, "Screenshot" ,appname)
+        instanceIndex += 1

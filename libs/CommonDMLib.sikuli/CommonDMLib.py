@@ -1116,6 +1116,11 @@ def RestartNox(resources, ref):
                 click(resources.MESSAGE_FAILED_TO_START_LAUNCHER)
             except:
                 print "failed to click"
+        if len(findAny(resources.MESSAGE_LAUNCHER_STOPPED_MANY_TIMES)) > 0:
+            try:
+                click(resources.MESSAGE_LAUNCHER_STOPPED_MANY_TIMES)
+            except:
+                print "failed to click"
         if len(findAny(resources.ICON_BROWSER)) > 0:
             break
         wait(1)
