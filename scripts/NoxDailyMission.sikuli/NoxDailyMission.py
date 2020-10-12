@@ -139,8 +139,6 @@ while instanceIndex < len(instances):
             if dailyReward > 0:
                 CommonDMLib.openMission(NoxResources)
                 missions = CommonDMLib.getTargetMissions(NoxResources)
-                if mode == "DEV":
-                    CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Mission', appname)
                 
                 if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("GROUP") for d in missions])):
                     finishMissions(instances[instanceIndex], statisticsData)

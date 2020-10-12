@@ -422,7 +422,7 @@ def retire(resources):
 def irregularLoop(resources, appname):
     print 'irregularLoop'
 #  イレギュラーループ
-    for enemyturn_loop in range(70):
+    for enemyturn_loop in range(50):
         print 'This is ' + str(enemyturn_loop) + ' times loop.'
         
         #   自分のターンを検知
@@ -451,7 +451,10 @@ def irregularLoop(resources, appname):
             wait(0.5)
 
         if appname not in ["SP"]:
-            if len(findAny(resources.MESSAGE_TAP))   > 0 or len(findAny(resources.MESSAGE_DEST))   > 0:
+            if len(findAny(resources.MESSAGE_TAP)) > 0 or \
+            len(findAny(resources.MESSAGE_DEST))   > 0 or \
+            len(findAny(resources.MESSAGE_EFFECT))   > 0 or \
+            len(findAny(resources.MESSAGE_SELECT)) > 0:
                 print 'Tap or Dest'   
                 BZ = findAny(
                         resources.ICON_ENEMY_UNTAPPED_BLOCKER, 
@@ -489,7 +492,7 @@ def irregularLoop(resources, appname):
                 #game_loopを終了する。
                 click(resources.BUTTON_RETRY)
                 
-        if appname not in ["LEGEND", "DAILY", "SP"]:
+        if appname not in ["LEGEND", "SP"]:
             #死の宣告、デスモーリー等
             if len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE)) > 0 or len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE2)) > 0:
                 print 'Player need to select his creature.'                       
@@ -513,8 +516,8 @@ def irregularLoop(resources, appname):
                 click(resources.BUTTON_OK2)
                 wait(1)
         
-        if  enemyturn_loop == 69:
-            print 'Irregular loop is over 70. Restart is necessary.'
+        if  enemyturn_loop == 49:
+            print 'Irregular loop is over 50. Restart is necessary.'
             raise Exception
     
     return 1

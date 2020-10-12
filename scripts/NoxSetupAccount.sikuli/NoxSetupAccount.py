@@ -34,7 +34,7 @@ for count in range(100):
     CommonDMLib.updatePlayerId(ref, "working", os.environ["COMPUTERNAME"])
     print "A tempporary Player ID is updated."
     username = ref
-    NoxDMLib.RestartNox(ref)
+    CommonDMLib.RestartNox(NoxResources,ref)
     CommonDMLib.callRemoveDataBat()
         
     for num in range(100):
@@ -162,6 +162,7 @@ for count in range(100):
                     wait(1)
                 else:
                     break
+            CommonDMLib.getPresent(NoxResources)
             click("1596781025606.png")
             wait(3)
             click("1596781081109.png")
