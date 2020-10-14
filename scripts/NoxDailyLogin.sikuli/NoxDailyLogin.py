@@ -10,9 +10,7 @@ import CommonDMLib
 import NoxResources
 
 ####################Settings####################
-instances = [1078,1081,
-    1082,1083,1084,1085,1086,
-    1087]
+instances = [1086]
 ####################Settings####################
 
 mentionUser = EnvSettings.mentionUser

@@ -26,16 +26,25 @@ tutorial = "tutorial.png"
 CommonDMLib.downloadDeckCodes()
 
 for count in range(100):
-    ref = CommonDMLib.getSetupAccountRef()
-    if ref == "":
-        print "There are no setup accounts."
+    try:
+        ref = CommonDMLib.getSetupAccountRef()
+        if ref == "":
+            print "There are no setup accounts."
+            break
+        print "SetupAccount is started. ref : " + str(ref)
+        CommonDMLib.updatePlayerId(ref, "working", os.environ["COMPUTERNAME"])
+        print "A tempporary Player ID is updated."
+        username = ref
+        CommonDMLib.RestartNox(NoxResources,ref)
+        CommonDMLib.callRemoveDataBat()
+    except:
+        e = sys.exc_info()
+        for mes in e:
+            print(mes)
+        CommonDMLib.updatePlayerId(ref, "", "")
+        CommonDMLib.sendMessagetoSlack(mentionUser,'Failed to launch instance ' + str(ref) + ". Setup was canceled.", appname)
+        CommonDMLib.sendMessagetoSlack( mentionUser,traceback.format_exc(), appname)
         break
-    print "SetupAccount is started. ref : " + str(ref)
-    CommonDMLib.updatePlayerId(ref, "working", os.environ["COMPUTERNAME"])
-    print "A tempporary Player ID is updated."
-    username = ref
-    CommonDMLib.RestartNox(NoxResources,ref)
-    CommonDMLib.callRemoveDataBat()
         
     for num in range(100):
         try:

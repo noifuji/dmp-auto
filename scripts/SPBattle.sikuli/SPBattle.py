@@ -88,7 +88,7 @@ while instanceIndex < len(instances):
                 continue
     
             turn_count = 0
-            for game_loop in range(15):
+            for game_loop in range(10):
     
                 if len(findAny(resources.BUTTON_TURN_END)) > 0:
                     print 'click turnend'
@@ -105,6 +105,9 @@ while instanceIndex < len(instances):
                 
                 if GameLib.irregularLoop(resources, appname) == 0:
                     break
+
+                if game_loop >= 14:
+                    raise Exception("over game loop limit")
                 
             #ゲームループエンド
             total_duel_count+=1

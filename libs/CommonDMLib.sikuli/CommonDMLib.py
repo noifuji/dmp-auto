@@ -882,12 +882,15 @@ def waitStartingGame(resource):
         skipStory(resource)
         #マッチングしなかった場合
         if len(findAny(resource.MESSAGE_NO_OPPONENTS)) > 0:
-            click(resource.BUTTON_OK)
-            wait(resource.BUTTON_SMALL_BATTLE_START, 60)
-            click(resource.BUTTON_SMALL_BATTLE_START)
-            wait(resource.BUTTON_LARGE_BATTLE_START,60)
-            click(resource.BUTTON_LARGE_BATTLE_START)
-            return -1
+            try:
+                click(resource.BUTTON_OK)
+                wait(resource.BUTTON_SMALL_BATTLE_START, 60)
+                click(resource.BUTTON_SMALL_BATTLE_START)
+                wait(resource.BUTTON_LARGE_BATTLE_START,60)
+                click(resource.BUTTON_LARGE_BATTLE_START)
+                return -1
+            except:
+                print "failed to click"
         if len(findAny(resource.BUTTON_RETRY)) > 0:
             click(resource.BUTTON_RETRY)
         if len(findAny(resource.MESSAGE_ERROR_9003)) > 0:
