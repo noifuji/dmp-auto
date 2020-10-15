@@ -45,4 +45,8 @@ while instanceIndex < len(instances):
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(instances[instanceIndex]) + '. This instance was skipped.', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.sendMessagetoSlack(mentionUser, "Screenshot" ,appname)
-        instanceIndex += 1
+        if retryCount >= 4:
+            instanceIndex += 1
+            retryCount = 0
+        else:
+            retryCount += 1
