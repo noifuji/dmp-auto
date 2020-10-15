@@ -10,11 +10,11 @@ import CommonDMLib
 import NoxResources
 
 ####################Settings####################
-instances = [1086]
+instances = EnvSettings.NOX_INSTANCES
 ####################Settings####################
 
 mentionUser = EnvSettings.mentionUser
-appname = 'BWD'
+appname = 'LOGIN'
 Settings.MoveMouseDelay = 0.1
 Settings.DelayBeforeDrag = 0.5
 mode = EnvSettings.RUN_MODE
@@ -33,25 +33,7 @@ while instanceIndex < len(instances):
     try:
         CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
         CommonDMLib.RestartApp(NoxResources)
-        click(NoxResources.ICON_SHOP)
-        for skipTutorialLoop in range(10):
-            click(Pattern("1602495018278.png").targetOffset(93,-44))
-            wait(0.5)
-        click(Pattern("1602495063341.png").targetOffset(-6,-199))
-        wait(3)
-        click(Pattern("1602495086836.png").targetOffset(-14,-221))
-        exists("1602495132908.png",60)
-        click(Pattern("1602495164024.png").targetOffset(148,78))
-        exists("1602495190769.png", 60)
-        click("1602495200056.png")
-        exists("1602495225721.png", 60)
-        click(Pattern("1602495388492.png").targetOffset(-221,-42))
-        wait(3)
-        click(Pattern("1602495273120.png").targetOffset(3,53))
-        exists("1602495190769.png", 60)
-        click("1602495200056.png")
-        exists("1602495225721.png", 60)
-        click(Pattern("1602495388492.png").targetOffset(-221,-42))
+        CommonDMLib.getPresent(NoxResources)
         
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Instance ' + str(instances[instanceIndex]) + 'was completed.', appname)
         instanceIndex += 1
