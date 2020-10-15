@@ -35,6 +35,7 @@ BUTTON_OK = Pattern("OK.png").similar(0.81)
 BUTTON_OK2 = Pattern("1601521147368.png").similar(0.81)
 BUTTON_OK3 =Pattern("1601873579981.png").similar(0.88) 
 BUTTON_RETRY = "1596901274897.png"
+BUTTON_LATER = Pattern("1602763660816.png").similar(0.90)
 BUTTON_AGREE = "1597913007417.png"
 BUTTON_SMALL_OK = Pattern("1602232771756.png").similar(0.86)
 BUTTON_CANCEL = Pattern("1596765861356.png").similar(0.84)

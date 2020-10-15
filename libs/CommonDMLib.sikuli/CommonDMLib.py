@@ -770,6 +770,11 @@ def skipNotifications(resource):
         print 'The last duel result detected.'
         click(resource.BUTTON_OK)
     
+    #アカウント連携
+    if len(findAny(resource.BUTTON_LATER)) > 0 :
+        print 'Account backup recommendation'
+        click(resource.BUTTON_LATER)
+    
     if len(findAny(resource.AD)) > 0:
         print 'Ads was skipped.'
         if len(findAny(resource.BUTTON_OK)) > 0:
@@ -1224,6 +1229,7 @@ def RestartApp(resource):
         for downloadLoop in range(300):
             print "downloading..." + str(downloadLoop)
             if len(findAny(resource.BUTTON_SKIP)) > 0 or len(findAny(resource.ICON_HOME)) > 0 or len(findAny(resource.BUTTON_TAP_AND_NEXT)) > 0:
+                print "finished"
                 break
             if downloadLoop >= 299:
                 raise Exception
