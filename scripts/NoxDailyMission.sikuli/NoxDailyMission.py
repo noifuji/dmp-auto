@@ -72,7 +72,6 @@ while instanceIndex < len(instances):
         CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
-        CommonDMLib.changeMission(NoxResources)
         if mode == "DEV":
             wait(1)
             CommonDMLib.uploadScreenShotToSlack(mentionUser,'Account' + str(instances[instanceIndex]) + ' is in process.', appname)

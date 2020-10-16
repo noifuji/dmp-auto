@@ -450,17 +450,21 @@ def irregularLoop(resources, appname):
                 print "failed to click"
             wait(0.5)
 
+        #効果によるクリーチャー選択
         if appname not in ["SP"]:
             if len(findAny(resources.MESSAGE_TAP)) > 0 or \
             len(findAny(resources.MESSAGE_DEST))   > 0 or \
-            len(findAny(resources.MESSAGE_EFFECT))   > 0 or \
-            len(findAny(resources.MESSAGE_SELECT)) > 0:
-                print 'Tap or Dest'   
+            len(findAny(resources.MESSAGE_EFFECT)) > 0 or \
+            len(findAny(resources.MESSAGE_MANA))   > 0 or \
+            len(findAny(resources.MESSAGE_BOUNCE))   > 0:
+                print 'Tap, Dest, Mana, Bounce'
                 BZ = findAny(
-                        resources.ICON_ENEMY_UNTAPPED_BLOCKER, 
-                        resources.ICON_ENEMY_UNTAPPED_CREATURE,
-                        resources.ICON_ENEMY_TAPPED_CREATURE_1,
-                        resources.ICON_ENEMY_TAPPED_CREATURE_2)
+                        resources.ICON_MY_CREATURE1,
+                        resources.ICON_MY_CREATURE2,
+                        resources.ICON_MY_CREATURE3,
+                        resources.ICON_ENEMY_CREATURE1,
+                        resources.ICON_ENEMY_CREATURE2,
+                        resources.ICON_ENEMY_CREATURE3)
                 for b in BZ:
                     click(b)
                     if exists(resources.BUTTON_OK2, 1) != None:
@@ -475,7 +479,7 @@ def irregularLoop(resources, appname):
             print 'Game has Finished.'
             return 0
 
-        #レジェンド、デイリーではスルーする
+        #ブロック
         if appname not in ["LEGEND", "SP"]:
             if len(findAny(resources.MESSAGE_BLOCK)) > 0 or len(findAny(resources.MESSAGE_CHOOSE_BLOCKER)) > 0:
                 print 'Block?'
@@ -492,20 +496,20 @@ def irregularLoop(resources, appname):
                 #game_loopを終了する。
                 click(resources.BUTTON_RETRY)
                 
-        if appname not in ["LEGEND", "SP"]:
-            #死の宣告、デスモーリー等
-            if len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE)) > 0 or len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE2)) > 0:
-                print 'Player need to select his creature.'                       
-                BZ = findAny(
-                        resources.ICON_MY_UNTAPPED_CREATURE,
-                        resources.ICON_MY_TAPPED_CREATURE,
-                        resources.ICON_MY_UNTAPPED_BLOCKER)
-                for b in BZ:
-                    click(b)
-                    if exists(resources.BUTTON_OK2,1) != None:
-                        click(resources.BUTTON_OK2)
-                        break
-                wait(0.5)
+#        if appname not in ["LEGEND", "SP"]:
+#            #死の宣告、デス
+#            if len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE)) > 0 or len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE2)) > 0:
+#                print 'Player need to select his creature.'                       
+#                BZ = findAny(
+#                        resources.ICON_MY_UNTAPPED_CREATURE,
+#                        resources.ICON_MY_TAPPED_CREATURE,
+#                        resources.ICON_MY_UNTAPPED_BLOCKER)
+#                for b in BZ:
+#                    click(b)
+#                    if exists(resources.BUTTON_OK2,1) != None:
+#                        click(resources.BUTTON_OK2)
+#                        break
+#                wait(0.5)
                 
         if appname not in ["LEGEND", "DAILY"]:
             #デモニックバイス

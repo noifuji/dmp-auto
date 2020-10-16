@@ -359,6 +359,7 @@ def scanNumberChangeWidth(targetImage, offsetX, offsetY, width, height, RightLef
                 raise Exception("Illegal argumant RightLeft : " + str(RightLeft))
             reg.highlight(0.1)
             num = OCR.readWord(reg)
+            num = num.replace(",", "")
             if isNumber(num):
                 print len(num)
                 WIDTH_CONFIRM = len(num) * WIDTH_A_CHAR + MARGIN_LEFT
@@ -374,19 +375,25 @@ def scanNumberChangeWidth(targetImage, offsetX, offsetY, width, height, RightLef
                 raise Exception("Illegal argumant RightLeft : " + str(RightLeft))
             reg.highlight(0.1)
             num = OCR.readWord(reg)
+            num = num.replace(",", "")
             if isNumber(num):
                     break
     return num
 
 def scanAccountInfo(resource):
-    ts = [resource.TITLE_PACK1,resource.TITLE_PACK2,
-            resource.TITLE_PACK3,resource.TITLE_PACK4,
-            resource.TITLE_PACK5,resource.TITLE_PACK5SR,
-            resource.TICKET_BEST]
+    ts = [{"NAME":"PACK1","IMAGE":resource.TITLE_PACK1},
+            {"NAME":"PACK2","IMAGE":resource.TITLE_PACK2},
+            {"NAME":"PACK3","IMAGE":resource.TITLE_PACK3},
+            {"NAME":"PACK4","IMAGE":resource.TITLE_PACK4},
+            {"NAME":"PACK5","IMAGE":resource.TITLE_PACK5},
+            {"NAME":"PACK5SR","IMAGE":resource.TITLE_PACK5SR},
+            {"NAME":"PACK6","IMAGE":resource.TITLE_PACK6},
+            {"NAME":"PACK6SR","IMAGE":resource.TITLE_PACK6SR},
+            {"NAME":"BEST","IMAGE":resource.TICKET_BEST}]
 
     dmp = 0
     gold = 0
-    tempPacks = []
+    tempPacks = {}
     lv = ""
 
     OFFSET_X = 78
@@ -395,7 +402,7 @@ def scanAccountInfo(resource):
     HEIGHT = 27
     WIDTH_INIT_LONG = 110
     
-    OFFSET_X_LV = 265
+    OFFSET_X_LV = 275
     OFFSET_Y_LV = 34
     WIDTH_INIT_LV = 85
     HEIGHT_LV = 46
@@ -418,11 +425,11 @@ def scanAccountInfo(resource):
 
     scanCount = 0
     for i in range(len(ts)):
-        res = scanNumberChangeWidth(ts[i], OFFSET_X, OFFSET_Y, WIDTH_INIT, HEIGHT, 0, 20)
+        res = scanNumberChangeWidth(ts[i]["IMAGE"], OFFSET_X, OFFSET_Y, WIDTH_INIT, HEIGHT, 0, 20)
         if res == "":
-            tempPacks.append("")
+            tempPacks[ts[i]["NAME"]] = ""
         else:
-            tempPacks.append(res)
+            tempPacks[ts[i]["NAME"]] = res
             scanCount += 1
             if scanCount % 2 == 0:
                 Settings.MoveMouseDelay = 1
@@ -437,12 +444,12 @@ def scanAccountInfo(resource):
     gold = scanNumberChangeWidth(resource.TITLE_GOLD, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT, 0, 20)
     dmp = scanNumberChangeWidth(resource.TITLE_DMPOINT, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT, 0, 20)
 
-    packs = [0,0,0,0,0,0,0,0,0]
-    for i in range(len(tempPacks)-1):
-        packs[i] = tempPacks[i]
+    packs = [tempPacks["PACK1"],tempPacks["PACK2"],tempPacks["PACK3"],
+            tempPacks["PACK4"],tempPacks["PACK5"],tempPacks["PACK6"],
+            0,0,0]
 
-    srPack = tempPacks[len(tempPacks)-2]
-    bestPack = tempPacks[len(tempPacks)-1]
+    srPack = str(int(tempPacks["PACK5SR"]) + int(tempPacks["PACK6SR"]))
+    bestPack = tempPacks["BEST"]
     return [lv, dmp, gold, packs, srPack, bestPack]
 
 def downloadFile(url, dest):
@@ -842,11 +849,19 @@ def getTargetMissions(resource):
     targetMissions = []
     for reg in missionRegs:
         reg.highlight(0.5)
-        best = reg.findBestList([d.get("IMAGE") for d in resource.MISSIONS])
-        if best != None:
-            print resource.MISSIONS[best.getIndex()]["NAME"] + " : " + str(best.getScore())
-            if best.getScore() > 0.9:
-                targetMissions.append(resource.MISSIONS[best.getIndex()])
+        scores = []
+        for image in [d.get("IMAGE") for d in resource.MISSIONS]:
+           detected = reg.findAny(image)
+           if len(detected) > 0:
+               scores.append(detected[0].getScore())
+               print detected[0].getScore()
+           else:
+               scores.append(0)
+               print 0
+        max_value = max(scores)
+        if max_value >= 0.7:
+            max_index = scores.index(max_value)
+            targetMissions.append(resource.MISSIONS[max_index])
                 
     results = []
     #sort by mission group
@@ -1132,7 +1147,7 @@ def RestartNox(resources, ref):
         if len(findAny(resources.ICON_BROWSER)) > 0:
             break
         wait(1)
-    wait(30)
+    wait(10)
     if len(findAny(resources.MESSAGE_BACKUP)) > 0:
         click(resources.MESSAGE_BACKUP)
         click(0.2)
