@@ -402,7 +402,7 @@ def scanAccountInfo(resource):
     HEIGHT = 27
     WIDTH_INIT_LONG = 110
     
-    OFFSET_X_LV = 275
+    OFFSET_X_LV = 270
     OFFSET_Y_LV = 34
     WIDTH_INIT_LV = 85
     HEIGHT_LV = 46

@@ -456,6 +456,7 @@ def irregularLoop(resources, appname):
             len(findAny(resources.MESSAGE_DEST))   > 0 or \
             len(findAny(resources.MESSAGE_EFFECT)) > 0 or \
             len(findAny(resources.MESSAGE_MANA))   > 0 or \
+            len(findAny(resources.MESSAGE_SELECT))   > 0 or \
             len(findAny(resources.MESSAGE_BOUNCE))   > 0:
                 print 'Tap, Dest, Mana, Bounce'
                 BZ = findAny(
