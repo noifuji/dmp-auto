@@ -28,8 +28,9 @@ LAST_STAGE = 10
 #Pre-processing Start
 if EnvSettings.ENGINE_FOR_MAIN == "ANDAPP":
     import AndAppResources
+    import NoxResources
     resources = AndAppResources
-    CommonDMLib.exitNox(resources)
+    CommonDMLib.exitNox(NoxResources)
     stageRegionValues = [-200, 240, 110, 50]
     instances = [0]
 elif EnvSettings.ENGINE_FOR_MAIN == "NOX":

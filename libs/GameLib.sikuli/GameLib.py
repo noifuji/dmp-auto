@@ -463,6 +463,7 @@ def irregularLoop(resources, appname):
                         resources.ICON_MY_CREATURE1,
                         resources.ICON_MY_CREATURE2,
                         resources.ICON_MY_CREATURE3,
+                        resources.ICON_MY_CREATURE4,
                         resources.ICON_ENEMY_CREATURE1,
                         resources.ICON_ENEMY_CREATURE2,
                         resources.ICON_ENEMY_CREATURE3)

@@ -69,3 +69,5 @@ if %ERRORLEVEL%==50 (
  start .\Tools\auto_update.bat .\Tools\%~n0%~x0
  exit
 )
+
+pause

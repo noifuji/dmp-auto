@@ -324,6 +324,7 @@ ICON_ENEMY_TAPPED_CREATURE_2 = Pattern("1601607576805.png").similar(0.80).target
 ICON_MY_CREATURE1 = Pattern("1602823628288.png").similar(0.90).targetOffset(0,-60)
 ICON_MY_CREATURE2 = Pattern("1602823715932.png").similar(0.90).targetOffset(-5,-56)
 ICON_MY_CREATURE3 = Pattern("1602823754592.png").similar(0.90).targetOffset(-15,-62)
+ICON_MY_CREATURE4 = "1601976850151.png"
 ICON_ENEMY_CREATURE1 = Pattern("1602824023268.png").similar(0.90).targetOffset(-19,-45)
 ICON_ENEMY_CREATURE2 = Pattern("1602823904261.png").similar(0.90).targetOffset(-18,-40)
 ICON_ENEMY_CREATURE3 = Pattern("ICON_ENEMY_CREATURE3.png").similar(0.90).targetOffset(-5,-46)

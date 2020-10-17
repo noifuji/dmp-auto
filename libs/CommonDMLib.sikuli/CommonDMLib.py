@@ -838,7 +838,7 @@ def getTargetMissions(resource):
     
     missionTitle = findAny(resource.TITLE_MISSION)
     if len(missionTitle) <= 0:
-        return
+        return []
     
     missionRegs = [
             Region(missionTitle[0].getX() + offsetX1, missionTitle[0].getY() + offsetY1, width, height),
@@ -1023,6 +1023,8 @@ def getStrategyByMainStoryStage(episode, stage):
     elif episode == 2 and stage == 6:
         strategy = 2
     elif episode == 2 and stage == 13:
+        strategy = 2
+    elif episode == 2 and stage == 4:
         strategy = 2
     elif episode == 1 and stage >= 1 and stage <= 15:
         strategy = 2
@@ -1241,12 +1243,12 @@ def RestartApp(resource):
            raise Exception 
     if skipDownloadFlag == False:
         click(resource.BUTTON_OK)
-        for downloadLoop in range(300):
+        for downloadLoop in range(150):
             print "downloading..." + str(downloadLoop)
             if len(findAny(resource.BUTTON_SKIP)) > 0 or len(findAny(resource.ICON_HOME)) > 0 or len(findAny(resource.BUTTON_TAP_AND_NEXT)) > 0:
                 print "finished"
                 break
-            if downloadLoop >= 299:
+            if downloadLoop >= 149:
                 raise Exception
             wait(1)
     #結果発表をスキップ
