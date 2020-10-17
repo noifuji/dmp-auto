@@ -91,6 +91,7 @@ while instanceIndex < len(instances):
         if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("GROUP") for d in missions])):
             finishMissions(instances[instanceIndex], statisticsData)
             instanceIndex += 1
+            retryCount = 0
             continue
         
         strategy = CommonDMLib.getMissionStrategy(NoxResources,missions[0])
@@ -153,6 +154,7 @@ while instanceIndex < len(instances):
                 CommonDMLib.startMainStoryBattle(NoxResources, deck[0], deck[1])
         #バトルループエンド
         instanceIndex += 1
+        retryCount = 0
     except SystemExit as e:
         CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)

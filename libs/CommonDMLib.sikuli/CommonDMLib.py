@@ -427,7 +427,7 @@ def scanAccountInfo(resource):
     for i in range(len(ts)):
         res = scanNumberChangeWidth(ts[i]["IMAGE"], OFFSET_X, OFFSET_Y, WIDTH_INIT, HEIGHT, 0, 20)
         if res == "":
-            tempPacks[ts[i]["NAME"]] = ""
+            tempPacks[ts[i]["NAME"]] = "0"
         else:
             tempPacks[ts[i]["NAME"]] = res
             scanCount += 1
@@ -1052,12 +1052,14 @@ def getDeckByStrategy(resource, strategy):
 def getPresent(resource):
     if len(findAny(resource.ICON_PRESENT_WITH_SIGN)) > 0:
         click(resource.ICON_PRESENT_WITH_SIGN) 
-        exists(resource.TITLE_PRESENT, 30)
-        click(resource.BUTTON_RECIEVE)
-        exists(resource.BUTTON_OK, 60)
-        click(resource.BUTTON_OK)
-        wait(3)
-        click(resource.BUTTON_CLOSE)
+        for presentLoop in range(100):
+            if len(findAny(resource.TITLE_PRESENT)) > 0:
+                click(resource.BUTTON_RECIEVE)
+            if len(findAny(resource.BUTTON_OK)) > 0:
+                click(resource.BUTTON_OK)
+                wait(3)
+                click(resource.BUTTON_CLOSE)
+                break
 
 #True : On
 #False : Off
@@ -1148,6 +1150,8 @@ def RestartNox(resources, ref):
                 print "failed to click"
         if len(findAny(resources.ICON_BROWSER)) > 0:
             break
+        if noxLaunchLoop >= 599:
+            raise Exception("Too many noxLaunchLoop")
         wait(1)
     wait(10)
     if len(findAny(resources.MESSAGE_BACKUP)) > 0:
