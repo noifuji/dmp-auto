@@ -157,7 +157,7 @@ while instanceIndex < len(instances):
         retryCount = 0
     except SystemExit as e:
         CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
-        exit(e)
+        exit(50)
     except:
         statisticsData["EXCEPTION"] += 1
         retryCount += 1
