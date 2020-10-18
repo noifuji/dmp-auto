@@ -192,7 +192,7 @@ while instanceIndex < len(instances):
                     stageRegionValues[1],
                     stageRegionValues[2],
                     stageRegionValues[3])
-            if episode == LAST_EPISODE and stage == LAST_STAGE:
+            if (episode > LAST_EPISODE) or (episode == LAST_EPISODE and stage >= LAST_STAGE):
                 if len(findAny(resources.BUTTON_CONFIRM_REWARD)) > 0:
                     click(resources.BUTTON_CONFIRM_REWARD)
                     exists(resources.TITLE_REWARD_INFO,60)
