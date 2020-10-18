@@ -21,7 +21,7 @@ stageRegionValues = []
 resources = None
 
 ###################Settings######################
-LAST_EPISODE = 5
+LAST_EPISODE = 4
 LAST_STAGE = 10
 ###################Settings######################
 

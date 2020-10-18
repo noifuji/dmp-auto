@@ -401,7 +401,7 @@ def battle(resources):
     for num in range(7):
         BZ = findAny(resources.ICON_MY_UNTAPPED_CREATURE)
         if len(BZ) > 0:
-            c = findAny(resources.ICON_ENEMY_TAPPED_CREATURE_1)
+            c = findAny(resources.ICON_ENEMY_TAPPED_CREATURE_1, resources.ICON_ENEMY_TAPPED_CREATURE_2)
             if len(c) > 0:
                 CommonDMLib.dragDropAtSpeed(BZ[0],c[0], 1.5)
                 wait(0.5)
@@ -464,9 +464,11 @@ def irregularLoop(resources, appname):
                         resources.ICON_MY_CREATURE2,
                         resources.ICON_MY_CREATURE3,
                         resources.ICON_MY_CREATURE4,
+                        resources.ICON_ENEMY_UNTAPPED_BLOCKER,
                         resources.ICON_ENEMY_CREATURE1,
                         resources.ICON_ENEMY_CREATURE2,
-                        resources.ICON_ENEMY_CREATURE3)
+                        resources.ICON_ENEMY_CREATURE3,
+                        resources.ICON_ENEMY_CREATURE4,)
                 for b in BZ:
                     click(b)
                     if exists(resources.BUTTON_OK4, 1) != None:

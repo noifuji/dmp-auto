@@ -1153,7 +1153,7 @@ def RestartNox(resources, ref):
         if noxLaunchLoop >= 599:
             raise Exception("Too many noxLaunchLoop")
         wait(1)
-    wait(10)
+    wait(30)
     if len(findAny(resources.MESSAGE_BACKUP)) > 0:
         click(resources.MESSAGE_BACKUP)
         click(0.2)
@@ -1186,6 +1186,15 @@ def RestartApp(resource):
                 print "An update is found."
                 skipUpdateFlag = False
                 break
+
+            if len(findAny(resource.MESSAGE_SYSTEM_UI_STOPPED)) > 0:
+                print "UI Error is detected."
+                try:
+                    click(resource.MESSAGE_SYSTEM_UI_STOPPED)
+                    wait(10)
+                    noxCallStartDMPApp()
+                except:
+                    print "failed to click"
             
             if len(findAny(resource.MESSAGE_FAILED_TO_START_LAUNCHER)) > 0:
                 print "Android Error is detected."
