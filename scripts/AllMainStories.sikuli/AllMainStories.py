@@ -28,6 +28,7 @@ def isClearedStage(resources):
         if len(findAny(resources.ICON_CLEARED)) > 0:
             res = True
         click(resources.BUTTON_CLOSE)
+        wait(3)
     return res
 
 ###################Settings######################
