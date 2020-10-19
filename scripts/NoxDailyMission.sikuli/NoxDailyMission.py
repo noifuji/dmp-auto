@@ -34,6 +34,7 @@ def finishMissions(instance, statisticsData):
     CommonDMLib.sendMessagetoSlack(mentionUser, 'Account' + str(instances[instanceIndex]) + ' was completed.', appname)
     CommonDMLib.closeMission(NoxResources)
     CommonDMLib.getPresent(NoxResources)
+    CommonDMLib.getMissionRewards(NoxResources)
     res = CommonDMLib.scanAccountInfo(NoxResources)
     CommonDMLib.updateAccountInfo(instance, res[0], res[1], res[2], res[3],res[4], res[5])
     CommonDMLib.updateCompletedInstanceJson(instance)

@@ -472,7 +472,10 @@ def irregularLoop(resources, appname):
                 for b in BZ:
                     click(b)
                     if exists(resources.BUTTON_OK4, 1) != None:
-                        click(resources.BUTTON_OK4)
+                        try:
+                            click(resources.BUTTON_OK4)
+                        except:
+                            print "failed to click"
                         break
                 wait(0.5)
                 if exists(resources.MESSAGE_NO_CREATURE_SELECTED,5) != None:
@@ -499,21 +502,6 @@ def irregularLoop(resources, appname):
             if len(findAny(resources.BUTTON_RETRY)) > 0:
                 #game_loopを終了する。
                 click(resources.BUTTON_RETRY)
-                
-#        if appname not in ["LEGEND", "SP"]:
-#            #死の宣告、デス
-#            if len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE)) > 0 or len(findAny(resources.MESSAGE_SELECT_OWN_CREATURE2)) > 0:
-#                print 'Player need to select his creature.'                       
-#                BZ = findAny(
-#                        resources.ICON_MY_UNTAPPED_CREATURE,
-#                        resources.ICON_MY_TAPPED_CREATURE,
-#                        resources.ICON_MY_UNTAPPED_BLOCKER)
-#                for b in BZ:
-#                    click(b)
-#                    if exists(resources.BUTTON_OK2,1) != None:
-#                        click(resources.BUTTON_OK2)
-#                        break
-#                wait(0.5)
                 
         if appname not in ["LEGEND", "DAILY"]:
             #デモニックバイス

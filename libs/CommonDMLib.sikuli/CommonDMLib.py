@@ -1049,6 +1049,7 @@ def getDeckByStrategy(resource, strategy):
     else:
         return None
 
+#only for Nox
 def getPresent(resource):
     if len(findAny(resource.ICON_PRESENT_WITH_SIGN)) > 0:
         click(resource.ICON_PRESENT_WITH_SIGN) 
@@ -1060,6 +1061,38 @@ def getPresent(resource):
                 wait(3)
                 click(resource.BUTTON_CLOSE)
                 break
+
+#only for Nox
+def getMissionRewards(resource):
+    if len(findAny(resource.ICON_MISSION_WITH_SIGN)) > 0:
+        click(resource.ICON_MISSION_WITH_SIGN) 
+        exists(resource.BUTTON_ACHIEVEMENT, 60)
+        click(resource.BUTTON_ACHIEVEMENT)
+        wait(2)
+        click(resource.BUTTON_RECIEVE)
+        exists(resource.BUTTON_OK, 10)
+        for waitLoop in range(10):
+            try:
+                click(resource.BUTTON_OK)
+            except:
+                print "failed to click"
+            wait(0.5)
+            if len(findAny(resource.BUTTON_OK)) == 0:
+                break
+        wait(1)
+        click(resource.BUTTON_EVENT)
+        wait(2)
+        click(resource.BUTTON_RECIEVE)
+        exists(resource.BUTTON_OK, 10)
+        for waitLoop in range(100):
+            try:
+                click(resource.BUTTON_OK)
+            except:
+                print "failed to click"
+            wait(0.5)
+            if len(findAny(resource.BUTTON_OK)) == 0:
+                break
+        click(resource.BUTTON_CLOSE)
 
 #True : On
 #False : Off

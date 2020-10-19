@@ -20,6 +20,16 @@ instances = []
 stageRegionValues = []
 resources = None
 
+def isClearedStage(resources):
+    res = False
+    if len(findAny(resources.BUTTON_CONFIRM_REWARD)) > 0:
+        click(resources.BUTTON_CONFIRM_REWARD)
+        exists(resources.TITLE_REWARD_INFO,60)
+        if len(findAny(resources.ICON_CLEARED)) > 0:
+            res = True
+        click(resources.BUTTON_CLOSE)
+    return res
+
 ###################Settings######################
 LAST_EPISODE = 4
 LAST_STAGE = 10
@@ -71,6 +81,14 @@ while instanceIndex < len(instances):
                     stageRegionValues[1],
                     stageRegionValues[2],
                     stageRegionValues[3])
+
+            if (episode > LAST_EPISODE) or (episode == LAST_EPISODE and stage > LAST_STAGE) or \
+                    (episode == LAST_EPISODE and stage == LAST_STAGE and isClearedStage(resources)):
+                CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories were cleared!', appname)
+                CommonDMLib.completeQuestStatus(instances[instanceIndex], "MAIN")
+                instanceIndex += 1
+                break
+            
             strategy = CommonDMLib.getStrategyByMainStoryStage(episode, stage)
             deck = CommonDMLib.getDeckByStrategy(resources, strategy)
             CommonDMLib.startMainStoryBattle(resources, deck[0], deck[1])
@@ -186,27 +204,10 @@ while instanceIndex < len(instances):
             retryCount = 0
             exceptionCout = 0
 
-            episode = CommonDMLib.getMainStoryEpisode(resources)
-            stage = CommonDMLib.getMainStoryStage(resources, 
-                    stageRegionValues[0], 
-                    stageRegionValues[1],
-                    stageRegionValues[2],
-                    stageRegionValues[3])
-            if (episode > LAST_EPISODE) or (episode == LAST_EPISODE and stage >= LAST_STAGE):
-                if len(findAny(resources.BUTTON_CONFIRM_REWARD)) > 0:
-                    click(resources.BUTTON_CONFIRM_REWARD)
-                    exists(resources.TITLE_REWARD_INFO,60)
-                    if len(findAny(resources.ICON_CLEARED)) > 0:
-                        CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories are cleared!', appname)
-                        CommonDMLib.completeQuestStatus(instances[instanceIndex], "MAIN")
-                        instanceIndex += 1
-                        break
-                    click(resources.BUTTON_CLOSE)
-
         #stage_loop End
     except SystemExit as e:
         CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
-        exit(e)
+        exit(50)
     except:
         exceptionCout += 1
         e = sys.exc_info()
