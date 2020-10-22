@@ -356,10 +356,9 @@ for count in range(100):
                     wait(0.2)
                     click("1599973746387.png")
                     wait(0.2)
-                    if i == 0:
-                        for color in targetDeck["COLOR"]:
-                            click(color)
-                            wait(0.2)
+                    for color in targetDeck["COLOR"]:
+                        click(color)
+                        wait(0.2)
                     click(TARGET_RARITY[i])
                     wait(1)
                     wheel(TARGET_RARITY[i], Button.WHEEL_DOWN, 10)
