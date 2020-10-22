@@ -471,12 +471,19 @@ def irregularLoop(resources, appname):
                         resources.ICON_ENEMY_CREATURE4,)
                 for b in BZ:
                     click(b)
+                    wait(0.5)
                     if exists(resources.BUTTON_OK4, 1) != None:
                         try:
                             click(resources.BUTTON_OK4)
                         except:
                             print "failed to click"
                         break
+                if len(findAny(resources.BUTTON_OK4)) > 0:
+                    try:
+                        click(resources.BUTTON_OK4)
+                    except:
+                        print "failed to click"
+                    break
                 wait(0.5)
                 if exists(resources.MESSAGE_NO_CREATURE_SELECTED,5) != None:
                     click(resources.BUTTON_OK2)

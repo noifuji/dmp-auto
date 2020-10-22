@@ -9,6 +9,23 @@ sys.path.append(EnvSettings.RES_DIR_PATH)
 import GameLib
 import CommonDMLib
 
+###################Settings######################
+NORMAL_LAST_EPISODE = 4
+NORMAL_LAST_STAGE = 10
+RESET_LAST_EPISODE = 2
+RESET_LAST_STAGE = 14
+###################Settings######################
+
+if len(sys.argv) >= 2 and sys.argv[1] == "reset":
+    print "reset mode is selected."
+    LAST_EPISODE = RESET_LAST_EPISODE
+    LAST_EPISODE = RESET_LAST_STAGE
+    instances = EnvSettings.NOX_RESET_INSTANCES
+else:
+    LAST_EPISODE = NORMAL_LAST_EPISODE
+    LAST_EPISODE = NORMAL_LAST_STAGE
+    instances = EnvSettings.NOX_INSTANCES
+
 appname = 'MAIN'
 mentionUser = EnvSettings.mentionUser
 Settings.MoveMouseDelay = 0.1
@@ -17,7 +34,6 @@ retryCount = 0
 exceptionCout = 0
 statisticsData = {"EPISODE":0,"STAGE":0}
 instances = []
-stageRegionValues = []
 resources = None
 
 def isClearedStage(resources):
@@ -31,26 +47,18 @@ def isClearedStage(resources):
         wait(3)
     return res
 
-###################Settings######################
-LAST_EPISODE = 4
-LAST_STAGE = 10
-###################Settings######################
-
 #Pre-processing Start
 if EnvSettings.ENGINE_FOR_MAIN == "ANDAPP":
     import AndAppResources
     import NoxResources
     resources = AndAppResources
     CommonDMLib.exitNox(NoxResources)
-    stageRegionValues = [-200, 240, 110, 50]
     instances = [0]
 elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
     import NoxResources
     resources = NoxResources
     App(EnvSettings.AppPath).close()
     App(EnvSettings.AndAppPath).close()
-    stageRegionValues = [-240, 284, 118, 70]
-    instances = EnvSettings.NOX_INSTANCES
     statuses = CommonDMLib.downloadQuestStatus()
     temp = []
     for instance in instances:
@@ -77,16 +85,22 @@ while instanceIndex < len(instances):
         
         for stage_loop in range(200):
             episode = CommonDMLib.getMainStoryEpisode(resources)
-            stage = CommonDMLib.getMainStoryStage(resources, 
-                    stageRegionValues[0], 
-                    stageRegionValues[1],
-                    stageRegionValues[2],
-                    stageRegionValues[3])
+            stage = CommonDMLib.getMainStoryStage(resources)
 
             if (episode > LAST_EPISODE) or (episode == LAST_EPISODE and stage > LAST_STAGE) or \
                     (episode == LAST_EPISODE and stage == LAST_STAGE and isClearedStage(resources)):
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories were cleared!', appname)
                 CommonDMLib.completeQuestStatus(instances[instanceIndex], "MAIN")
+                if len(sys.argv) >= 2 and sys.argv[1] == "reset" and EnvSettings.ENGINE_FOR_MAIN == "NOX":
+                    for checkRewardLoop in range(180):
+                        if len(findAny(NoxResources.BUTTON_BACK)) > 0:
+                            click(NoxResources.BUTTON_BACK)
+                        if len(findAny(NoxResources.ICON_HOME)) > 0:
+                            break
+                    CommonDMLib.getPresent(NoxResources)
+                    CommonDMLib.getMissionRewards(NoxResources)
+                    res = CommonDMLib.scanAccountInfo(NoxResources)
+                    CommonDMLib.updateAccountInfo(instance, res[0], res[1], res[2], res[3],res[4], res[5])
                 instanceIndex += 1
                 break
             

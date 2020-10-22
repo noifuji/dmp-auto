@@ -10,6 +10,7 @@ DECKIMAGE_STSPELL = "MESSAGE_LAST_SP_BATTLE-2.png"
 DECKIMAGE_SPBATTLE = "1601892166679.png"
 DECKIMAGE_MAIN = "DECKIMAGE_MAIN.png"
 #################DMP Common###############
+MESSAGE_MAINTENANCE ="1603341203261.png"
 BUTTON_TAKEOVER = Pattern("1594988274658.png").targetOffset(-162,150)
 BUTTON_MENU = "1602164588516.png"
 BUTTON_CLEAR_CACHE = "1602164597869.png"
@@ -81,14 +82,23 @@ BUTTON_CONFIRM_REWARD = "BUTTON_CONFIRM_REWARD.png"
 TITLE_REWARD_INFO = "TITLE_REWARD_INFO.png"
 ICON_CLEARED = Pattern("ICON_CLEARED.png").similar(0.85)
 
+STAGE_REGION_OFFSETS = {"x":-200,"y": 240, "w":200, "h":50}
 STAGES = [{"STAGE":1, "IMAGE":"1601273304749.png"},
             {"STAGE":2, "IMAGE":"1601273322817.png"},
-            {"STAGE":3, "IMAGE":"1601273332295.png"},
+            {"STAGE":3, "IMAGE":"1603187970895.png"},
             {"STAGE":4, "IMAGE":"1601273363595.png"},
-            {"STAGE":5, "IMAGE":"1601273374501.png"},
-            {"STAGE":6, "IMAGE":"1601273384379.png"},
-            {"STAGE":7, "IMAGE":"1601273397340.png"},
-            {"STAGE":8, "IMAGE":"1601273410662.png"},
+            {"STAGE":5, "IMAGE":"1603188734460.png"},
+            {"STAGE":5, "IMAGE":"1603188822771.png"},
+            {"STAGE":5, "IMAGE":"1603187805700.png"},
+            {"STAGE":6, "IMAGE":"1603188768017.png"},
+            {"STAGE":6, "IMAGE":"1603188836979.png"},
+            {"STAGE":6, "IMAGE":"1603187784409.png"},
+            {"STAGE":7, "IMAGE":"1603188783164.png"},
+            {"STAGE":7, "IMAGE":"1603188852776.png"},
+            {"STAGE":7, "IMAGE":"1603187564243.png"},
+            {"STAGE":8, "IMAGE":"1603188798521.png"},
+            {"STAGE":8, "IMAGE":"1603188867410.png"},
+            {"STAGE":8, "IMAGE":"1603188485226.png"},
             {"STAGE":9, "IMAGE":"1601273419500.png"},
             {"STAGE":10, "IMAGE":"1601273431022.png"},
             {"STAGE":1, "IMAGE":"1601273455215.png"},

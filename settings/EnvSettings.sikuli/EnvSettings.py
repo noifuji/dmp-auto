@@ -78,7 +78,11 @@ ENGINE_FOR_SP = userSettings["ENGINE_FOR_SP"]
 
 
 NOX_INSTANCES = UserSettings.NOX_INSTANCES2
-
+try:
+    NOX_RESET_INSTANCES = UserSettings.NOX_RESET_INSTANCES
+except:
+    NOX_RESET_INSTANCES = []
+    
 
 
 

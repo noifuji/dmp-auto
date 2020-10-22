@@ -94,7 +94,7 @@ def dragDropAtSpeed(fromImg, toImg, speed):
     
     mouseMove(fromImg)
     mouseDown(Button.LEFT)
-    wait(0.4)
+    wait(0.2)
     Settings.MoveMouseDelay = speed
     mouseMove(toImg_gx - fromImg_gx, toImg_gy - fromImg_gy)
     mouseUp(Button.LEFT)
@@ -570,36 +570,55 @@ def compareList(list1, list2) :
             return False
     return True
 
-def countAllCardsByRarity(resource, app):
+def countAllCardsByRarity(resource):
     names = []
     cards = []
-    rarities = resource.BUTTON_RARITY
-    for rarity in rarities:
+
+    #カードリストリージョンを取得する。
+    cardListTitle = findAny(resource.TITLE_CARD_LIST)
+    if len(cardListTitle) <= 0:
+        raise Exception("failed to detect CardList")
+    cardListX = cardListTitle[0].getX()
+    cardListY = cardListTitle[0].getY()
+    if resource.APP_ENGINE == "NOX":
+        cardListW = 1340
+        cardListH = 620
+    elif resource.APP_ENGINE == "ANDAPP":
+        cardListW = 1340
+        cardListH = 690
+    else:
+        raise Exception("Invalid App Engine")
+
+    cardListRegion = Region(cardListX,cardListY,cardListW,cardListH)
+    cardListRegionTopHalf = Region(cardListX, cardListY, cardListW, cardListH/2)
+    cardListRegionBottomHalf = Region(cardListX, cardListY + cardListH/2, cardListW, cardListH/2)
+
+    for rarity in resource.BUTTON_RARITIES:
         click(resource.BUTTON_FILTER)
         click(resource.BUTTON_RESET)
         click(rarity)
         wheel(rarity,Button.WHEEL_DOWN, 20)
-        wait(0.3)
+        wait(1)
         click(resource.BUTTON_DMPP01)
         click(resource.BUTTON_DMPP02)
         click(resource.BUTTON_DMPP03)
         click(resource.BUTTON_DMPP04)
         click(resource.BUTTON_DMPP05)
+        click(resource.BUTTON_DMPP06)
         click(resource.BUTTON_OK)
         wait(0.5)
         
         targets = resource.ICON_CARD_COUNT
         
         count = [0,0,0,0]
-        prevCount = [0,0,0,0]
         confirmedCount = [0,0,0,0]
         wheelCount = 0
     
         if exists(resource.SCROLL1, 0.5) == None:
             num = 0
             for target in targets :
-                region_of_DMApp = app.window()
-                f = Finder(SCREEN.capture())
+                cardListRegion.highlight(0.1)
+                f = Finder(SCREEN.capture(cardListRegion))
                 f.findAll(target)
                 result = []
                 while f.hasNext():
@@ -613,9 +632,8 @@ def countAllCardsByRarity(resource, app):
         for loop in range(1000):
             num = 0
             for target in targets :
-                region_of_DMApp = app.window()
-                region_of_DMApp.setH(region_of_DMApp.getH()*1/2)
-                f = Finder(SCREEN.capture(region_of_DMApp))
+                cardListRegionTopHalf.highlight(0.1)
+                f = Finder(SCREEN.capture(cardListRegionTopHalf))
                 f.findAll(target)
                 result = []
                 while f.hasNext():
@@ -628,18 +646,11 @@ def countAllCardsByRarity(resource, app):
             confirmedCount[2] += count[2]
             confirmedCount[3] += count[3]
             
-            prevCount[0] = count[0]
-            prevCount[1] = count[1]
-            prevCount[2] = count[2]
-            prevCount[3] = count[3]
-                
             if exists(resource.SCROLL2,0.5) != None:
                 num = 0
                 for target in targets :
-                    region_of_DMApp = app.window()
-                    region_of_DMApp.setY(region_of_DMApp.getY()+region_of_DMApp.getH()*1/2)
-                    region_of_DMApp.setH(region_of_DMApp.getH()*1/2)
-                    f = Finder(SCREEN.capture(region_of_DMApp))
+                    cardListRegionBottomHalf.highlight(0.1)
+                    f = Finder(SCREEN.capture(cardListRegionBottomHalf))
                     f.findAll(target)
                     result = []
                     while f.hasNext():
@@ -647,15 +658,24 @@ def countAllCardsByRarity(resource, app):
                     confirmedCount[num] += len(result)
                     num += 1
                 break
+
+            if resource.APP_ENGINE == "NOX":
+                dragDropAtSpeed(Pattern("1603354588837.png").targetOffset(22,470),Pattern("1603354588837.png").targetOffset(28,163) , 2.5)
+            elif resource.APP_ENGINE == "ANDAPP":
+                wheel(resource.TITLE_CARD_LIST, Button.WHEEL_DOWN, 4)
+            else:
+                raise Exception("Invalid App Engine")
             
-            wheel(resource.TITLE_CARD_LIST, Button.WHEEL_DOWN, 4)
-            wait(0.5)
         names.append(sum(confirmedCount))
         cards.append(confirmedCount[0]*1 + confirmedCount[1]*2 + confirmedCount[2]*3 + confirmedCount[3]*4)
+
     
-    print "VR:" + str(names[0]) + "Card Names / " + str(cards[0]) + "Cards"
-    print "SR:" + str(names[1]) + "Card Names / " + str(cards[1]) + "Cards"
-    return {"VR" : cards[0], "SR" : cards[1]}
+    print "C :" + str(names[0]) + "Card Names / " + str(cards[0]) + "Cards"
+    print "UC:" + str(names[1]) + "Card Names / " + str(cards[1]) + "Cards"
+    print "R :" + str(names[2]) + "Card Names / " + str(cards[2]) + "Cards"
+    print "VR:" + str(names[3]) + "Card Names / " + str(cards[3]) + "Cards"
+    print "SR:" + str(names[4]) + "Card Names / " + str(cards[4]) + "Cards"
+    return {"NAMES" : names, "CARDS" : cards}
 
 def chooseDeck(resource, deckImage):
     print "chooseDeck"
@@ -829,12 +849,12 @@ def closeMission(resource):
 
 def getTargetMissions(resource):
     print "getTargetMissions"
-    offsetX1 = 175
+    offsetX1 = 10
     offsetY1 = 185
     offsetY2 = 355
     offsetY3 = 525
-    width = 1070
-    height = 70
+    width = 1270
+    height = 140
     
     missionTitle = findAny(resource.TITLE_MISSION)
     if len(missionTitle) <= 0:
@@ -932,7 +952,11 @@ def waitStartingGame(resource):
 #OFFSET_Y = 284
 #WIDTH = 118
 #HEIGHT = 70
-def getMainStoryStage(resource, offsetX, offsetY, width, height):
+def getMainStoryStage(resource):
+    offsetX = resource.STAGE_REGION_OFFSETS["x"]
+    offsetY = resource.STAGE_REGION_OFFSETS["y"]
+    width = resource.STAGE_REGION_OFFSETS["w"] 
+    height = resource.STAGE_REGION_OFFSETS["h"] 
     stage = 0
     res = findAny(resource.TITLE_MAIN_STORY)
     if len(res) > 0:
@@ -1026,6 +1050,8 @@ def getStrategyByMainStoryStage(episode, stage):
         strategy = 2
     elif episode == 2 and stage == 4:
         strategy = 2
+    elif episode == 1 and stage == 12:
+        strategy = 100
     elif episode == 1 and stage >= 1 and stage <= 15:
         strategy = 2
     else:
@@ -1183,6 +1209,8 @@ def RestartNox(resources, ref):
                 print "failed to click"
         if len(findAny(resources.ICON_BROWSER)) > 0:
             break
+        if len(findAny(resources.MESSAGE_ONECLICK_ERROR)) > 0:
+            raise Exception("One Click Recovery Error")
         if noxLaunchLoop >= 599:
             raise Exception("Too many noxLaunchLoop")
         wait(1)
@@ -1212,7 +1240,7 @@ def RestartApp(resource):
         raise Exception
 
     skipUpdateFlag = True
-    for num in range(180):
+    for num in range(360):
         print "loading opening page......" + str(num)
         if resource.APP_ENGINE == "NOX":
             if len(findAny("1597912712276.png")) > 0:
@@ -1236,6 +1264,9 @@ def RestartApp(resource):
                 except:
                     print "failed to click"
                 break
+        if len(findAny(resource.MESSAGE_MAINTENANCE)) > 0:
+            wait(1800)
+            click(resource.BUTTON_OK)
         
         if len(findAny(resource.BUTTON_TAKEOVER)) > 0:
             print "The opening page is found."
