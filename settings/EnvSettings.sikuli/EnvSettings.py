@@ -54,6 +54,10 @@ def downloadUserSettings(computername):
         rawStrInstances = us['NOX_INSTANCES']
         instances = rawStrInstances.split('/')
         us['NOX_INSTANCES'] = [int(s) for s in instances]
+        
+        rawStrResetInstances = us['NOX_RESET_INSTANCES']
+        resetInstances = rawStrResetInstances.split('/')
+        us['NOX_RESET_INSTANCES'] = [int(s) for s in resetInstances]
 
     result = {}
     for us in usersettings:
