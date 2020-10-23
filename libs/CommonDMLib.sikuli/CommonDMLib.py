@@ -798,14 +798,14 @@ def skipNotifications(resource):
         click(resource.BUTTON_OK)
     
     #アカウント連携
-    if len(findAny(resource.BUTTON_LATER)) > 0 :
-        print 'Account backup recommendation'
-        click(resource.BUTTON_LATER)
+    #if len(findAny(resource.BUTTON_LATER)) > 0 :
+ #       print 'Account backup recommendation'
+ #       click(resource.BUTTON_LATER)
     
-    if len(findAny(resource.AD)) > 0:
-        print 'Ads was skipped.'
-        if len(findAny(resource.BUTTON_OK)) > 0:
-            click(resource.BUTTON_OK)
+ #   if len(findAny(resource.AD)) > 0:
+ #       print 'Ads was skipped.'
+  #      if len(findAny(resource.BUTTON_OK)) > 0:
+   #         click(resource.BUTTON_OK)
     wait(1)
     return 0
 
@@ -843,9 +843,8 @@ def changeMission(resource):
 
 def closeMission(resource):
     print "closeMission"
-    if len(findAny(resource.BUTTON_CLOSE)) > 0:
-        click(resource.BUTTON_CLOSE)
-        waitVanish(resource.TITLE_MISSION, 30)
+    type(Key.ESC)
+    waitVanish(resource.TITLE_MISSION, 30)
 
 def getTargetMissions(resource):
     print "getTargetMissions"
@@ -1064,8 +1063,8 @@ def getDeckByStrategy(resource, strategy):
         return [resource.DECKIMAGE_STSPELL, getDeckCode("DECKCODE_STSPELL")]
     elif strategy == 2 or strategy == 6:
          return [resource.DECKIMAGE_RED_BLACK, getDeckCode("DECKCODE_RED_BLACK")]
-    elif strategy == 3 or strategy == 4:
-        return [resource.DECKIMAGE_ST, getDeckCode("DECKCODE_ST")]
+    elif strategy == 3:
+         return [resource.DECKIMAGE_ST, getDeckCode("DECKCODE_ST")]
     elif strategy == 5:
         return [resource.DECKIMAGE_LARGE_CREATURE, getDeckCode("DECKCODE_LARGE_CREATURE")]
     elif strategy == 100:
@@ -1363,9 +1362,20 @@ def RestartApp(resource):
                         print "failed to click"
                 if len(findAny(resource.ICON_HOME)) > 0:
                     break
-        skipRewards(resource)
+        type(Key.ESC)
+        #skipRewards(resource)
         if len(findAny(resource.ICON_MISSION)) > 0:
             click(resource.ICON_MISSION)
-            if len(findAny(resource.TITLE_MISSION)) > 0:
+            if exists(resource.TITLE_MISSION,1) != None:
                 click(resource.BUTTON_CLOSE)
                 break
+#    if resource.APP_ENGINE == "NOX":
+#        click(resource.ICON_OTHER)
+#        wait(3)
+#        if exists(resource.BUTTON_SETTINGS,5) != None:
+#            if find(resource.BUTTON_SETTINGS).getScore() < 0.96:
+#                click(resource.BUTTON_SETTINGS)
+#                exists("1603422361520.png", 60)
+#                dragDropAtSpeed(Pattern("1603422361520.png").targetOffset(28,548), Pattern("1603422361520.png").targetOffset(0,3), 2)
+#                click("1603422431461.png")
+#                type(Key.ESC)

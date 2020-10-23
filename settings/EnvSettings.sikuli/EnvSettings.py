@@ -50,6 +50,11 @@ def downloadUserSettings(computername):
             continue
         usersettings.append({key: val for key, val in zip(usersettingsRaw[0], usersettingsRaw[i+1])})
 
+    for us in usersettings:
+        rawStrInstances = us['NOX_INSTANCES']
+        instances = rawStrInstances.split('/')
+        us['NOX_INSTANCES'] = [int(s) for s in instances]
+
     result = {}
     for us in usersettings:
         if us["COMPUTERNAME"] == computername:
@@ -77,9 +82,9 @@ ENGINE_FOR_LEGEND = userSettings["ENGINE_FOR_LEGEND"]
 ENGINE_FOR_SP = userSettings["ENGINE_FOR_SP"]
 
 
-NOX_INSTANCES = UserSettings.NOX_INSTANCES2
+NOX_INSTANCES = userSettings['NOX_INSTANCES']
 try:
-    NOX_RESET_INSTANCES = UserSettings.NOX_RESET_INSTANCES
+    NOX_RESET_INSTANCES = userSettings['NOX_RESET_INSTANCES']
 except:
     NOX_RESET_INSTANCES = []
     

@@ -536,9 +536,9 @@ def gameLoop(resources, strategy, appname):
             click(resources.AVATOR_DEFAULT_MALE)
             wait(1)
         #  マナチャージ
-        if strategy in [1,3,4,6]:
+        if strategy in [1,3,6]:
             print "no charge"
-        elif strategy == 2:
+        elif strategy in [2]:
             currentMana = ChargeManaRedBlack(resources)
         elif strategy == 5:
             currentMana = ChargeManaLarge(resources)
@@ -547,9 +547,9 @@ def gameLoop(resources, strategy, appname):
         wait(1)
         
         #  召喚
-        if strategy in [1,3,4,6]:
+        if strategy in [1,3,6]:
             print "no summon"
-        elif strategy == 2:
+        elif strategy in [2]:
             SummonRedBlack(resources,currentMana)
         elif strategy == 5:
             SummonLarge(resources,currentMana)
@@ -558,12 +558,13 @@ def gameLoop(resources, strategy, appname):
         wait(1)
         
         #  攻撃
-        if strategy in [1,4,6]:
+        if strategy in [1,6]:
             print "no attack"
         elif strategy in [2,100]:
             directAttack(resources)
         elif strategy == 3:
             battle(resources)
+            directAttack(resources)
         elif strategy == 5:
             if random.random() < 0.5:
                 directAttack(resources)

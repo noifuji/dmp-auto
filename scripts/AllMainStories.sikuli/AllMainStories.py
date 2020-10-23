@@ -16,16 +16,6 @@ RESET_LAST_EPISODE = 2
 RESET_LAST_STAGE = 14
 ###################Settings######################
 
-if len(sys.argv) >= 2 and sys.argv[1] == "reset":
-    print "reset mode is selected."
-    LAST_EPISODE = RESET_LAST_EPISODE
-    LAST_EPISODE = RESET_LAST_STAGE
-    instances = EnvSettings.NOX_RESET_INSTANCES
-else:
-    LAST_EPISODE = NORMAL_LAST_EPISODE
-    LAST_EPISODE = NORMAL_LAST_STAGE
-    instances = EnvSettings.NOX_INSTANCES
-
 appname = 'MAIN'
 mentionUser = EnvSettings.mentionUser
 Settings.MoveMouseDelay = 0.1
@@ -35,6 +25,16 @@ exceptionCout = 0
 statisticsData = {"EPISODE":0,"STAGE":0}
 instances = []
 resources = None
+
+if len(sys.argv) >= 2 and sys.argv[1] == "reset":
+    print "reset mode is selected."
+    LAST_EPISODE = RESET_LAST_EPISODE
+    LAST_EPISODE = RESET_LAST_STAGE
+    instances = EnvSettings.NOX_RESET_INSTANCES
+else:
+    LAST_EPISODE = NORMAL_LAST_EPISODE
+    LAST_EPISODE = NORMAL_LAST_STAGE
+    instances = EnvSettings.NOX_INSTANCES
 
 def isClearedStage(resources):
     res = False

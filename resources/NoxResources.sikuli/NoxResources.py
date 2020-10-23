@@ -80,8 +80,8 @@ TITLE_PACK3 = Pattern("1600523796024.png").similar(0.90)
 TITLE_PACK4 =Pattern("1600523808395.png").similar(0.90)
 TITLE_PACK5 =Pattern("1600523838234.png").similar(0.90)
 TITLE_PACK6 =Pattern("1602807194589.png").similar(0.90)
-TITLE_PACK5SR =Pattern("1603179673163.png").similar(0.94)
-TITLE_PACK6SR=Pattern("1603179632553.png").similar(0.94)
+TITLE_PACK5SR =Pattern("1603413839097.png").similar(0.85)
+TITLE_PACK6SR=Pattern("1603413856882.png").similar(0.85)
 TICKET_BEST = Pattern("1601801798254.png").similar(0.85)
 TITLE_ITEM = Pattern("1600524382930.png").targetOffset(268,239)
 TITLE_ITEM_DRAG = Pattern("1601009165140.png").targetOffset(372,392)
@@ -89,6 +89,7 @@ TITLE_ITEM_DROP = Pattern("1601009179822.png").targetOffset(359,68)
 BUTTON_OTHER = "1600525368575.png"
 TITLE_GOLD = Pattern("1600525512184.png").similar(0.85)
 TITLE_DMPOINT = "1600525496880.png"
+BUTTON_SETTINGS = "1603422089697.png"
 #################LegendBattle####################
 ICON_TARGET_REWARD = Pattern("1601645476931.png").similar(0.90)
 ICON_SP_TARGET_REWARD = Pattern("1601973838151.png").similar(0.85)
@@ -330,7 +331,7 @@ ALL_ICONS_OF_COST = [ICON_COST_WHITE_1,ICON_COST_WHITE_2,ICON_COST_WHITE_3,ICON_
         ICON_COST_RED_4,ICON_COST_BLACK_2,ICON_COST_BLACK_3,ICON_COST_BLACK_4]
 ICON_MY_UNTAPPED_CREATURE = Pattern("creature.png").similar(0.90).targetOffset(5,77)
 ICON_MY_UNTAPPED_CREATURE2 =Pattern("1601703910457.png").similar(0.95).targetOffset(-6,70) 
-ICON_MY_UNTAPPED_BLOCKER = Pattern("1596903270708.png").similar(0.80).targetOffset(-4,74)
+ICON_MY_UNTAPPED_BLOCKER = Pattern("1603409783512.png").similar(0.95)#Pattern("1596903270708.png").similar(0.80).targetOffset(-4,74)
 ICON_MY_TAPPED_CREATURE = Pattern("ICON_MY_TAPPED_CREATURE.png").similar(0.93).targetOffset(-3,67)
 ICON_ENEMY_UNTAPPED_CREATURE = Pattern("1596934367665.png").similar(0.90).targetOffset(10,59) 
 ICON_ENEMY_UNTAPPED_BLOCKER = Pattern("1602947681919.png").similar(0.85).targetOffset(-3,46)
