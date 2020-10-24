@@ -29,11 +29,11 @@ resources = None
 if len(sys.argv) >= 2 and sys.argv[1] == "reset":
     print "reset mode is selected."
     LAST_EPISODE = RESET_LAST_EPISODE
-    LAST_EPISODE = RESET_LAST_STAGE
+    LAST_STAGE = RESET_LAST_STAGE
     instances = EnvSettings.NOX_RESET_INSTANCES
 else:
     LAST_EPISODE = NORMAL_LAST_EPISODE
-    LAST_EPISODE = NORMAL_LAST_STAGE
+    LAST_STAGE = NORMAL_LAST_STAGE
     instances = EnvSettings.NOX_INSTANCES
 
 def isClearedStage(resources):
@@ -89,8 +89,6 @@ while instanceIndex < len(instances):
 
             if (episode > LAST_EPISODE) or (episode == LAST_EPISODE and stage > LAST_STAGE) or \
                     (episode == LAST_EPISODE and stage == LAST_STAGE and isClearedStage(resources)):
-                CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories were cleared!', appname)
-                CommonDMLib.completeQuestStatus(instances[instanceIndex], "MAIN")
                 if len(sys.argv) >= 2 and sys.argv[1] == "reset" and EnvSettings.ENGINE_FOR_MAIN == "NOX":
                     for checkRewardLoop in range(180):
                         if len(findAny(NoxResources.BUTTON_BACK)) > 0:
@@ -100,7 +98,9 @@ while instanceIndex < len(instances):
                     CommonDMLib.getPresent(NoxResources)
                     CommonDMLib.getMissionRewards(NoxResources)
                     res = CommonDMLib.scanAccountInfo(NoxResources)
-                    CommonDMLib.updateAccountInfo(instance, res[0], res[1], res[2], res[3],res[4], res[5])
+                    CommonDMLib.updateAccountInfo(instances[instanceIndex], res[0], res[1], res[2], res[3],res[4], res[5])
+                CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories were cleared!', appname)
+                CommonDMLib.completeQuestStatus(instances[instanceIndex], "MAIN")
                 instanceIndex += 1
                 break
             

@@ -38,9 +38,9 @@ apo = "apo.png"
 TARGET_DMP = 4000
 DECK_BLIZZARD = {"NAME":"Blizzard", "SR" : [blizard], "VR" : [spark,apo,court], "COLOR" : ["1603262159403.png", "1603262167793.png"]}
 DECK_LANCER = {"NAME":"Lancer", "SR" : [lancer], "VR" : [vision,surfer], "COLOR" : ["1599975832115.png"]}
-DECK_SAPPIRE = {"NAME":"Bolmeteus Sappire", "SR" : [sapphire,sabaki], "VR" : [extreme,surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
+DECK_SAPPIRE = {"NAME":"Bolmeteus Sappire", "SR" : [sapphire,sabaki,lostsoul], "VR" : [extreme,surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
 DECK_BALOM = {"NAME":"Balom", "SR" : [dolbalom,dolbalomSec,lostsoul,sabaki], "VR" : [surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
-TARGET_DECKS = [DECK_SAPPIRE,DECK_BALOM,DECK_BLIZZARD,DECK_LANCER]
+TARGET_DECKS = [DECK_SAPPIRE,DECK_BLIZZARD,DECK_LANCER]
 ####################Settings####################
 appname = 'RESET'
 mentionUser = EnvSettings.mentionUser
@@ -66,6 +66,30 @@ OK = Pattern("OK.png").similar(0.90)
 OK2 = Pattern("OK2.png").similar(0.80)
 tutorial = "tutorial.png"
 retry = "retry.png"
+
+def renameRunningNoxInstance(resources, ref):
+    App(EnvSettings.NoxMultiPlayerPath).open()
+    if exists(resources.TITLE_MULTI_PLAYER,120) == None:
+        killMultiPlayerManager()
+        raise Exception("MultiPlayerManager has error. Please retry to launch.")
+    for num in range(10):
+        if exists(resources.BUTTON_NOX_STOP, 1) == None:
+            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_DOWN, 1)
+        else:
+            break
+    for num in range(10):
+        if exists(resources.BUTTON_NOX_STOP, 1) == None:
+            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_UP, 2)
+        else:
+            break
+    if len(findAny(resources.BUTTON_NOX_STOP)) > 0:
+        click(resources.BUTTON_NOX_RENAME)
+        for bkLoop in range(20):
+            type(Key.BACKSPACE)
+        type(ref)
+        type(Key.ENTER)
+        wait(1)
+    App(EnvSettings.NoxMultiPlayerPath).close()
 
         
 def countCard(target):
@@ -102,25 +126,18 @@ def getTargetCount(targets):
         result += countCard(t)
     return result
 
-
+breakFlag = False
 for count in range(100):
     try:
-        ref = CommonDMLib.getSetupAccountRef()
-        if ref == "":
-            print "There are no setup accounts."
-            break
-        print "SetupAccount is started. ref : " + str(ref)
-        CommonDMLib.updatePlayerId(ref, "working", os.environ["COMPUTERNAME"])
-        print "A tempporary Player ID is updated."
-        username = ref
+        #仮のrefを設定
+        ref = "marathon"
         CommonDMLib.RestartNox(NoxResources,ref)
         CommonDMLib.callRemoveDataBat()
     except:
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.updatePlayerId(ref, "", "")
-        CommonDMLib.sendMessagetoSlack(mentionUser,'Failed to launch instance ' + str(ref) + ". Setup was canceled.", appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser,'Failed to launch instance. Setup was canceled.', appname)
         CommonDMLib.sendMessagetoSlack( mentionUser,traceback.format_exc(), appname)
         break
     
@@ -262,11 +279,15 @@ for count in range(100):
                                 print "failed to click"
                         if len(findAny(NoxResources.ICON_HOME)) > 0:
                             break
-                CommonDMLib.skipRewards(NoxResources)
+                
+                type(Key.ESC)
                 if len(findAny(NoxResources.ICON_MISSION)) > 0:
-                    click(NoxResources.ICON_MISSION)
-                    if len(findAny(NoxResources.TITLE_MISSION)) > 0:
-                        click(NoxResources.BUTTON_CLOSE)
+                    try:
+                        click(NoxResources.ICON_MISSION)
+                    except:
+                        print "failed to click"
+                    if exists(NoxResources.TITLE_MISSION,1) != None:
+                        type(Key.ESC)
                         break
 
             #ホーム画面から初回プレゼントを取得
@@ -383,21 +404,38 @@ for count in range(100):
                     break
             
             if successFlag:
-                mes = 'Success!! [ref = ' + ref  + ", name = " + deckName + ", score=" + str(score) + "]"
+                mes = "Success!! [name = " + deckName + ", score=" + str(score) + "]"
                 CommonDMLib.sendMessagetoSlack(mentionUser,mes, appname)
                 CommonDMLib.uploadScreenShotToSlack(mentionUser,"Screenshot" , appname)
                 cardCountResult = CommonDMLib.countAllCardsByRarity(NoxResources)
-                CommonDMLib.updateCardCount(ref, cardCountResult["NAMES"], cardCountResult["CARDS"])
                 click("1603258852950.png")
                 exists("1596781025606.png", 120)
                 click("1596781025606.png")
                 exists("1597235336512.png",10)
                 click("1597235336512.png")
                 exists("1597235361421.png",30)
-                CommonDMLib.uploadScreenShotToSlack(mentionUser, str(username), appname)
                 playerId = CommonDMLib.scanNumberChangeWidth("1601082545206.png", -270, 0, 233, 38, 0, 25)
+                #ref取得
+                ref = CommonDMLib.getSetupAccountRef()
+                if ref == "":
+                    CommonDMLib.sendMessagetoSlack(mentionUser,"No empty Ref numbers. Add Refs to the inventory list.", appname)
+                    breakFlag = True
+                    break
+                
+                CommonDMLib.updateCardCount(ref, cardCountResult["NAMES"], cardCountResult["CARDS"])
                 CommonDMLib.updatePlayerId(ref, playerId, os.environ["COMPUTERNAME"])
-                #スコアとデッキ名称をシートに記載する。
+                #プレーヤー名をrefに変更する。
+                click(Pattern("1603534330138.png").targetOffset(106,81))
+                for bkLoop in range(10):
+                    type(Key.BACKSPACE)
+                    wait(0.2)
+                type(str(ref))
+                wait(0.5)
+                click("1603541423678.png")
+                CommonDMLib.uploadScreenShotToSlack(mentionUser, str(ref), appname)
+                #インスタンス名をrefに変更する。
+                renameRunningNoxInstance(NoxResources, str(ref))
+                
                 break
             else:
                 print "No Target SRs."
@@ -416,3 +454,6 @@ for count in range(100):
             CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
             CommonDMLib.uploadScreenShotToSlack(mentionUser,"Screenshot" , appname)
             wait(5)
+            
+    if breakFlag:
+            break

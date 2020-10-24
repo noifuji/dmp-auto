@@ -12,6 +12,7 @@ DECKIMAGE_MAIN = "1601457706210.png"
 ##############NoxPlayer Home#################
 TITLE_MULTI_PLAYER = Pattern("1596962591946.png").targetOffset(92,154)
 BUTTON_NOX_STOP = Pattern("1596777933938.png").similar(0.90)
+BUTTON_NOX_RENAME = Pattern("1603533707676.png").similar(0.90).targetOffset(-337,-1)
 BUTTON_NOX_PLAY = Pattern("1601077335160.png").similar(0.95)
 ICON_SEARCH = Pattern("1601532705094.png").similar(0.83).targetOffset(-84,4)
 BUTTON_NOX_OK_BLUE = Pattern("1601533049989.png").similar(0.90)

@@ -1084,7 +1084,8 @@ def getPresent(resource):
             if len(findAny(resource.BUTTON_OK)) > 0:
                 click(resource.BUTTON_OK)
                 wait(3)
-                click(resource.BUTTON_CLOSE)
+                type(Key.ESC)
+                waitVanish(resource.TITLE_PRESENT)
                 break
 
 #only for Nox
@@ -1117,7 +1118,8 @@ def getMissionRewards(resource):
             wait(0.5)
             if len(findAny(resource.BUTTON_OK)) == 0:
                 break
-        click(resource.BUTTON_CLOSE)
+        type(Key.ESC)
+        waitVanish(resource.TITLE_MISSION)
 
 #True : On
 #False : Off
