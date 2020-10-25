@@ -498,8 +498,11 @@ def irregularLoop(resources, appname):
             if len(findAny(resources.MESSAGE_BLOCK)) > 0 or len(findAny(resources.MESSAGE_CHOOSE_BLOCKER)) > 0:
                 print 'Block?'
                 if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
-                    click(resources.ICON_MY_UNTAPPED_BLOCKER)
-                    click(resources.BUTTON_BLOCK)
+                    try:
+                        click(resources.ICON_MY_UNTAPPED_BLOCKER)
+                        click(resources.BUTTON_BLOCK)
+                    except:
+                        print "failed to click"
                 else:
                     click(resources.BUTTON_NOBLOCK)
                 wait(1)
