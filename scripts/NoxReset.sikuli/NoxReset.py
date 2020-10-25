@@ -37,7 +37,7 @@ apo = "apo.png"
 ####################Settings####################
 TARGET_DMP = 4000
 DECK_BLIZZARD = {"NAME":"Blizzard", "SR" : [blizard], "VR" : [spark,apo,court], "COLOR" : ["1603262159403.png", "1603262167793.png"]}
-DECK_LANCER = {"NAME":"Lancer", "SR" : [lancer], "VR" : [vision,surfer], "COLOR" : ["1599975832115.png"]}
+DECK_LANCER = {"NAME":"Lancer", "SR" : [lancer], "VR" : [vision,surfer,spark], "COLOR" : ["1603262159403.png","1599975832115.png"]}
 DECK_SAPPIRE = {"NAME":"Bolmeteus Sappire", "SR" : [sapphire,sabaki,lostsoul], "VR" : [extreme,surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
 DECK_BALOM = {"NAME":"Balom", "SR" : [dolbalom,dolbalomSec,lostsoul,sabaki], "VR" : [surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
 TARGET_DECKS = [DECK_SAPPIRE,DECK_BLIZZARD,DECK_LANCER]
@@ -411,9 +411,29 @@ for count in range(100):
                 click("1603258852950.png")
                 exists("1596781025606.png", 120)
                 click("1596781025606.png")
+                wait(3)
+                click("1596781081109.png")
+                exists("1596781095779.png", 30)
+                wheel(Pattern("1596781095779.png").targetOffset(19,145), Button.WHEEL_DOWN, 100)
+                wait(5)
+                click(Pattern("1596781218965.png").targetOffset(503,-3))
+                click(Pattern("1596781239281.png").targetOffset(499,-1))
+                click(Pattern("1596781253234.png").targetOffset(511,1))
+                click(Pattern("1596781269013.png").targetOffset(500,8))
+                click(Pattern("1596781287439.png").similar(0.60).targetOffset(506,0))
+                wait(0.5)
+                type(Key.ESC)
                 exists("1597235336512.png",10)
                 click("1597235336512.png")
                 exists("1597235361421.png",30)
+                click(Pattern("1600004482153.png").targetOffset(9,-27))
+                exists("1600004545866.png", 60)
+                click("1600004566684.png")
+                click(Pattern("1600004640701.png").targetOffset(-263,282))
+                click("1600004681385.png")
+                exists("1600004729257.png",10)
+                click(Pattern("1600004729257.png").targetOffset(6,330))
+                exists("1600004802890.png", 120)
                 playerId = CommonDMLib.scanNumberChangeWidth("1601082545206.png", -270, 0, 233, 38, 0, 25)
                 #ref取得
                 ref = CommonDMLib.getSetupAccountRef()

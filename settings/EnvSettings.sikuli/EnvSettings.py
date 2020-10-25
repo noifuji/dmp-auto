@@ -69,33 +69,35 @@ def downloadUserSettings(computername):
     
     return result
 
-userSettings = downloadUserSettings(os.environ["COMPUTERNAME"])
-
-TOKEN = userSettings["TOKEN"]
-TARGET_CHANNEL = userSettings["TARGET_CHANNEL"]
-DRIVE_DECK_CODE_JSON_URL = userSettings["DRIVE_DECK_CODE_JSON_URL"]
-ACCOUNT_INFO_SHEET_ID = userSettings["ACCOUNT_INFO_SHEET_ID"]
-STATISTICS_SHEET_ID = userSettings["STATISTICS_SHEET_ID"]
-mentionUser = userSettings["MENTION_AT"]
-AppPath = userSettings["ANDAPP_DMP_PATH"]
-AndAppPath = userSettings["ANDAPP_PATH"]
-NoxDirPath = userSettings["NOX_BIN_PATH"]
-RUN_MODE = userSettings["RUN_MODE"]
-ENGINE_FOR_MAIN = userSettings["ENGINE_FOR_MAIN"]
-ENGINE_FOR_LEGEND = userSettings["ENGINE_FOR_LEGEND"]
-ENGINE_FOR_SP = userSettings["ENGINE_FOR_SP"]
-
-
-NOX_INSTANCES = userSettings['NOX_INSTANCES']
 try:
-    NOX_RESET_INSTANCES = userSettings['NOX_RESET_INSTANCES']
-except:
-    NOX_RESET_INSTANCES = []
+    userSettings = downloadUserSettings(os.environ["COMPUTERNAME"])
+
+    TOKEN = userSettings["TOKEN"]
+    TARGET_CHANNEL = userSettings["TARGET_CHANNEL"]
+    DRIVE_DECK_CODE_JSON_URL = userSettings["DRIVE_DECK_CODE_JSON_URL"]
+    ACCOUNT_INFO_SHEET_ID = userSettings["ACCOUNT_INFO_SHEET_ID"]
+    STATISTICS_SHEET_ID = userSettings["STATISTICS_SHEET_ID"]
+    mentionUser = userSettings["MENTION_AT"]
+    AppPath = userSettings["ANDAPP_DMP_PATH"]
+    AndAppPath = userSettings["ANDAPP_PATH"]
+    NoxDirPath = userSettings["NOX_BIN_PATH"]
+    RUN_MODE = userSettings["RUN_MODE"]
+    ENGINE_FOR_MAIN = userSettings["ENGINE_FOR_MAIN"]
+    ENGINE_FOR_LEGEND = userSettings["ENGINE_FOR_LEGEND"]
+    ENGINE_FOR_SP = userSettings["ENGINE_FOR_SP"]
     
-
-
-
-NoxAppPath = os.path.join(NoxDirPath, r"Nox.exe")
-NoxMultiPlayerPath = os.path.join(NoxDirPath, r"MultiPlayerManager.exe")
-NoxAdbPath = os.path.join(NoxDirPath, r"adb.exe")
-
+    
+    NOX_INSTANCES = userSettings['NOX_INSTANCES']
+    try:
+        NOX_RESET_INSTANCES = userSettings['NOX_RESET_INSTANCES']
+    except:
+        NOX_RESET_INSTANCES = []
+        
+    
+    
+    
+    NoxAppPath = os.path.join(NoxDirPath, r"Nox.exe")
+    NoxMultiPlayerPath = os.path.join(NoxDirPath, r"MultiPlayerManager.exe")
+    NoxAdbPath = os.path.join(NoxDirPath, r"adb.exe")
+except:
+    print "failed to access Sheet"
