@@ -169,7 +169,8 @@ while instanceIndex < len(instances):
             
         #バトルループエンド
     except SystemExit as e:
-        CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
+        if e == 50:
+            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
     except:
         e = sys.exc_info()
