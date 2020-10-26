@@ -1167,7 +1167,7 @@ def exitNox(resources):
         click(resources.BUTTON_NOX_STOP)
         if exists(resources.BUTTON_NOX_OK_BLUE, 10) != None:
             click(resources.BUTTON_NOX_OK_BLUE)
-        if waitVanish(resources.BUTTON_NOX_STOP, 120) == False:
+        if waitVanish(resources.BUTTON_NOX_STOP, 180) == False:
             print "Nox instance stays."
             exit(1)
     App(EnvSettings.NoxMultiPlayerPath).close()

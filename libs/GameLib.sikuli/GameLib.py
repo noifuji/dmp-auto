@@ -569,7 +569,7 @@ def gameLoop(resources, strategy, appname):
             battle(resources)
             directAttack(resources)
         elif strategy == 5:
-            if random.random() < 0.5:
+            if random.random() < 0.7:
                 directAttack(resources)
 
         #その他

@@ -40,7 +40,7 @@ DECK_BLIZZARD = {"NAME":"Blizzard", "SR" : [blizard], "VR" : [spark,apo,court], 
 DECK_LANCER = {"NAME":"Lancer", "SR" : [lancer], "VR" : [vision,surfer,spark], "COLOR" : ["1603262159403.png","1599975832115.png"]}
 DECK_SAPPIRE = {"NAME":"Bolmeteus Sappire", "SR" : [sapphire,sabaki,lostsoul], "VR" : [extreme,surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
 DECK_BALOM = {"NAME":"Balom", "SR" : [dolbalom,dolbalomSec,lostsoul,sabaki], "VR" : [surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
-TARGET_DECKS = [DECK_SAPPIRE,DECK_BLIZZARD,DECK_LANCER]
+TARGET_DECKS = [DECK_SAPPIRE]
 ####################Settings####################
 appname = 'RESET'
 mentionUser = EnvSettings.mentionUser
