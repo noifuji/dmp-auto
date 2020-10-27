@@ -29,11 +29,34 @@ ACCOUNT_INFO_COMPUTERNAME_COL = "AB"
 ACCOUNT_INFO_MAIN_COL = "AC"
 ACCOUNT_INFO_LEGEND_COL = "AD"
 ACCOUNT_INFO_SP_END_COL = "AE"
+ACCOUNT_INFO_CREATEDATE_COL = "AF"
 ACCOUNT_INFO_START_ROW = "3"
 ACCOUNT_INFO_END_ROW = "300"
 
 sys.path.append(JAVA_API_PATH)
 from spreadsheetapis import SpreadSheetApis
+
+def zip_longer(list1, list2):
+    if len(list1) >= len(list2):
+        result = []
+        for i in range(len(list1)):
+            if i > (len(list2) - 1):
+                l2 = ""
+            else:
+                l2 = list2[i]
+            result.append((list1[i], l2))
+    else:
+        result = []
+        for i in range(len(list2)):
+            if i > (len(list1) - 1):
+                l1 = ""
+            else:
+                l1 = list1[i]
+            result.append((l1, list2[i]))
+            
+    return result
+
+
 
 def downloadUserSettings(computername):
     print "downloadUserSettings"
@@ -45,19 +68,22 @@ def downloadUserSettings(computername):
     usersettingsRaw = spreadsheet.read(UserSettings.USER_SETTINGS_SHEET_ID, "UserSettings!A1:Z300", "COLUMNS")
     usersettings = []
     for i in range(len(usersettingsRaw)-1):
-        if len(usersettingsRaw[0]) != len(usersettingsRaw[i+1]):
-            print "Usersettings must have all attributes."
-            continue
-        usersettings.append({key: val for key, val in zip(usersettingsRaw[0], usersettingsRaw[i+1])})
+        usersettings.append({key: val for key, val in zip_longer(usersettingsRaw[0], usersettingsRaw[i+1])})
 
     for us in usersettings:
         rawStrInstances = us['NOX_INSTANCES']
         instances = rawStrInstances.split('/')
-        us['NOX_INSTANCES'] = [int(s) for s in instances]
+        if len(instances) == 1 and instances[0] == "":
+            us['NOX_INSTANCES'] = []
+        else:
+            us['NOX_INSTANCES'] = [int(s) for s in instances]
         
         rawStrResetInstances = us['NOX_RESET_INSTANCES']
         resetInstances = rawStrResetInstances.split('/')
-        us['NOX_RESET_INSTANCES'] = [int(s) for s in resetInstances]
+        if len(resetInstances) == 1 and resetInstances[0] == "":
+            us['NOX_RESET_INSTANCES'] = []
+        else:
+            us['NOX_RESET_INSTANCES'] = [int(s) for s in resetInstances]
 
     result = {}
     for us in usersettings:

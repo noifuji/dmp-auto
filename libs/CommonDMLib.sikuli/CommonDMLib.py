@@ -295,6 +295,9 @@ def updatePlayerId(ref, playerId, computername):
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
             EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(rowIndex), [[computername]], "ROWS")
+    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
+            EnvSettings.ACCOUNT_INFO_CREATEDATE_COL + str(rowIndex), [[datetime.now().strftime("%Y/%m/%d")]], "ROWS")#aaa
 
 def updateAccountInfo(ref, lv, dmp, gold, packs, srPack, bestPack):
     row = [[lv, dmp, gold]]
@@ -821,20 +824,8 @@ def openMission(resource):
 
 def changeMission(resource):
     print "changeMission"
-    if exists(resource.MISSION_WIN_5["IMAGE"], 1) != None:
-        click(resource.MISSION_WIN_5["IMAGE"])
-        wait(3)
-        if exists(resource.BUTTON_OK, 10) != None:
-            click(resource.BUTTON_OK)
-            wait(1)
-    if exists(resource.MISSION_SUMMON_3_SHINKA["IMAGE"], 1) != None:
-        click(resource.MISSION_SUMMON_3_SHINKA["IMAGE"])
-        wait(3)
-        if exists(resource.BUTTON_OK, 10) != None:
-            click(resource.BUTTON_OK)
-            wait(1)
-    if exists(resource.MISSION_SPELL_4_HIGHER5["IMAGE"], 1) != None:
-        click(resource.MISSION_SPELL_4_HIGHER5["IMAGE"])
+    if exists(resource.MISSION_DRAW_20["IMAGE"], 1) != None:
+        click(resource.MISSION_DRAW_20["IMAGE"])
         wait(3)
         if exists(resource.BUTTON_OK, 10) != None:
             click(resource.BUTTON_OK)
