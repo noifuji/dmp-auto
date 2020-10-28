@@ -1033,23 +1033,15 @@ def startMainStoryBattle(resource, deckImage, deckcode):
 
 def getStrategyByMainStoryStage(episode, stage):
     strategy = 100
-    if episode == 4 and stage == 3:
+    if episode == 1 and stage in [1,2,3,4,5,6,7,8,9,10,11,13,14,15]:
         strategy = 2
-    elif episode == 4 and stage == 9:
+    elif episode == 2 and stage in [4,6,13]:
         strategy = 2
-    elif episode == 3 and stage == 2:
-        strategy = 100
-    elif episode == 2 and stage == 10:
+    elif episode == 2 and stage in [10,12]:
         strategy = 102
-    elif episode == 2 and stage == 6:
-        strategy = 2
-    elif episode == 2 and stage == 13:
-        strategy = 2
-    elif episode == 2 and stage == 4:
-        strategy = 2
-    elif episode == 1 and stage == 12:
+    elif episode == 3 and stage in [2]:
         strategy = 100
-    elif episode == 1 and stage >= 1 and stage <= 15:
+    elif episode == 4 and stage in [3,9]:
         strategy = 2
     else:
         strategy = 100

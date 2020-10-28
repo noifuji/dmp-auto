@@ -691,7 +691,7 @@ def gameLoop(resources, strategy, appname):
             SummonLarge(resources,currentMana)
         elif strategy == 100:
             SummonBasic(resources,currentMana)
-        elif strategy == 100:
+        elif strategy == 102:
             SummonFatty(resources,currentMana)
         wait(1)
         
