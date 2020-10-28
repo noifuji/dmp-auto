@@ -195,6 +195,15 @@ while instanceIndex < len(instances):
                             click(resources.EPISODES[1]["IMAGE"])
                         except:
                             print "failed to click"
+
+                #レビュー依頼をキャンセルする。
+                if len(findAny(resources.BUTTON_CANCEL)) > 0:
+                    try:
+                        click(resources.BUTTON_CANCEL)
+                    except:
+                        print "failed to click"
+                        
+                            
                 if len(findAny(resources.BUTTON_CONFIRM_REWARD)) > 0:
                     try:
                         click(resources.BUTTON_CONFIRM_REWARD)

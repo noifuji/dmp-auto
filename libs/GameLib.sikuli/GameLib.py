@@ -163,6 +163,61 @@ def ChargeManaLarge(resources):
         
     return mana
 
+def ChargeManaFatty(resources):
+    print 'ChargeManaFatty'
+    #マナ取得
+    mana = getManaNumBeforeCharge(resources)
+    print 'ManaZone(Before charge):' + str(mana)
+    hand = getHandCount(resources, [
+                resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_4,
+                resources.ICON_COST_GREEN_7,resources.ICON_COST_WHITE_6,
+                resources.ICON_COST_GREEN_3,resources.ICON_COST_WHITE_2,
+                resources.ICON_COST_GREEN_2,resources.ICON_COST_WHITE_7,
+                resources.ICON_COST_WHITE_1])
+    print 'Hand:' + str(hand)
+    #マナ0-2
+    #　チャージ　大きい順にチャージ
+    if mana == 0:
+        Hand = findAny(
+                resources.ICON_COST_WHITE_6,resources.ICON_COST_WHITE_4,
+                resources.ICON_COST_WHITE_2,resources.ICON_COST_WHITE_1,
+                resources.ICON_COST_GREEN_5,resources.ICON_COST_GREEN_3,
+                resources.ICON_COST_GREEN_2)
+    elif mana == 1:
+        Hand = findAny(
+                resources.ICON_COST_GREEN_5,resources.ICON_COST_GREEN_7,
+                resources.ICON_COST_GREEN_3,resources.ICON_COST_GREEN_2,
+                resources.ICON_COST_WHITE_1,resources.ICON_COST_WHITE_6,
+                resources.ICON_COST_WHITE_4,resources.ICON_COST_WHITE_2)
+    elif mana >= 2 and mana <= 3:
+        Hand = findAny(
+                resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_1,
+                resources.ICON_COST_WHITE_6,
+                resources.ICON_COST_WHITE_4,resources.ICON_COST_WHITE_2,
+                resources.ICON_COST_GREEN_2,resources.ICON_COST_GREEN_3,
+                resources.ICON_COST_GREEN_7) 
+    elif mana >= 4 and mana <= 5:
+        Hand = findAny(
+                resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_1,
+                resources.ICON_COST_WHITE_6,
+                resources.ICON_COST_WHITE_4,resources.ICON_COST_WHITE_2,
+                resources.ICON_COST_GREEN_2,resources.ICON_COST_GREEN_3,
+                resources.ICON_COST_GREEN_7,) 
+    #　手札が3枚以上ならチャージ
+    elif mana == 6:
+        Hand = findAny(
+                resources.ICON_COST_GREEN_5,resources.ICON_COST_GREEN_3,
+                resources.ICON_COST_GREEN_2,resources.ICON_COST_WHITE_4,
+                resources.ICON_COST_WHITE_1,resources.ICON_COST_WHITE_2,
+                resources.ICON_COST_WHITE_6,resources.ICON_COST_WHITE_7)
+    else:
+        return mana
+    
+    if len(Hand) > 0:         
+        charge(resources,Hand[0])
+        mana += 1
+    return mana
+
 def SummonBasic(resources, currentMana):
     print 'SummonBasic'
     availableMana = currentMana
@@ -346,6 +401,77 @@ def SummonLarge(resources, currentMana):
             break
         wait(1)
 
+def SummonFatty(resources, currentMana):
+    print 'SummonFatty'
+    availableMana = currentMana
+    print 'Available Mana : ' + str(availableMana)
+    count = 0
+    for num in range(10):
+        summon_creature = None
+        g2 = findAny(resources.ICON_COST_GREEN_2)
+        g3 = findAny(resources.ICON_COST_GREEN_3)
+        g5 = findAny(resources.ICON_COST_GREEN_5)
+        g7 = findAny(resources.ICON_COST_GREEN_7)
+        w1 = findAny(resources.ICON_COST_WHITE_1)
+        w2 = findAny(resources.ICON_COST_WHITE_2)
+        w4 = findAny(resources.ICON_COST_WHITE_4)
+        w6 = findAny(resources.ICON_COST_WHITE_6)
+        w7 = findAny(resources.ICON_COST_WHITE_7)
+
+        if len(w7) > 0  and availableMana >= 7:
+            print 'Summon White Cost7.'
+            summon_creature = w7[0]
+            availableMana-=7
+        elif len(g7) > 0 and availableMana >= 7:
+            print 'Summon Green Cost7.'
+            summon_creature = g7[0]
+            availableMana-=7
+        elif len(w2) > 0  and availableMana >= 2:
+            print 'Summon White Cost2.'
+            summon_creature = w2[0]
+            availableMana-=2
+        elif len(g3) > 0  and availableMana >= 3:
+            print 'Summon Green Cost3.'
+            summon_creature = g3[0]
+            availableMana-=2
+        elif len(g2) > 0  and availableMana >= 2:
+            print 'Summon Green Cost2.'
+            summon_creature = g2[0]
+            availableMana-=1
+        elif len(w4) > 0  and availableMana >= 4:
+            print 'Summon White Cost4.'
+            summon_creature = w4[0]
+            availableMana-=4
+        elif len(w1) > 0  and availableMana >= 1:
+            print 'Summon White Cost1.'
+            summon_creature = w1[0]
+            availableMana-=1
+        elif len(w6) > 0  and availableMana >= 6:
+            print 'Summon White Cost6.'
+            summon_creature = w6[0]
+            availableMana-=6
+        elif len(g5) > 0  and availableMana >= 5:
+            print 'Summon Green Cost5.'
+            summon_creature = g5[0]
+            availableMana-=5
+        else:
+            print 'Couldnt find a summonable creature. Break loop.'
+            break
+        
+        try:
+            summon(resources,summon_creature)
+        except:
+            Settings.MoveMouseDelay = 0.1
+            break
+        wait(2)
+        if exists(resources.BUTTON_OK2, 2) != None:
+            try:
+                click(resources.BUTTON_OK2)
+                wait(1)
+                click(resources.BUTTON_OK2)
+            except:
+                print "failed to click"
+
 
 def directAttack(resources):
     print 'directAttack'
@@ -431,6 +557,11 @@ def irregularLoop(resources, appname):
             wait(1)
             break
         
+        #不落の超人の強制アタックを検知
+        if len(findAny(resources.BUTTON_TURN_END_RED)) > 0:
+            print 'Force attack is detected. Retiring this game.'
+            retire(resources)
+        
         #   トリガー発動 
         if appname not in ["SP"]:
             if len(findAny(resources.BUTTON_ST)) > 0:
@@ -472,13 +603,13 @@ def irregularLoop(resources, appname):
                 for b in BZ:
                     click(b)
                     wait(0.5)
-                    if exists(resources.BUTTON_OK4, 1) != None:
+                    if exists(resources.ICON_SELECTED, 1) != None:
                         try:
                             click(resources.BUTTON_OK4)
                         except:
                             print "failed to click"
                         break
-                if len(findAny(resources.BUTTON_OK4)) > 0:
+                if len(findAny(resources.ICON_SELECTED)) > 0:
                     try:
                         click(resources.BUTTON_OK4)
                     except:
@@ -497,14 +628,14 @@ def irregularLoop(resources, appname):
         if appname not in ["LEGEND", "SP"]:
             if len(findAny(resources.MESSAGE_BLOCK)) > 0 or len(findAny(resources.MESSAGE_CHOOSE_BLOCKER)) > 0:
                 print 'Block?'
-                if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
-                    try:
-                        click(resources.ICON_MY_UNTAPPED_BLOCKER)
-                        click(resources.BUTTON_BLOCK)
-                    except:
-                        print "failed to click"
-                else:
-                    click(resources.BUTTON_NOBLOCK)
+                #if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
+                #    try:
+                #        click(resources.ICON_MY_UNTAPPED_BLOCKER)
+                #        click(resources.BUTTON_BLOCK)
+                #    except:
+                #        print "failed to click"
+                #else:
+                click(resources.BUTTON_NOBLOCK)
                 wait(1)
 
         
@@ -561,11 +692,11 @@ def gameLoop(resources, strategy, appname):
         wait(1)
         
         #  攻撃
-        if strategy in [1,6]:
+        if strategy in [6]:
             print "no attack"
         elif strategy in [2,100]:
             directAttack(resources)
-        elif strategy == 3:
+        elif strategy in [1,3]:
             battle(resources)
             directAttack(resources)
         elif strategy == 5:

@@ -5,10 +5,11 @@ APP_ENGINE = "NOX"
 #################DECKS###############
 DECKIMAGE_RED_BLACK = Pattern("1598939664217.png").similar(0.85)
 DECKIMAGE_ST = Pattern("1596892120520-1.png").similar(0.90)
-DECKIMAGE_LARGE_CREATURE = "1599784444953.png"#Pattern("1596892035465.png").similar(0.90)
+DECKIMAGE_LARGE_CREATURE = "1599784444953.png"
 DECKIMAGE_STSPELL = "1598831170897.png"
 DECKIMAGE_SPBATTLE = "1601891857285.png"
 DECKIMAGE_MAIN = "1601457706210.png"
+DECKIMAGE_FATTY = "1603892339978.png"
 ##############NoxPlayer Home#################
 TITLE_MULTI_PLAYER = Pattern("1596962591946.png").targetOffset(92,154)
 BUTTON_NOX_STOP = Pattern("1596777933938.png").similar(0.90)
@@ -203,7 +204,7 @@ MISSION_CHARGE_10={"GROUP":"SPEED","NAME":"MISSION_CHARGE_10","IMAGE":Pattern("C
 MISSION_BREAK_3={"GROUP":"LARGE","NAME":"MISSION_BREAK_3","IMAGE":Pattern("Break3ShieldsInOneTurn-1.png")}
 
 #BATTLE
-MISSION_DEST_4={"GROUP":"BATTLE","NAME":"MISSION_DEST_4","IMAGE":Pattern("1596881282876-1.png")}
+MISSION_DEST_4={"GROUP":"SPELL","NAME":"MISSION_DEST_4","IMAGE":Pattern("1596881282876-1.png")}
 MISSION_BATTLE_5={"GROUP":"BATTLE","NAME":"MISSION_BATTLE_5","IMAGE":Pattern("FiveTimesBattleWithCreatures-1.png")}
 
 #ST
@@ -285,8 +286,10 @@ BUTTON_DMPP05 = "BUTTON_DMPP05.png"
 BUTTON_DMPP06 ="1602809581827.png"
 ICON_CARD_COUNT = [Pattern("x1.png").similar(0.85),Pattern("x2.png").similar(0.92),Pattern("x3.png").similar(0.91),Pattern("x4.png").similar(0.90)]
 TITLE_CARD_LIST = Pattern("1603352084329.png").targetOffset(53,166)
+TITLE_DECK = "1603869510560.png"
 ################DUEL#################
 BUTTON_TURN_END = "turnEnd.png"
+BUTTON_TURN_END_RED = "1603866822802.png"
 BUTTON_ENEMY_TURN = Pattern("1601886511079.png").similar(0.82)
 AVATOR_DEFAULT_MALE = Pattern("Avator-1.png").targetOffset(376,-12)
 ICON_MANA_0 = Pattern("mana0_beforeCharge.png").similar(0.95)
@@ -304,7 +307,7 @@ ICON_MANA_11 = Pattern("mana11.png").similar(0.95)
 MANA_ICONS = [ICON_MANA_0, ICON_MANA_1, ICON_MANA_2, ICON_MANA_3, ICON_MANA_4, ICON_MANA_5, ICON_MANA_6, ICON_MANA_7]
 ICON_CARD_SQUARE = Pattern("1601473911812.png").similar(0.84)
 ICON_COST_WHITE_1 = Pattern("wcost1.png").similar(0.85).targetOffset(81,51)
-ICON_COST_WHITE_2 = Pattern("1601509713697.png").similar(0.87).targetOffset(69,62)#Pattern("wcost2.png").similar(0.85).targetOffset(74,55)
+ICON_COST_WHITE_2 = Pattern("1601509713697.png").similar(0.87).targetOffset(69,62)
 ICON_COST_WHITE_3 = Pattern("wcost3.png").similar(0.95).targetOffset(51,50)
 ICON_COST_WHITE_4 = Pattern("ICON_COST_WHITE_4.png").similar(0.90).targetOffset(67,73)
 ICON_COST_WHITE_6 = Pattern("1601540414332.png").similar(0.87).targetOffset(76,69)
@@ -357,7 +360,7 @@ TARGET_POSITION_DIRECT_ATTACK = Pattern("1596770245448.png").targetOffset(-419,6
 TARGET_POSITION_FIRST_SHIELD = Pattern("1596770307126.png").targetOffset(-246,-522)
 TARGET_POSITION_SECOND_SHIELD = Pattern("1596770307126-1.png").targetOffset(246,-515)
 MESSAGE_NO_CREATURE_SELECTED = "MESSAGE_NO_CREATURE_SELECTED.png"
-
+ICON_SELECTED = "1603807142933.png"
 MESSAGE_EFFECT = Pattern("1596934235569.png").similar(0.88)
 MESSAGE_BOUNCE = Pattern("1596934544674.png").similar(0.90)
 MESSAGE_TAP = Pattern("MESSAGE_TAP.png").similar(0.90)

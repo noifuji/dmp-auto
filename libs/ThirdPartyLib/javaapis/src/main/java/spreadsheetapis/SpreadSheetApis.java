@@ -14,6 +14,7 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
+import com.google.api.services.drive.DriveScopes;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,12 +25,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class SpreadSheetApis {
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String TOKENS_DIRECTORY_PATH = "data";
-  private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
+  private static final List<String> SCOPES = Arrays.asList(SheetsScopes.SPREADSHEETS,DriveScopes.DRIVE);
 	
 	
   private Sheets service;

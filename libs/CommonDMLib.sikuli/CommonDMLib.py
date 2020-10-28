@@ -719,9 +719,15 @@ def addNewDeckByCode(resource, code):
         wait(1)
     exists(resource.BUTTON_SAVE_DECK, 60)
     click(resource.BUTTON_SAVE_DECK)
-    exists(resource.BUTTON_OK, 60)
-    click(resource.BUTTON_OK)
-    exists(resource.TITLE_DECKLIST, 30)
+    for okLoop in range(100):
+        if len(findAny(resource.BUTTON_OK)) > 0:
+            try:
+                click(resource.BUTTON_OK)
+            except:
+                print "failed to click"
+        if len(findAny(resource.TITLE_DECKLIST)) > 0:
+            break
+        wait(0.5)
 
 def skipStory(resource):
     print 'skipStory'
@@ -981,21 +987,20 @@ def getMainStoryEpisode(resource):
     return episode
 
 def openMainStory(resource):
-    print 'openAndStartMainStory'
+    print 'openMainStory'
     breakCount = 0
     for openStoryLoop in range(100):
-        if exists(resource.ICON_SOLO_PLAY, 1) != None:
+        if len(findAny(resource.ICON_SOLO_PLAY)) > 0:
             click(resource.ICON_SOLO_PLAY)
             wait(3)
-        if exists(resource.BUTTON_MAIN_STORY, 1) != None:
+        if len(findAny(resource.BUTTON_MAIN_STORY)) > 0:
             click(resource.BUTTON_MAIN_STORY)
-        if exists(resource.BUTTON_BACK, 1) != None:
+        if len(findAny(resource.BUTTON_BACK)) > 0:
             click(resource.BUTTON_BACK2)
         if len(findAny(resource.TITLE_MAIN_STORY2)) > 0:
             breakCount += 1
         if breakCount > 5:
             break
-        wait(0.5)
 
 def chooseMainStoryStage(resource, ep, stageImage):
     if ep == 1:
@@ -1034,6 +1039,8 @@ def getStrategyByMainStoryStage(episode, stage):
         strategy = 2
     elif episode == 3 and stage == 2:
         strategy = 100
+    elif episode == 2 and stage == 12:
+        strategy = 102
     elif episode == 2 and stage == 6:
         strategy = 2
     elif episode == 2 and stage == 13:
@@ -1062,6 +1069,8 @@ def getDeckByStrategy(resource, strategy):
         return [resource.DECKIMAGE_MAIN, getDeckCode("DECKCODE_MAIN")]
     elif strategy == 101:
         return [resource.DECKIMAGE_SPBATTLE, getDeckCode("DECKCODE_SP")]
+    elif strategy == 102:
+        return [resource.DECKIMAGE_FATTY, getDeckCode("DECKIMAGE_FATTY")]
     else:
         return None
 
