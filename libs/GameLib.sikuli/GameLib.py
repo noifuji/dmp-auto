@@ -678,6 +678,8 @@ def gameLoop(resources, strategy, appname):
             currentMana = ChargeManaLarge(resources)
         elif strategy == 100:
             currentMana = ChargeManaBasic(resources)
+        elif strategy == 102:
+            currentMana = ChargeManaFatty(resources)
         wait(1)
         
         #  召喚
@@ -689,12 +691,14 @@ def gameLoop(resources, strategy, appname):
             SummonLarge(resources,currentMana)
         elif strategy == 100:
             SummonBasic(resources,currentMana)
+        elif strategy == 100:
+            SummonFatty(resources,currentMana)
         wait(1)
         
         #  攻撃
         if strategy in [6]:
             print "no attack"
-        elif strategy in [2,100]:
+        elif strategy in [2,100,102]:
             directAttack(resources)
         elif strategy in [1,3]:
             battle(resources)
