@@ -67,30 +67,6 @@ OK2 = Pattern("OK2.png").similar(0.80)
 tutorial = "tutorial.png"
 retry = "retry.png"
 
-def renameRunningNoxInstance(resources, ref):
-    App(EnvSettings.NoxMultiPlayerPath).open()
-    if exists(resources.TITLE_MULTI_PLAYER,120) == None:
-        killMultiPlayerManager()
-        raise Exception("MultiPlayerManager has error. Please retry to launch.")
-    for num in range(10):
-        if exists(resources.BUTTON_NOX_STOP, 1) == None:
-            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_DOWN, 1)
-        else:
-            break
-    for num in range(10):
-        if exists(resources.BUTTON_NOX_STOP, 1) == None:
-            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_UP, 2)
-        else:
-            break
-    if len(findAny(resources.BUTTON_NOX_STOP)) > 0:
-        click(resources.BUTTON_NOX_RENAME)
-        for bkLoop in range(20):
-            type(Key.BACKSPACE)
-        type(ref)
-        type(Key.ENTER)
-        wait(1)
-    App(EnvSettings.NoxMultiPlayerPath).close()
-
         
 def countCard(target):
     x1 = Pattern("x1.png").similar(0.85)
@@ -138,7 +114,6 @@ for count in range(100):
         for mes in e:
             print(mes)
         CommonDMLib.sendMessagetoSlack(mentionUser,'Failed to launch instance. Setup was canceled.', appname)
-        CommonDMLib.sendMessagetoSlack( mentionUser,traceback.format_exc(), appname)
         break
     
     for num in range(100):
@@ -454,7 +429,7 @@ for count in range(100):
                 click("1603541423678.png")
                 CommonDMLib.uploadScreenShotToSlack(mentionUser, str(ref), appname)
                 #インスタンス名をrefに変更する。
-                renameRunningNoxInstance(NoxResources, str(ref))
+                CommonDMLib.renameRunningNoxInstance(NoxResources, str(ref))
                 
                 break
             else:

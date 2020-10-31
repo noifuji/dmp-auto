@@ -74,11 +74,12 @@ while instanceIndex < len(instances):
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
         CommonDMLib.changeMission(NoxResources)
-        if mode == "DEV":
-            wait(1)
-            CommonDMLib.uploadScreenShotToSlack(mentionUser,'Account' + str(instances[instanceIndex]) + ' is in process.', appname)
         
         missions = CommonDMLib.getTargetMissions(NoxResources)
+        
+        if mode == "DEV":
+            wait(1)
+            CommonDMLib.sendMessagetoSlack(mentionUser,'Account' + str(instances[instanceIndex]) + ' is in process.', appname)
         
         if statisticsData[CommonDMLib.STATISTICS_MISSION1] == "":
             for i in range(len(missions)):

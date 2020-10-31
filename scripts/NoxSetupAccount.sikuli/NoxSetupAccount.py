@@ -27,13 +27,7 @@ CommonDMLib.downloadDeckCodes()
 
 for count in range(100):
     try:
-        ref = CommonDMLib.getSetupAccountRef()
-        if ref == "":
-            print "There are no setup accounts."
-            break
-        print "SetupAccount is started. ref : " + str(ref)
-        CommonDMLib.updatePlayerId(ref, "working", os.environ["COMPUTERNAME"])
-        print "A tempporary Player ID is updated."
+        ref = "setup"
         username = ref
         CommonDMLib.RestartNox(NoxResources,ref)
         CommonDMLib.callRemoveDataBat()
@@ -41,9 +35,7 @@ for count in range(100):
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.updatePlayerId(ref, "", "")
-        CommonDMLib.sendMessagetoSlack(mentionUser,'Failed to launch instance ' + str(ref) + ". Setup was canceled.", appname)
-        CommonDMLib.sendMessagetoSlack( mentionUser,traceback.format_exc(), appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser,'Failed to launch instance. Setup was canceled.', appname)
         break
         
     for num in range(100):
@@ -163,42 +155,37 @@ for count in range(100):
             if breakFlag == True:
                 continue
     
-            #告知画面のスキップ
-            for num in range(10):
-                print 'checking OK buttons...' + str(num)
-                if exists(OK,3) !=None:
-                    click(OK)
-                    wait(1)
-                else:
-                    break
-            CommonDMLib.getPresent(NoxResources)
-            click("1596781025606.png")
-            wait(3)
-            click("1596781081109.png")
-            exists("1596781095779.png", 30)
-            wheel(Pattern("1596781095779.png").targetOffset(19,145), Button.WHEEL_DOWN, 100)
+            for skipLoop in range(120):
+                if CommonDMLib.skipNotifications(NoxResources) == -1:
+                    exists(resource.BUTTON_SMALL_OK, 60)
+                    for backLoop in range(60):
+                        print "backLoop"
+                        if len(findAny(NoxResources.BUTTON_SMALL_OK)) > 0:
+                            try:
+                                click(NoxResources.BUTTON_SMALL_OK)
+                            except:
+                                print "failed to click"
+                        if len(findAny(NoxResources.BUTTON_BACK)) > 0:
+                            try:
+                                click(NoxResources.BUTTON_BACK)
+                            except:
+                                print "failed to click"
+                        if len(findAny(NoxResources.ICON_HOME)) > 0:
+                            break
+                
+                type(Key.ESC)
+                if len(findAny(NoxResources.ICON_MISSION)) > 0:
+                    try:
+                        click(NoxResources.ICON_MISSION)
+                    except:
+                        print "failed to click"
+                    if exists(NoxResources.TITLE_MISSION,1) != None:
+                        type(Key.ESC)
+                        break
+                    
             wait(5)
-            click(Pattern("1596781218965.png").targetOffset(503,-3))
-            click(Pattern("1596781239281.png").targetOffset(499,-1))
-            click(Pattern("1596781253234.png").targetOffset(511,1))
-            click(Pattern("1596781269013.png").targetOffset(500,8))
-            click(Pattern("1596781287439.png").similar(0.60).targetOffset(506,0))
-            click("1596781316064.png")
-            exists("1597235336512.png",10)
-            click("1597235336512.png")
-            exists("1597235361421.png",30)
-            CommonDMLib.uploadScreenShotToSlack(mentionUser, str(username), appname)
-            playerId = CommonDMLib.scanNumberChangeWidth("1601082545206.png", -270, 0, 233, 38, 0, 25)
-            click(Pattern("1600004482153.png").targetOffset(9,-27))
-            exists("1600004545866.png", 60)
-            click("1600004566684.png")
-            click(Pattern("1600004640701.png").targetOffset(-263,282))
-            click("1600004681385.png")
-            exists("1600004729257.png",10)
-            click(Pattern("1600004729257.png").targetOffset(6,330))
-            exists("1600004802890.png", 120)
-            click("1597235437582.png")
-            exists("1597235476942.png",60)
+            CommonDMLib.getPresent(NoxResources)
+            
             for openCardListLoop in range(100):
                 if len(findAny("1596780580130.png")) > 0:
                     try:
@@ -229,7 +216,49 @@ for count in range(100):
             CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_ST"))
             CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_LARGE_CREATURE"))
             CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_MAIN"))
+            click("1597235437582.png")
+            exists("1597235476942.png",60)
+            click("1596781025606.png")
+            wait(3)
+            click("1596781081109.png")
+            exists("1596781095779.png", 30)
+            wheel(Pattern("1596781095779.png").targetOffset(19,145), Button.WHEEL_DOWN, 100)
+            wait(5)
+            click(Pattern("1596781218965.png").targetOffset(503,-3))
+            click(Pattern("1596781239281.png").targetOffset(499,-1))
+            click(Pattern("1596781253234.png").targetOffset(511,1))
+            click(Pattern("1596781269013.png").targetOffset(500,8))
+            click(Pattern("1596781287439.png").similar(0.60).targetOffset(506,0))
+            click("1596781316064.png")
+            exists("1597235336512.png",10)
+            click("1597235336512.png")
+            exists("1597235361421.png",30)
+            click(Pattern("1600004482153.png").targetOffset(9,-27))
+            exists("1600004545866.png", 60)
+            click("1600004566684.png")
+            click(Pattern("1600004640701.png").targetOffset(-263,282))
+            click("1600004681385.png")
+            exists("1600004729257.png",10)
+            click(Pattern("1600004729257.png").targetOffset(6,330))
+            exists("1600004802890.png", 120)
+            ref = CommonDMLib.getSetupAccountRef()
+            if ref == "":
+                CommonDMLib.sendMessagetoSlack(mentionUser,"No empty Ref numbers. Add Refs to the inventory list.", appname)
+                breakFlag = True
+                break
+            playerId = CommonDMLib.scanNumberChangeWidth("1601082545206.png", -270, 0, 233, 38, 0, 25)
+            #プレーヤー名をrefに変更する。
+            click(Pattern("1603534330138.png").targetOffset(106,81))
+            for bkLoop in range(10):
+                type(Key.BACKSPACE)
+                wait(0.2)
+            type(str(ref))
+            wait(0.5)
+            click("1603541423678.png")
+            wait(1)
+            CommonDMLib.uploadScreenShotToSlack(mentionUser, str(ref), appname)
             CommonDMLib.updatePlayerId(ref, playerId, os.environ["COMPUTERNAME"])
+            CommonDMLib.renameRunningNoxInstance(NoxResources, str(ref))
             CommonDMLib.sendMessagetoSlack(mentionUser,'Setup has finished.', appname)
             break
         except:

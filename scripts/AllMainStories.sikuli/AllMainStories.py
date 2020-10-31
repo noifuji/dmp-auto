@@ -220,7 +220,7 @@ while instanceIndex < len(instances):
 
             if EnvSettings.RUN_MODE == "DEV":
                 wait(1)
-                CommonDMLib.uploadScreenShotToSlack(mentionUser, 'Battle Loop Count : ' + str(retryCount), appname)
+                CommonDMLib.sendMessagetoSlack(mentionUser, '[EP:'+str(episode)+',ST:'+str(stage)+']Battle Loop Count : ' + str(retryCount), appname)
             statisticsData["RETRY"] = retryCount
             statisticsData["EXCEPTION"] = exceptionCout
             statisticsData["ENDTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")

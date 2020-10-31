@@ -1161,7 +1161,8 @@ def exitNox(resources):
             click(resources.BUTTON_NOX_OK_BLUE)
         if waitVanish(resources.BUTTON_NOX_STOP, 180) == False:
             print "Nox instance stays."
-            exit(1)
+            killMultiPlayerManager()
+            raise Exception("Failed to close instance. Retrying...")
     App(EnvSettings.NoxMultiPlayerPath).close()
 
 def openNoxInstance(resources, ref):
@@ -1180,6 +1181,30 @@ def openNoxInstance(resources, ref):
         click(resources.BUTTON_NOX_PLAY)
     else:
         raise Exception("No instance : " + str(ref))
+    App(EnvSettings.NoxMultiPlayerPath).close()
+
+def renameRunningNoxInstance(resources, ref):
+    App(EnvSettings.NoxMultiPlayerPath).open()
+    if exists(resources.TITLE_MULTI_PLAYER,120) == None:
+        killMultiPlayerManager()
+        raise Exception("MultiPlayerManager has error. Please retry to launch.")
+    for num in range(10):
+        if exists(resources.BUTTON_NOX_STOP, 1) == None:
+            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_DOWN, 1)
+        else:
+            break
+    for num in range(10):
+        if exists(resources.BUTTON_NOX_STOP, 1) == None:
+            wheel(resources.TITLE_MULTI_PLAYER, Button.WHEEL_UP, 2)
+        else:
+            break
+    if len(findAny(resources.BUTTON_NOX_STOP)) > 0:
+        click(resources.BUTTON_NOX_RENAME)
+        for bkLoop in range(20):
+            type(Key.BACKSPACE)
+        type(ref)
+        type(Key.ENTER)
+        wait(1)
     App(EnvSettings.NoxMultiPlayerPath).close()
     
 def RestartNox(resources, ref):
@@ -1205,7 +1230,8 @@ def RestartNox(resources, ref):
         if len(findAny(resources.MESSAGE_ONECLICK_ERROR)) > 0:
             raise Exception("One Click Recovery Error")
         if noxLaunchLoop >= 599:
-            raise Exception("Too many noxLaunchLoop")
+            killMultiPlayerManager()
+            raise Exception("Too many noxLaunchLoops")
         wait(1)
     wait(30)
     if len(findAny(resources.MESSAGE_BACKUP)) > 0:
