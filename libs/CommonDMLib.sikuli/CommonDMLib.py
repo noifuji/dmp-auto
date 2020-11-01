@@ -1331,7 +1331,7 @@ def RestartApp(resource):
                 wheel(resource.MESSAGE_CONFIRM_ALLOW, Button.WHEEL_DOWN, 20)
                 wait(2)
                 click(resource.BUTTON_ALLOW_BLUE)
-        if len(findAny(resource.BUTTON_SKIP)) > 0 or len(findAny(resource.ICON_HOME)) > 0:
+        if len(findAny(resource.BUTTON_SKIP)) > 0 or len(findAny(resource.ICON_HOME)) > 0 or len(findAny(resource.BUTTON_TAP_AND_NEXT)) > 0:
             print "Loading is finished."
             skipDownloadFlag = True
             break
