@@ -59,6 +59,67 @@ def getManaNumBeforeCharge(resources):
     else:
         return 7
 
+def getManaColor(resources):
+    results = findAny(
+            resources.ICON_MANA_WHITE
+            ,resources.ICON_MANA_BLUE
+            ,resources.ICON_MANA_BLACK
+            ,resources.ICON_MANA_RED
+            ,resources.ICON_MANA_GREEN)
+    manaColors = {"WHITE" : False, "BLUE" : False,
+            "BLACK" : False, "RED" : False,
+            "GREEN" : False}
+    for res in results:
+        if res.getIndex() == 0:
+            manaColors["WHITE"] = True
+        elif res.getIndex() == 1:
+            manaColors["BLUE"] = True
+        elif res.getIndex() == 2:
+            manaColors["BLACK"] = True
+        elif res.getIndex() == 3:
+            manaColors["RED"] = True
+        elif res.getIndex() == 4:
+            manaColors["GREEN"] = True
+    return manaColors
+
+def solveEffect(resources):
+    exists(resources.ICON_NOT_SELECTED, 2)
+    if len(findAny(resources.MESSAGE_TAP)) > 0 or \
+        len(findAny(resources.MESSAGE_DEST))   > 0 or \
+        len(findAny(resources.MESSAGE_EFFECT)) > 0 or \
+        len(findAny(resources.MESSAGE_MANA))   > 0 or \
+        len(findAny(resources.MESSAGE_SELECT))   > 0 or \
+        len(findAny(resources.MESSAGE_BOUNCE))   > 0:
+        print 'Tap, Dest, Mana, Bounce'
+        BZ = findAny(
+                resources.ICON_MY_CREATURE1,
+                resources.ICON_MY_CREATURE2,
+                resources.ICON_MY_CREATURE3,
+                resources.ICON_MY_CREATURE4,
+                resources.ICON_ENEMY_UNTAPPED_BLOCKER,
+                resources.ICON_ENEMY_CREATURE1,
+                resources.ICON_ENEMY_CREATURE2,
+                resources.ICON_ENEMY_CREATURE3,
+                resources.ICON_ENEMY_CREATURE4)
+        for b in BZ:
+            click(b)
+            wait(0.5)
+            if exists(resources.ICON_SELECTED, 1) != None:
+                try:
+                    click(resources.BUTTON_OK4)
+                except:
+                    print "failed to click"
+                break
+        if len(findAny(resources.ICON_SELECTED)) > 0:
+            try:
+                click(resources.BUTTON_OK4)
+            except:
+                print "failed to click"
+        wait(0.5)
+        if exists(resources.MESSAGE_NO_CREATURE_SELECTED,5) != None:
+            click(resources.BUTTON_OK2)
+        wait(0.5)
+
 def ChargeManaBasic(resources):
     print 'ChargeManaBasic'
     #マナ取得
@@ -212,6 +273,57 @@ def ChargeManaFatty(resources):
                 resources.ICON_COST_WHITE_6,resources.ICON_COST_WHITE_7)
     else:
         return mana
+    
+    if len(Hand) > 0:         
+        charge(resources,Hand[0])
+        mana += 1
+    return mana
+
+def ChargeManaSpell(resources):
+    print 'ChargeManaSpell'
+    #マナ取得
+    mana = getManaNumBeforeCharge(resources)
+    print 'ManaZone(Before charge):' + str(mana)
+
+    #マナゾーンの色チェック
+    manaColors = getManaColor(resources)
+    print manaColors
+    chargeTargets = []
+    #未チャージの色を抽出
+    if not manaColors["RED"]:
+        chargeTargets.append(resources.ICON_COST_RED_5)
+        chargeTargets.append(resources.ICON_COST_RED_3)
+    if not manaColors["BLACK"]:
+        chargeTargets.append(resources.ICON_COST_BLACK_4)
+        chargeTargets.append(resources.ICON_COST_BLACK_3)
+    if not manaColors["GREEN"]:
+        chargeTargets.append(resources.ICON_COST_GREEN_4)
+        chargeTargets.append(resources.ICON_COST_GREEN_2)
+    if not manaColors["WHITE"]:
+        chargeTargets.append(resources.ICON_COST_WHITE_4)
+        chargeTargets.append(resources.ICON_COST_WHITE_2)
+    if not manaColors["BLUE"]:
+        chargeTargets.append(resources.ICON_COST_BLUE_4)
+        chargeTargets.append(resources.ICON_COST_BLUE_2)
+    #手札探索対象を作成
+    Hand = findAnyList(chargeTargets)
+    print "findAnyList result : " +  str(len(Hand))
+    #手札に無い場合は、全対象から確認
+    if len(Hand) == 0 and mana <= 4:
+        Hand = findAnyList(
+                [
+                    resources.ICON_COST_BLACK_4,resources.ICON_COST_WHITE_4,
+                    resources.ICON_COST_BLUE_4,
+                    resources.ICON_COST_GREEN_4,
+                    resources.ICON_COST_RED_5,
+                    resources.ICON_COST_RED_3,
+                    resources.ICON_COST_BLACK_3,
+                    resources.ICON_COST_BLUE_2,
+                    resources.ICON_COST_WHITE_2,
+                    resources.ICON_COST_GREEN_2])
+
+        if len(Hand) == 0:
+            return mana
     
     if len(Hand) > 0:         
         charge(resources,Hand[0])
@@ -472,6 +584,56 @@ def SummonFatty(resources, currentMana):
             except:
                 print "failed to click"
 
+def SummonSpell(resources, currentMana):
+    print 'SummonSpell'
+    availableMana = currentMana
+    print 'Available Mana : ' + str(availableMana)
+    count = 0
+
+    #マナゾーンの色をチェック
+    manaColors = getManaColor(resources)
+    print manaColors
+    
+    for num in range(10):
+        summon_creature = None
+        r3 = findAny(resources.ICON_COST_RED_3)
+        r5 = findAny(resources.ICON_COST_RED_5)
+        bk3 = findAny(resources.ICON_COST_BLACK_3)
+        b2 = findAny(resources.ICON_COST_BLUE_2)
+        b4 = findAny(resources.ICON_COST_BLUE_4)
+        w2 = findAny(resources.ICON_COST_WHITE_2)
+        g2 = findAny(resources.ICON_COST_GREEN_2)
+        g4 = findAny(resources.ICON_COST_GREEN_4)
+
+        if len(r3) > 0 and manaColors["RED"] and availableMana >= 3:
+            summon_creature = r3[0]
+            availableMana-=3
+        elif len(bk3) > 0 and manaColors["BLACK"] and availableMana >= 3:
+            summon_creature = bk3[0]
+            availableMana-=3
+        elif len(r5) > 0 and manaColors["RED"] and availableMana >= 5:
+            summon_creature = r5[0]
+            availableMana-=5
+        elif len(g2) > 0 and manaColors["GREEN"] and availableMana >= 2:
+            summon_creature = g2[0]
+            availableMana-=1
+        elif len(w2) > 0 and manaColors["WHITE"] and availableMana >= 2:
+            summon_creature = w2[0]
+            availableMana-=2
+        elif len(b4) > 0 and manaColors["BLUE"] and availableMana >= 4:
+            summon_creature = b4[0]
+            availableMana-=4
+        else:
+            print 'Couldnt find a summonable creature. Break loop.'
+            break
+        
+        try:
+            summon(resources,summon_creature)
+        except:
+            Settings.MoveMouseDelay = 0.1
+            break
+        solveEffect(resources)
+
 
 def directAttack(resources):
     print 'directAttack'
@@ -599,7 +761,7 @@ def irregularLoop(resources, appname):
                         resources.ICON_ENEMY_CREATURE1,
                         resources.ICON_ENEMY_CREATURE2,
                         resources.ICON_ENEMY_CREATURE3,
-                        resources.ICON_ENEMY_CREATURE4,)
+                        resources.ICON_ENEMY_CREATURE4)
                 for b in BZ:
                     click(b)
                     wait(0.5)
@@ -670,8 +832,10 @@ def gameLoop(resources, strategy, appname):
             click(resources.AVATOR_DEFAULT_MALE)
             wait(1)
         #  マナチャージ
-        if strategy in [1,3,6]:
+        if strategy in [3,6]:
             print "no charge"
+        elif strategy in [1]:
+            currentMana = ChargeManaSpell(resources)
         elif strategy in [2]:
             currentMana = ChargeManaRedBlack(resources)
         elif strategy == 5:
@@ -683,8 +847,10 @@ def gameLoop(resources, strategy, appname):
         wait(1)
         
         #  召喚
-        if strategy in [1,3,6]:
+        if strategy in [3,6]:
             print "no summon"
+        elif strategy in [1]:
+            SummonSpell(resources,currentMana)
         elif strategy in [2]:
             SummonRedBlack(resources,currentMana)
         elif strategy == 5:

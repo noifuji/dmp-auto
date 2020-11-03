@@ -39,7 +39,9 @@ appname = 'PREPARE'
 Settings.MoveMouseDelay = 0.1
 try:
     ref = input("Enter Ref")
-    deckCode = input("Enter Deck Code")
+    deckCodeRaw = input("Enter Deck Code")
+    deckCodes = deckCodeRaw.split(",")
+    
     
     CommonDMLib.RestartNox(NoxResources, ref)
     CommonDMLib.RestartApp(NoxResources)
@@ -68,20 +70,22 @@ try:
         click("1596780684705.png")
         wait(1)
     exists("1596780703269.png",60)
-    #対象のデッキを作成する。
-    CommonDMLib.addNewDeckByCode(NoxResources, deckCode)
-    click("1603869466863-1.png")
-    exists(NoxResources.TITLE_DECK, 60)
-    image = captureImage(NoxResources.TITLE_DECK, 45, 1270, 650)
-    print image.getFilename()
     f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
     strCredentials = f.read()
     f.close()
     drive = DriveApis("DMPAuto", strCredentials)
     fId = drive.createFolder(str(ref), "1ApCg9taRAEmK7QH93bxmoIzMbRaC_r7m")
-    drive.uploadFile("DeckImage.png", image.getFilename(), fId)
-    type(Key.ESC)
-    waitVanish(NoxResources.TITLE_DECK, 60)
+    for deckCode in deckCodes:
+        #対象のデッキを作成する。
+        CommonDMLib.addNewDeckByCode(NoxResources, deckCode)
+        click("1603869466863-1.png")
+        exists(NoxResources.TITLE_DECK, 60)
+        image = captureImage(NoxResources.TITLE_DECK, 45, 1270, 650)
+        print image.getFilename()
+        drive.uploadFile("DeckImage_" + deckCode + ".png", image.getFilename(), fId)
+        type(Key.ESC)
+        waitVanish(NoxResources.TITLE_DECK, 60)
+    
     type(Key.ESC)
     exists(NoxResources.ICON_HOME, 60)
     click(Pattern("1596593310453.png").targetOffset(-2,-214))
