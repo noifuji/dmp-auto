@@ -19,6 +19,7 @@ appname = 'DAILY'
 Settings.MoveMouseDelay = 0.1
 Settings.DelayBeforeDrag = 0.5
 mode = EnvSettings.RUN_MODE
+MAX_RETRY_COUNT = 10
 
 #Pre-processing Start        
 App(EnvSettings.AppPath).close()
@@ -63,7 +64,7 @@ while instanceIndex < len(instances):
         statisticsData[CommonDMLib.STATISTICS_ENDTIME] = ""
         statisticsData[CommonDMLib.STATISTICS_EXCEPTION] = 0
     
-    if retryCount > 3:
+    if retryCount > MAX_RETRY_COUNT:
         print "Too many retries. This instance will be skipped."
         retryCount = 0
         instanceIndex += 1

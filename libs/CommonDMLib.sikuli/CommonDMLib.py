@@ -898,12 +898,14 @@ def getMissionStrategy(resource, mission):
         strategyCode = 2
     elif mission["GROUP"] == "BATTLE":
         strategyCode = 3
-    elif mission["GROUP"] == "ST":
+    elif mission["GROUP"] == "DEST":
         strategyCode = 4
     elif mission["GROUP"] == "LARGE":
         strategyCode = 5
     elif mission["GROUP"] == "RETIRE":
         strategyCode = 6
+    elif mission["GROUP"] == "BREAK3":
+        strategyCode = 7
         
     return strategyCode
 
@@ -997,10 +999,14 @@ def openMainStory(resource):
             click(resource.BUTTON_MAIN_STORY)
         if len(findAny(resource.BUTTON_BACK)) > 0:
             click(resource.BUTTON_BACK2)
-        if len(findAny(resource.TITLE_MAIN_STORY2)) > 0:
-            breakCount += 1
-        if breakCount > 5:
-            break
+        if len(findAny(resource.BUTTON_CONFIRM_REWARD)) > 0:
+            try:
+                click(resource.BUTTON_CONFIRM_REWARD)
+                if exists(resource.TITLE_REWARD_INFO,1) != None:
+                    type(Key.ESC)
+                    break
+            except:
+                print "failed to click"
 
 def chooseMainStoryStage(resource, ep, stageImage):
     if ep == 1:
@@ -1055,8 +1061,12 @@ def getDeckByStrategy(resource, strategy):
          return [resource.DECKIMAGE_RED_BLACK, getDeckCode("DECKCODE_RED_BLACK")]
     elif strategy == 3:
          return [resource.DECKIMAGE_ST, getDeckCode("DECKCODE_ST")]
+    elif strategy == 4:
+         return [resource.DECKIMAGE_ST, getDeckCode("DECKCODE_STSPELL")]
     elif strategy == 5:
         return [resource.DECKIMAGE_LARGE_CREATURE, getDeckCode("DECKCODE_LARGE_CREATURE")]
+    elif strategy == 7:
+         return [resource.DECKIMAGE_RED_BLACK, getDeckCode("DECKCODE_RED_BLACK")]
     elif strategy == 100:
         return [resource.DECKIMAGE_MAIN, getDeckCode("DECKCODE_MAIN")]
     elif strategy == 101:
@@ -1385,7 +1395,10 @@ def RestartApp(resource):
         type(Key.ESC)
         #skipRewards(resource)
         if len(findAny(resource.ICON_MISSION)) > 0:
-            click(resource.ICON_MISSION)
+            try:
+                click(resource.ICON_MISSION)
+            except:
+                print "failed to click"
             if exists(resource.TITLE_MISSION,1) != None:
                 click(resource.BUTTON_CLOSE)
                 break

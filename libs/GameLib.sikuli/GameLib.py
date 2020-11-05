@@ -92,11 +92,11 @@ def solveEffect(resources):
         len(findAny(resources.MESSAGE_BOUNCE))   > 0:
         print 'Tap, Dest, Mana, Bounce'
         BZ = findAny(
+                resources.ICON_ENEMY_UNTAPPED_BLOCKER,
                 resources.ICON_MY_CREATURE1,
                 resources.ICON_MY_CREATURE2,
                 resources.ICON_MY_CREATURE3,
                 resources.ICON_MY_CREATURE4,
-                resources.ICON_ENEMY_UNTAPPED_BLOCKER,
                 resources.ICON_ENEMY_CREATURE1,
                 resources.ICON_ENEMY_CREATURE2,
                 resources.ICON_ENEMY_CREATURE3,
@@ -634,13 +634,12 @@ def SummonSpell(resources, currentMana):
             break
         solveEffect(resources)
 
-
-def directAttack(resources):
+def directAttack(resources, attackerW, attackerS):
     print 'directAttack'
     creaturePositions = []
     for num in range(3):
         print "checking W breaker...." + str(num)
-        BZ = findAny(resources.ICON_W_BREAKER)
+        BZ = findAny(attackerW)
         if len(BZ) > 0:
             try:
                 print "attacking shield...."
@@ -659,7 +658,7 @@ def directAttack(resources):
         
     for num in range(5):
         print "checking Single breaker...." + str(num)
-        BZ = findAny(resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2)
+        BZ = findAny(attackerS)
         for b in BZ:
             try:
                 attackFlag = True
@@ -683,6 +682,7 @@ def directAttack(resources):
                 print "exception was occured"
                 break
             wait(1)
+
 
 def battle(resources):
     print "Battle"
@@ -790,14 +790,24 @@ def irregularLoop(resources, appname):
         if appname not in ["LEGEND", "SP"]:
             if len(findAny(resources.MESSAGE_BLOCK)) > 0 or len(findAny(resources.MESSAGE_CHOOSE_BLOCKER)) > 0:
                 print 'Block?'
-                #if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
-                #    try:
-                #        click(resources.ICON_MY_UNTAPPED_BLOCKER)
-                #        click(resources.BUTTON_BLOCK)
-                #    except:
-                #        print "failed to click"
-                #else:
-                click(resources.BUTTON_NOBLOCK)
+                if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
+                    try:
+                        click(resources.ICON_MY_UNTAPPED_BLOCKER)
+                        click(resources.BUTTON_BLOCK)
+                    except:
+                        print "failed to click"
+                if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER2)) > 0:
+                    try:
+                        click(resources.ICON_MY_UNTAPPED_BLOCKER2)
+                        click(resources.BUTTON_BLOCK)
+                    except:
+                        print "failed to click"
+
+                if len(findAny(resources.BUTTON_NOBLOCK)) > 0:
+                    try:
+                        click(resources.BUTTON_NOBLOCK)
+                    except:
+                        print "failed to click"
                 wait(1)
 
         
@@ -831,12 +841,16 @@ def gameLoop(resources, strategy, appname):
         if len(findAny(resources.AVATOR_DEFAULT_MALE)) > 0:
             click(resources.AVATOR_DEFAULT_MALE)
             wait(1)
+
+        if strategy == 7:
+            manaBeforeCharge = getManaNumBeforeCharge(resources)
+            
         #  マナチャージ
         if strategy in [3,6]:
             print "no charge"
-        elif strategy in [1]:
+        elif strategy in [1,4]:
             currentMana = ChargeManaSpell(resources)
-        elif strategy in [2]:
+        elif strategy in [2,7]:
             currentMana = ChargeManaRedBlack(resources)
         elif strategy == 5:
             currentMana = ChargeManaLarge(resources)
@@ -849,9 +863,9 @@ def gameLoop(resources, strategy, appname):
         #  召喚
         if strategy in [3,6]:
             print "no summon"
-        elif strategy in [1]:
+        elif strategy in [1,4]:
             SummonSpell(resources,currentMana)
-        elif strategy in [2]:
+        elif strategy in [2,7]:
             SummonRedBlack(resources,currentMana)
         elif strategy == 5:
             SummonLarge(resources,currentMana)
@@ -862,16 +876,19 @@ def gameLoop(resources, strategy, appname):
         wait(1)
         
         #  攻撃
-        if strategy in [6]:
+        if strategy in [1,6]:
             print "no attack"
         elif strategy in [2,100,102]:
-            directAttack(resources)
-        elif strategy in [1,3]:
+            directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
+        elif strategy in [7]:
+            if manaBeforeCharge >= 4:
+                directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
+        elif strategy in [3,4]:
             battle(resources)
-            directAttack(resources)
+            directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
         elif strategy == 5:
             if random.random() < 0.7:
-                directAttack(resources)
+                directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
 
         #その他
         if strategy == 6:
