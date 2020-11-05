@@ -105,7 +105,8 @@ while instanceIndex < len(instances):
                     #turn_count += 1
                     
                 #if turn_count >= 0 :
-                wait(random.randint(0,5))
+                if EnvSettings.ENGINE_FOR_SP == "NOX":
+                    wait(random.randint(0,5))
                 print 'retire'
                 GameLib.retire(resources)
                 
