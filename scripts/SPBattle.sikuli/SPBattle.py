@@ -55,9 +55,12 @@ while instanceIndex < len(instances):
             CommonDMLib.RestartNox(resources, instances[instanceIndex])
         CommonDMLib.RestartApp(resources)
         wait(3)
-        click(resources.ICON_EXTRA)
-        wait(3)
-        click(resources.BUTTON_SP_BATTLE)
+        if len(findAny(resources.BUTTON_SP_BATTLE)) > 0:
+            click(resources.BUTTON_SP_BATTLE)
+        else:
+            click(resources.ICON_EXTRA)
+            wait(3)
+            click(resources.BUTTON_SP_BATTLE)
 
         for battleStartLoop in range(200):
             print "battleStartLoop..." + str(battleStartLoop)

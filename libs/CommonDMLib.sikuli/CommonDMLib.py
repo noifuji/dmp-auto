@@ -1385,23 +1385,12 @@ def RestartApp(resource):
                         click(resource.BUTTON_SMALL_OK)
                     except:
                         print "failed to click"
-                if len(findAny(resource.BUTTON_BACK)) > 0:
-                    try:
-                        click(resource.BUTTON_BACK)
-                    except:
-                        print "failed to click"
-                if len(findAny(resource.ICON_HOME)) > 0:
+                type(Key.ESC)
+                if exists(resource.MESSAGE_BACK_TO_TITLE, 1) != None:
                     break
         type(Key.ESC)
-        #skipRewards(resource)
-        if len(findAny(resource.ICON_MISSION)) > 0:
-            try:
-                click(resource.ICON_MISSION)
-            except:
-                print "failed to click"
-            if exists(resource.TITLE_MISSION,1) != None:
-                click(resource.BUTTON_CLOSE)
-                break
+        if exists(resource.MESSAGE_BACK_TO_TITLE, 0.5) != None:
+            break
 #    if resource.APP_ENGINE == "NOX":
 #        click(resource.ICON_OTHER)
 #        wait(3)
