@@ -1,5 +1,6 @@
 import sys
 import traceback
+import random
 
 sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
 import EnvSettings
@@ -53,6 +54,7 @@ while instanceIndex < len(instances):
         if EnvSettings.ENGINE_FOR_SP == "NOX":
             CommonDMLib.RestartNox(resources, instances[instanceIndex])
         CommonDMLib.RestartApp(resources)
+        wait(3)
         click(resources.ICON_EXTRA)
         wait(3)
         click(resources.BUTTON_SP_BATTLE)
@@ -100,6 +102,7 @@ while instanceIndex < len(instances):
                     #turn_count += 1
                     
                 #if turn_count >= 0 :
+                wait(random.randint(0,5))
                 print 'retire'
                 GameLib.retire(resources)
                 
