@@ -90,18 +90,18 @@ while instanceIndex < len(instances):
             turn_count = 0
             for game_loop in range(10):
     
-                if len(findAny(resources.BUTTON_TURN_END)) > 0:
-                    print 'click turnend'
-                    for turnendLoop in range(20):
-                        GameLib.turnEnd(resources)
-                        if len(findAny(resources.BUTTON_ENEMY_TURN, resources.BUTTON_SMALL_BATTLE_START)) > 0:
-                            break
+                #if len(findAny(resources.BUTTON_TURN_END)) > 0:
+                    #print 'click turnend'
+                    #for turnendLoop in range(20):
+                    #    GameLib.turnEnd(resources)
+                    #    if len(findAny(resources.BUTTON_ENEMY_TURN, resources.BUTTON_SMALL_BATTLE_START)) > 0:
+                    #        break
                     
-                    turn_count += 1
+                    #turn_count += 1
                     
-                    if turn_count >= 0 :
-                        print 'retire'
-                        GameLib.retire(resources)
+                #if turn_count >= 0 :
+                print 'retire'
+                GameLib.retire(resources)
                 
                 if GameLib.irregularLoop(resources, appname) == 0:
                     break
@@ -117,19 +117,14 @@ while instanceIndex < len(instances):
          
             for battleResultLoop in range(200):
                 print "battleResultLoop..." + str(battleResultLoop)
-                CommonDMLib.skipRewards(resources)
+                type(Key.ESC)
                 if len(findAny(resources.BUTTON_DUEL_HISTORY)) > 0:
                     try:
                         click(resources.BUTTON_DUEL_HISTORY)
                     except:
                         print "failed to click"
                 if len(findAny(resources.TITLE_DUEL_HISTORY)) > 0:
-                    try:
-                        click(resources.BUTTON_RESULT)
-                        wait(2)
-                        break
-                    except:
-                        print "failed to click"
+                    break
                 if battleResultLoop >= 199:
                     raise Exception("Too many battleResultLoop")
 
