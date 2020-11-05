@@ -127,6 +127,10 @@ while instanceIndex < len(instances):
                     except:
                         print "failed to click"
                 if len(findAny(resources.TITLE_DUEL_HISTORY)) > 0:
+                    try:
+                        click(resources.BUTTON_RESULT)
+                    except:
+                        print "failed to click"
                     break
                 if battleResultLoop >= 199:
                     raise Exception("Too many battleResultLoop")
