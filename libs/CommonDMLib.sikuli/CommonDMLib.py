@@ -1253,6 +1253,7 @@ def RestartNox(resources, ref):
 
 
 def RestartApp(resource):
+    DOWNLOAD_TIMEOUT = 600
     print 'RestartApp'
     if resource.APP_ENGINE == "NOX":
         noxCallKillDMPApp()
@@ -1349,12 +1350,12 @@ def RestartApp(resource):
            raise Exception 
     if skipDownloadFlag == False:
         click(resource.BUTTON_OK)
-        for downloadLoop in range(150):
+        for downloadLoop in range(DOWNLOAD_TIMEOUT):
             print "downloading..." + str(downloadLoop)
             if len(findAny(resource.BUTTON_SKIP)) > 0 or len(findAny(resource.ICON_HOME)) > 0 or len(findAny(resource.BUTTON_TAP_AND_NEXT)) > 0:
                 print "finished"
                 break
-            if downloadLoop >= 149:
+            if downloadLoop >= (DOWNLOAD_TIMEOUT-1):
                 raise Exception
             wait(1)
     #結果発表をスキップ
