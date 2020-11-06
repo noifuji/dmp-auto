@@ -107,6 +107,9 @@ while instanceIndex < len(instances):
                 #if turn_count >= 0 :
                 if EnvSettings.ENGINE_FOR_SP == "NOX":
                     wait(random.randint(0,5))
+                else:
+                    wait(random.randint(0,2))
+                    
                 print 'retire'
                 GameLib.retire(resources)
                 
@@ -133,6 +136,7 @@ while instanceIndex < len(instances):
                 if len(findAny(resources.TITLE_DUEL_HISTORY)) > 0:
                     try:
                         click(resources.BUTTON_RESULT)
+                        wait(0.5)
                     except:
                         print "failed to click"
                     break
