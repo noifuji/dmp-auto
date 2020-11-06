@@ -1386,11 +1386,17 @@ def RestartApp(resource):
                     except:
                         print "failed to click"
                 type(Key.ESC)
+                wait(1)
                 if exists(resource.MESSAGE_BACK_TO_TITLE, 1) != None:
+                    type(Key.ESC)
+                    wait(1)
                     break
-        type(Key.ESC)
         if exists(resource.MESSAGE_BACK_TO_TITLE, 0.5) != None:
+            type(Key.ESC)
+            wait(1)
             break
+        type(Key.ESC)
+        wait(1)
 #    if resource.APP_ENGINE == "NOX":
 #        click(resource.ICON_OTHER)
 #        wait(3)
