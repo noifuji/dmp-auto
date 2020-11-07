@@ -87,7 +87,7 @@ try:
         waitVanish(NoxResources.TITLE_DECK, 60)
     
     type(Key.ESC)
-    exists(NoxResources.ICON_HOME, 60)
+    exists(NoxResources.ICON_SOLO_PLAY, 60)
     click(Pattern("1596593310453.png").targetOffset(-2,-214))
     if exists("1596593154431.png", 120) != None:
         for listTutorialLoop in range(10):
@@ -112,7 +112,7 @@ try:
     cardCountResult = CommonDMLib.countAllCardsByRarity(NoxResources)
     CommonDMLib.updateCardCount(ref, cardCountResult["NAMES"], cardCountResult["CARDS"])
     type(Key.ESC)
-    exists(NoxResources.ICON_HOME, 60)
+    exists(NoxResources.ICON_SOLO_PLAY, 60)
     res = CommonDMLib.scanAccountInfo(NoxResources)
     CommonDMLib.updateAccountInfo(ref, res[0], res[1], res[2], res[3],res[4], res[5])
     type(Key.ESC)
