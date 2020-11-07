@@ -47,9 +47,9 @@ try:
     CommonDMLib.RestartApp(NoxResources)
     #全てのデッキを削除
     for openCardListLoop in range(100):
-        if len(findAny("1596780580130.png")) > 0:
+        if len(findAny(NoxResources.ICON_CARD)) > 0:
             try:
-                click("1596780580130.png")
+                click(NoxResources.ICON_CARD)
             except:
                 print "failed to click"
             wait(1)
