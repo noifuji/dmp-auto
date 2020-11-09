@@ -35,12 +35,12 @@ spark ="spark.png"
 apo = "apo.png"
 
 ####################Settings####################
-TARGET_DMP = 4000
+TARGET_DMP = 5000
 DECK_BLIZZARD = {"NAME":"Blizzard", "SR" : [blizard], "VR" : [spark,apo,court], "COLOR" : ["1603262159403.png", "1603262167793.png"]}
 DECK_LANCER = {"NAME":"Lancer", "SR" : [lancer], "VR" : [vision,surfer,spark], "COLOR" : ["1603262159403.png","1599975832115.png"]}
 DECK_SAPPIRE = {"NAME":"Bolmeteus Sappire", "SR" : [sapphire,sabaki,lostsoul], "VR" : [extreme,surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
 DECK_BALOM = {"NAME":"Balom", "SR" : [dolbalom,dolbalomSec,lostsoul,sabaki], "VR" : [surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
-TARGET_DECKS = [DECK_SAPPIRE]
+TARGET_DECKS = [DECK_LANCER]
 ####################Settings####################
 appname = 'RESET'
 mentionUser = EnvSettings.mentionUser
