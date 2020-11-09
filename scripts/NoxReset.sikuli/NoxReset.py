@@ -49,19 +49,6 @@ DMApp = App(EnvSettings.NoxAppPath)
 
 
 #resources
-dmpIcon = "dmpIcon.png"
-amazeIcon = "amazeIcon.png"
-settingIcon = "settingIcon.png"
-closeIconBlack = Pattern("closeIconBlack.png").targetOffset(358,1)
-closeIconBlue = Pattern("closeIconBlue.png").targetOffset(360,1)
-closeIconGrey = Pattern("closeIconGrey.png").targetOffset(366,5)
-closeIconDL = Pattern("closeIconDL.png").similar(0.85).targetOffset(361,3)
-windowIcon = "windowIcon.png"
-noTasksIcon = "noTasksIcon.png"
-rename = Pattern("rename.png").targetOffset(-110,33)
-save = Pattern("save.png").targetOffset(114,-5)
-
-skip = Pattern("skip.png").similar(0.90)
 OK = Pattern("OK.png").similar(0.90)
 OK2 = Pattern("OK2.png").similar(0.80)
 tutorial = "tutorial.png"
@@ -160,10 +147,10 @@ for count in range(100):
             action_flag = False
             while loop_without_action_count <= 120:
                 
-                if len(findAny(skip)) > 0:
+                if len(findAny(NoxResources.BUTTON_SKIP)) > 0:
                     print 'A skip button is detected.'
                     try:
-                        click(skip)
+                        click(NoxResources.BUTTON_SKIP)
                     except:
                         print "failed to click skip"
                     action_flag = True
@@ -218,7 +205,7 @@ for count in range(100):
                 if len(findAny(retry)) > 0:
                     click(retry)
                     
-                if len(findAny(Pattern("1596592571942.png").similar(0.86))) > 0:
+                if len(findAny(NoxResources.ICON_HOME)) > 0:
                     print 'Home view was detected. This download loop will break.'
                     break
     
@@ -269,9 +256,9 @@ for count in range(100):
             wait(5)
             CommonDMLib.getPresent(NoxResources)
             #ショップでパック開封
-            click("1596592801262.png")
+            click(NoxResources.ICON_SHOP)
             for shopTutorialLoop in range(5):
-                click(Pattern("1599838544906.png").targetOffset(85,-53))
+                click(Pattern("1604912893427.png").targetOffset(79,-49))
                 wait(1)
             click(Pattern("1596592864693.png").similar(0.90).targetOffset(-5,-237))
             wait(5)
@@ -332,7 +319,7 @@ for count in range(100):
             if exists(OK2,60) != None:
                 click(OK2)
             wait(1)
-            click("1596593298299.png")
+            click(NoxResources.ICON_CARD)
             wait(5)
             click(Pattern("1596593310453.png").targetOffset(-2,-214))
             if exists("1596593154431.png", 120) != None:
@@ -384,8 +371,8 @@ for count in range(100):
                 CommonDMLib.uploadScreenShotToSlack(mentionUser,"Screenshot" , appname)
                 cardCountResult = CommonDMLib.countAllCardsByRarity(NoxResources)
                 click("1603258852950.png")
-                exists("1596781025606.png", 120)
-                click("1596781025606.png")
+                exists(NoxResources.ICON_OTHER, 120)
+                click(NoxResources.ICON_OTHER)
                 wait(3)
                 click("1596781081109.png")
                 exists("1596781095779.png", 30)

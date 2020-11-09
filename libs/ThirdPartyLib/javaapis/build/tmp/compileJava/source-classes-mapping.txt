@@ -1,8 +1,9 @@
 slackapis/SlackApis.java
  slackapis.SlackApis
-resizesimage/ResizeImage.java
- resizeimage.ResizeImage
 driveapis/DriveApis.java
  driveapis.DriveApis
+resizesimage/ResizeImage.java
+ resizeimage.ResizeImage
 spreadsheetapis/SpreadSheetApis.java
  spreadsheetapis.SpreadSheetApis
+ spreadsheetapis.SpreadSheetApis$1

@@ -275,10 +275,13 @@ def uploadStatistics(sheetname, statistics):
     spreadsheet.append(EnvSettings.STATISTICS_SHEET_ID, sheetname + "!A1", row, "ROWS")
 
 def updatePlayerId(ref, playerId, computername):
+    print "updatePlayerId"
     f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
     strCredentials = f.read()
     f.close()
+    print "strCredentials were read"
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
+    print "SpreadSheetApis instance was created"
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
             EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
@@ -914,6 +917,7 @@ def getMissionStrategy(resource, mission):
 def waitStartingGame(resource):
     print 'waitStartingGame'
     WAIT_TIME = 50
+    myTurnCount = 0
     for num in range(WAIT_TIME):
         print "waiting game start..." + str(num) + "/" + str(WAIT_TIME)
         #ストーリースキップ
@@ -939,6 +943,11 @@ def waitStartingGame(resource):
             exists(resource.ICON_EXTRA,120)
             return -1
         if len(findAny(resource.BUTTON_TURN_END)) > 0:
+            myTurnCount += 1
+            print "myTurnCount:" + str(myTurnCount)
+            if myTurnCount >= 3:
+                break
+        if len(findAny(resource.BUTTON_SMALL_BATTLE_START)) > 0:
             break
         if num >= (WAIT_TIME-1):
             raise Exception("Too many waitStartingGame loop")
@@ -1004,6 +1013,7 @@ def openMainStory(resource):
                 click(resource.BUTTON_CONFIRM_REWARD)
                 if exists(resource.TITLE_REWARD_INFO,1) != None:
                     type(Key.ESC)
+                    waitVanish(resource.TITLE_REWARD_INFO, 5)
                     break
             except:
                 print "failed to click"
@@ -1398,13 +1408,17 @@ def RestartApp(resource):
             break
         type(Key.ESC)
         wait(1)
-#    if resource.APP_ENGINE == "NOX":
-#        click(resource.ICON_OTHER)
-#        wait(3)
-#        if exists(resource.BUTTON_SETTINGS,5) != None:
-#            if find(resource.BUTTON_SETTINGS).getScore() < 0.96:
-#                click(resource.BUTTON_SETTINGS)
-#                exists("1603422361520.png", 60)
-#                dragDropAtSpeed(Pattern("1603422361520.png").targetOffset(28,548), Pattern("1603422361520.png").targetOffset(0,3), 2)
-#                click("1603422431461.png")
-#                type(Key.ESC)
+    #解像度設定の変更
+    if resource.APP_ENGINE == "NOX":
+        extra = findAny(resource.ICON_EXTRA)
+        if len(extra) > 0 and extra[0].getScore() < 0.99:
+            click(resource.ICON_OTHER)
+            wait(3)
+            if exists(resource.BUTTON_SETTINGS,5) != None:
+                if find(resource.BUTTON_SETTINGS).getScore() < 0.96:
+                    click(resource.BUTTON_SETTINGS)
+                    exists("1603422361520.png", 60)
+                    dragDropAtSpeed(Pattern("1603422361520.png").targetOffset(28,548), Pattern("1603422361520.png").targetOffset(0,3), 2)
+                    click(Pattern("1604913302661.png").similar(0.86))
+                    type(Key.ESC)
+                    waitVanish("1603422361520.png", 10)

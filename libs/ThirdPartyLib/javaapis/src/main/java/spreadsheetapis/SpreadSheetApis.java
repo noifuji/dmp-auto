@@ -15,6 +15,8 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpRequest;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,9 +40,21 @@ public class SpreadSheetApis {
 	
   public SpreadSheetApis(String appname, String strClientSecrets) throws IOException, GeneralSecurityException{
     final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-    this.service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT, strClientSecrets))
+    this.service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(getCredentials(HTTP_TRANSPORT, strClientSecrets)))
                  .setApplicationName(appname)
                  .build();
+    System.out.println("SpreadSheetApis");
+  }
+	
+  private HttpRequestInitializer setHttpTimeout(final HttpRequestInitializer requestInitializer) {
+    return new HttpRequestInitializer() {
+      @Override
+      public void initialize(HttpRequest httpRequest) throws IOException {
+        requestInitializer.initialize(httpRequest);
+        httpRequest.setConnectTimeout(1 * 60000);  // 1 minute connect timeout
+        httpRequest.setReadTimeout(1 * 60000);     // 1 minute read timeout
+      }
+    };
   }
 	
   private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, String strClientSecrets) throws IOException {
@@ -83,7 +97,7 @@ public class SpreadSheetApis {
   	
     Iterator<ValueRange> iterator = valueRanges.iterator();
     while(iterator.hasNext()) {
-    	result.add(iterator.next().getValues());
+      result.add(iterator.next().getValues());
     }
     return result;
   }
@@ -92,6 +106,7 @@ public class SpreadSheetApis {
     if (!dimension.equals("ROWS") && !dimension.equals("COLUMNS")) {
       throw new IOException();
     }
+    System.out.println("write is called");
     String valueInputOption = "USER_ENTERED";
     ValueRange requestBody = new ValueRange();
     requestBody.setValues(values);
@@ -102,6 +117,7 @@ public class SpreadSheetApis {
     request.setValueInputOption(valueInputOption);
 
     request.execute();
+    System.out.println("request was executed");
   }
 	
   public void append(String spreadsheetId, String range, List<List<Object>> values, String dimension) throws IOException {

@@ -24,7 +24,7 @@ def turnEnd(resources):
 
 def charge(resources, target):
     if resources.APP_ENGINE == "NOX":
-        CommonDMLib.dragDropAtSpeed(target, resources.TARGET_POSITION_CHARGE, 1.2)
+        CommonDMLib.dragDropAtSpeed(target, resources.TARGET_POSITION_CHARGE, 2)
     elif resources.APP_ENGINE == "ANDAPP":
         click(target)
         wait(1)
@@ -656,7 +656,7 @@ def directAttack(resources, attackerW, attackerS):
                 Settings.MoveMouseDelay = 0.1
                 break
         
-    for num in range(5):
+    for num in range(7):
         print "checking Single breaker...." + str(num)
         BZ = findAny(attackerS)
         for b in BZ:
@@ -677,11 +677,11 @@ def directAttack(resources, attackerW, attackerS):
                         click(resources.TARGET_POSITION_FIRST_SHIELD)
                         click(resources.TARGET_POSITION_SECOND_SHIELD)
                         click(resources.BUTTON_OK2)
+                    wait(2)
             except:
                 Settings.MoveMouseDelay = 0.1
                 print "exception was occured"
                 break
-            wait(1)
 
 
 def battle(resources):

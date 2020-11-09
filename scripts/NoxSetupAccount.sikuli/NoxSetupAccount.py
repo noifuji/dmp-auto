@@ -136,7 +136,7 @@ for count in range(100):
                 if len(findAny(NoxResources.BUTTON_RETRY)) > 0:
                     click(NoxResources.BUTTON_RETRY)
                     
-                if len(findAny(Pattern("1596592571942-1.png").similar(0.86))) > 0:
+                if len(findAny(NoxResources.ICON_HOME)) > 0:
                     print 'Home view was detected. This download loop will be broken.'
                     break
     
@@ -187,9 +187,9 @@ for count in range(100):
             CommonDMLib.getPresent(NoxResources)
             
             for openCardListLoop in range(100):
-                if len(findAny("1596780580130.png")) > 0:
+                if len(findAny(NoxResources.ICON_CARD)) > 0:
                     try:
-                        click("1596780580130.png")
+                        click(NoxResources.ICON_CARD)
                     except:
                         print "failed to click"
                     wait(1)
@@ -217,8 +217,8 @@ for count in range(100):
             CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_LARGE_CREATURE"))
             CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_MAIN"))
             click("1597235437582.png")
-            exists("1597235476942.png",60)
-            click("1596781025606.png")
+            exists(NoxResources.ICON_SOLO_PLAY,60)
+            click(NoxResources.ICON_OTHER)
             wait(3)
             click("1596781081109.png")
             exists("1596781095779.png", 30)

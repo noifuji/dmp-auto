@@ -119,8 +119,8 @@ while instanceIndex < len(instances):
             #レベルアップ報酬のスキップ
             for battleResultLoop in range(180):
                 CommonDMLib.skipRewards(NoxResources)
-                if exists("1596893006314.png",1) != None:
-                    click("1596893006314.png")
+                if exists(NoxResources.BUTTON_SMALL_OK,1) != None:
+                    click(NoxResources.BUTTON_SMALL_OK)
                 else:
                     break
             dailyReward = 0
@@ -129,16 +129,16 @@ while instanceIndex < len(instances):
                 rewardResult = CommonDMLib.skipRewards(NoxResources)
                 dailyReward += rewardResult["daily"]
                 if dailyReward > 0:
-                    if len(findAny(Pattern("1596952408522.png").similar(0.85))) > 0:
-                        click(Pattern("1596952408522.png").similar(0.85))
-                    if len(findAny("1596952469317.png")) > 0:
+                    if len(findAny(NoxResources.BUTTON_BACK)) > 0:
+                        click(NoxResources.BUTTON_BACK)
+                    if len(findAny("1604812430562.png")) > 0:
                         break
-                if len(findAny("1596767585645.png")) > 0 and dailyReward == 0:
+                if len(findAny(NoxResources.BUTTON_SMALL_BATTLE_START)) > 0 and dailyReward == 0:
                     try:
-                        click("1596767585645.png")
+                        click(NoxResources.BUTTON_SMALL_BATTLE_START)
                     except:
                         print "failed to click smallStart"
-                if len(findAny("1596893264220.png")) > 0:
+                if len(findAny(NoxResources.BUTTON_LARGE_BATTLE_START)) > 0:
                     break
             if dailyReward > 0:
                 CommonDMLib.openMission(NoxResources)
