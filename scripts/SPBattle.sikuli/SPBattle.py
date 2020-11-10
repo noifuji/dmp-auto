@@ -23,6 +23,43 @@ resources = None
 targetRewardFlag = False
 strategy = 101
 
+def waitStartingGame(resource):
+    print 'waitStartingGame'
+    WAIT_TIME = 60
+    myTurnCount = 0
+    for num in range(WAIT_TIME):
+        print "waiting game start..." + str(num) + "/" + str(WAIT_TIME)
+        #ストーリースキップ
+        CommonDMLib.skipStory(resource)
+        #マッチングしなかった場合
+        if len(findAny(resource.MESSAGE_NO_OPPONENTS)) > 0:
+            try:
+                click(resource.BUTTON_OK)
+                wait(resource.BUTTON_SMALL_BATTLE_START, 60)
+                click(resource.BUTTON_SMALL_BATTLE_START)
+                wait(resource.BUTTON_LARGE_BATTLE_START,60)
+                click(resource.BUTTON_LARGE_BATTLE_START)
+                return -1
+            except:
+                print "failed to click"
+        if len(findAny(resource.BUTTON_RETRY)) > 0:
+            click(resource.BUTTON_RETRY)
+        if len(findAny(resource.MESSAGE_ERROR_9003)) > 0:
+            raise Exception
+            
+        if len(findAny(resource.MESSAGE_CONNECTION_LOST)) >0 :
+            click(resource.BUTTON_OK)
+            exists(resource.ICON_EXTRA,120)
+            return -1
+        if len(findAny(resource.BUTTON_TURN_END)) > 0:
+            break
+        if len(findAny(resource.BUTTON_SMALL_BATTLE_START)) > 0:
+            break
+        if num >= (WAIT_TIME-1):
+            raise Exception("Too many waitStartingGame loop")
+        wait(1)
+    return 0
+
 #Pre-processing Start
 
 if CommonDMLib.isNewVersionAvailable():
@@ -87,7 +124,7 @@ while instanceIndex < len(instances):
         for battle_loop in range(2000):
         
             #マッチングを待つ
-            if CommonDMLib.waitStartingGame(resources) == -1:
+            if waitStartingGame(resources) == -1:
                 if EnvSettings.RUN_MODE == "DEV":
                     CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
                 continue
@@ -105,10 +142,10 @@ while instanceIndex < len(instances):
                     #turn_count += 1
                     
                 #if turn_count >= 0 :
-                #if EnvSettings.ENGINE_FOR_SP == "NOX":
-                #    wait(random.randint(0,5))
-                #else:
-                #    wait(random.randint(0,2))
+                if EnvSettings.ENGINE_FOR_SP == "NOX":
+                    wait(random.randint(0,5))
+                else:
+                    wait(random.randint(0,2))
                     
                 print 'retire'
                 GameLib.retire(resources)
@@ -154,9 +191,10 @@ while instanceIndex < len(instances):
                 win_count =0
                 instanceIndex += 1
                 break
-
-            if CommonDMLib.isNewVersionAvailable():
-                exit(50)
+            
+            if total_duel_count % 5 == 0:
+                if CommonDMLib.isNewVersionAvailable():
+                    exit(50)
 
             if len(findAny(resources.ICON_WIN)) > 0:
                 win_count += 1
