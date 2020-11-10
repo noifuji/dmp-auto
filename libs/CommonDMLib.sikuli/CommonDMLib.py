@@ -19,6 +19,10 @@ def killMultiPlayerManager():
     cmd = 'taskkill /im MultiPlayerManager.exe /t'
     returncode = subprocess.Popen(cmd, shell=True)
 
+def killNoxInstance():
+    cmd = 'taskkill /im Nox.exe /t /F'
+    returncode = subprocess.Popen(cmd, shell=True)
+
 def isNewVersionAvailable():
     x = 10
     delay = 1.0
@@ -916,7 +920,7 @@ def getMissionStrategy(resource, mission):
 #return -1 異常発生
 def waitStartingGame(resource):
     print 'waitStartingGame'
-    WAIT_TIME = 50
+    WAIT_TIME = 60
     myTurnCount = 0
     for num in range(WAIT_TIME):
         print "waiting game start..." + str(num) + "/" + str(WAIT_TIME)
@@ -1182,6 +1186,7 @@ def exitNox(resources):
         if waitVanish(resources.BUTTON_NOX_STOP, 180) == False:
             print "Nox instance stays."
             killMultiPlayerManager()
+            killNoxInstance()
             raise Exception("Failed to close instance. Retrying...")
     App(EnvSettings.NoxMultiPlayerPath).close()
 

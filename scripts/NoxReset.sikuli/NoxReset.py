@@ -28,6 +28,7 @@ daemonhand = "daemonhand.png"
 extreme = "extreme.png"
 vision = "vision.png"
 lancer = "lancer.png"
+para = "1604984428751.png"
 sapphire = "sapphire.png"
 dolbalom="1603262324332.png"
 dolbalomSec="1603253252148.png"
@@ -35,9 +36,9 @@ spark ="spark.png"
 apo = "apo.png"
 
 ####################Settings####################
-TARGET_DMP = 5000
+TARGET_DMP = 4500
 DECK_BLIZZARD = {"NAME":"Blizzard", "SR" : [blizard], "VR" : [spark,apo,court], "COLOR" : ["1603262159403.png", "1603262167793.png"]}
-DECK_LANCER = {"NAME":"Lancer", "SR" : [lancer], "VR" : [vision,surfer,spark], "COLOR" : ["1603262159403.png","1599975832115.png"]}
+DECK_LANCER = {"NAME":"Lancer", "SR" : [lancer,para], "VR" : [vision,surfer,spark], "COLOR" : ["1603262159403.png","1599975832115.png"]}
 DECK_SAPPIRE = {"NAME":"Bolmeteus Sappire", "SR" : [sapphire,sabaki,lostsoul], "VR" : [extreme,surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
 DECK_BALOM = {"NAME":"Balom", "SR" : [dolbalom,dolbalomSec,lostsoul,sabaki], "VR" : [surfer,daemonhand], "COLOR" : ["1599975832115.png","1599975856377.png","1599975849850.png"]}
 TARGET_DECKS = [DECK_LANCER]
@@ -317,8 +318,8 @@ for count in range(100):
             exists("1596593154431.png",10)                
             click("1596593154431.png")
             if exists(OK2,60) != None:
-                click(OK2)
-            wait(1)
+                type(Key.ESC)
+            wait(3)
             click(NoxResources.ICON_CARD)
             wait(5)
             click(Pattern("1596593310453.png").targetOffset(-2,-214))
