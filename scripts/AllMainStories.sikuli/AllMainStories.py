@@ -126,7 +126,6 @@ while instanceIndex < len(instances):
                     CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
                     break
     
-                wait(10)
                 # ゲームループ
                 GameLib.gameLoop(resources, strategy, appname)
                 # ゲームループエンド

@@ -1057,8 +1057,10 @@ def getStrategyByMainStoryStage(episode, stage):
         strategy = 2
     elif episode == 2 and stage in [4,6,13]:
         strategy = 2
-    elif episode == 2 and stage in [10,12]:
+    elif episode == 2 and stage in [10]:
         strategy = 102
+    elif episode == 2 and stage in [9,12,15]:
+        strategy = 103
     elif episode == 3 and stage in [2]:
         strategy = 100
     elif episode == 4 and stage in [3,9]:
@@ -1087,6 +1089,8 @@ def getDeckByStrategy(resource, strategy):
         return [resource.DECKIMAGE_SPBATTLE, getDeckCode("DECKCODE_SP")]
     elif strategy == 102:
         return [resource.DECKIMAGE_FATTY, getDeckCode("DECKIMAGE_FATTY")]
+    elif strategy == 103:
+        return [resource.DECKIMAGE_HAKUHO, getDeckCode("DECKIMAGE_HAKUHO")]
     else:
         return None
 
@@ -1420,10 +1424,10 @@ def RestartApp(resource):
             click(resource.ICON_OTHER)
             wait(3)
             if exists(resource.BUTTON_SETTINGS,5) != None:
-                if find(resource.BUTTON_SETTINGS).getScore() < 0.96:
-                    click(resource.BUTTON_SETTINGS)
-                    exists("1603422361520.png", 60)
-                    dragDropAtSpeed(Pattern("1603422361520.png").targetOffset(28,548), Pattern("1603422361520.png").targetOffset(0,3), 2)
-                    click(Pattern("1604913302661.png").similar(0.86))
-                    type(Key.ESC)
-                    waitVanish("1603422361520.png", 10)
+                click(resource.BUTTON_SETTINGS)
+                exists("1603422361520.png", 60)
+                dragDropAtSpeed(Pattern("1603422361520.png").targetOffset(28,548), Pattern("1603422361520.png").targetOffset(-3,-73), 2)
+                click(Pattern("1604913302661.png").similar(0.86))
+                wait(5)
+                type(Key.ESC)
+                waitVanish("1603422361520.png", 10)

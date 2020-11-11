@@ -39,11 +39,13 @@ public class SpreadSheetApis {
   private Sheets service;
 	
   public SpreadSheetApis(String appname, String strClientSecrets) throws IOException, GeneralSecurityException{
+    System.out.println("Start SpreadSheetApis");
     final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-    this.service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, setHttpTimeout(getCredentials(HTTP_TRANSPORT, strClientSecrets)))
+    System.out.println("Start to create a sheet service instance");
+    this.service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT, strClientSecrets))
                  .setApplicationName(appname)
                  .build();
-    System.out.println("SpreadSheetApis");
+    System.out.println("End SpreadSheetApis");
   }
 	
   private HttpRequestInitializer setHttpTimeout(final HttpRequestInitializer requestInitializer) {
@@ -58,14 +60,18 @@ public class SpreadSheetApis {
   }
 	
   private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, String strClientSecrets) throws IOException {
+    System.out.println("Start getCredentials");
     GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new java.io.StringReader(strClientSecrets));
+    System.out.println("GoogleClientSecrets.load");
 
     // Build flow and trigger user authorization request.
     GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                                      .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                                      .setAccessType("offline")
                                      .build();
+    System.out.println("new GoogleAuthorizationCodeFlow.Builder");
     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+    System.out.println("End getCredentials");
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
   }
 

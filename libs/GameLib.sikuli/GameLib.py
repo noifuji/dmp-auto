@@ -59,6 +59,90 @@ def getManaNumBeforeCharge(resources):
     else:
         return 7
 
+def countEnemyBlockers(resources):
+    if resources.APP_ENGINE == "NOX":
+        OFFSETX = -1000
+        OFFSETY = 210
+        WIDTH = 1270
+        HEIGHT = 100
+    elif resources.APP_ENGINE == "ANDAPP":
+        OFFSETX = -780
+        OFFSETY = 200
+        WIDTH = 1000
+        HEIGHT = 70
+    else:
+        raise Exception()
+    res = findAny(resources.ICON_ENEMY_CARD_COUNT)
+    if len(res) == 0:
+        return
+    cardListRegion = Region(res[0].getX()+OFFSETX,res[0]. getY()+OFFSETY,WIDTH,HEIGHT)
+    cardListRegion.highlight(0.1)
+    f = Finder(SCREEN.capture(cardListRegion))
+    f.findAll(resources.ICON_ENEMY_UNTAPPED_BLOCKER)
+    count = 0
+    while f.hasNext():
+        f.next()
+        count += 1
+    return count
+
+def countMyAttackers(resources):
+    if resources.APP_ENGINE == "NOX":
+        OFFSETX = -1000
+        OFFSETY = 400
+        WIDTH = 1270
+        HEIGHT = 150
+    elif resources.APP_ENGINE == "ANDAPP":
+        OFFSETX = -780
+        OFFSETY = 335
+        WIDTH = 1000
+        HEIGHT = 110
+    else:
+        raise Exception()
+    res = findAny(resources.ICON_ENEMY_CARD_COUNT)
+    if len(res) == 0:
+        return
+    cardListRegion = Region(res[0].getX()+OFFSETX,res[0]. getY()+OFFSETY,WIDTH,HEIGHT)
+    cardListRegion.highlight(0.1)
+    f = Finder(SCREEN.capture(cardListRegion))
+    f.findAll(resources.ICON_MY_UNTAPPED_CREATURE)
+    count = 0
+    while f.hasNext():
+        f.next()
+        count += 1
+    return count
+
+                        
+def countEnemyShields(resources):
+    if resources.APP_ENGINE == "NOX":
+        OFFSETX = -470
+        OFFSETY = 100
+    elif resources.APP_ENGINE == "ANDAPP":
+        OFFSETX = -400
+        OFFSETY = 90
+    else:
+        raise Exception()
+    res = findAny(resources.ICON_ENEMY_CARD_COUNT)
+    if len(res) == 0:
+        return
+    click(Location(res[0].getX()+OFFSETX, res[0].getY()+OFFSETY))
+    wait(2)
+    result = findBestList([
+                resources.ICON_SHIELD_COUNT0,
+                resources.ICON_SHIELD_COUNT1,
+                resources.ICON_SHIELD_COUNT2,
+                resources.ICON_SHIELD_COUNT3,
+                resources.ICON_SHIELD_COUNT4,
+                resources.ICON_SHIELD_COUNT5
+                ])
+    if result == None:
+        count = 5
+    else:
+        count = result.getIndex()
+
+    click(resources.BUTTON_OK2)
+    waitVanish(resources.BUTTON_OK2, 5)
+    return count
+
 def getManaColor(resources):
     results = findAny(
             resources.ICON_MANA_WHITE
@@ -330,6 +414,56 @@ def ChargeManaSpell(resources):
         mana += 1
     return mana
 
+def ChargeManaHakuho(resources):
+    print 'ChargeManaHakuho'
+    #マナ取得
+    mana = getManaNumBeforeCharge(resources)
+    print 'ManaZone(Before charge):' + str(mana)
+
+    #マナゾーンの色チェック
+    for retryLoop in range(10):
+        manaColors = getManaColor(resources)
+        print manaColors
+        if manaColors["RED"] == False and manaColors["BLACK"] == False and mana >= 1:
+            print "retry"
+        elif (manaColors["RED"] == False or manaColors["BLACK"] == False) and mana >= 2:
+            print "retry"
+        else:
+            break
+            
+    chargeTargets = []
+    #未チャージの色を抽出
+    if not manaColors["RED"]:
+        chargeTargets.append(resources.ICON_COST_RED_4)
+        chargeTargets.append(resources.ICON_COST_RED_3)
+        chargeTargets.append(resources.ICON_COST_RED_2)
+    if not manaColors["BLACK"]:
+        chargeTargets.append(resources.ICON_COST_BLACK_4)
+        chargeTargets.append(resources.ICON_COST_BLACK_2)
+        chargeTargets.append(resources.ICON_COST_BLACK_3)
+    #手札探索対象を作成
+    Hand = findAnyList(chargeTargets)
+    print "findAnyList result : " +  str(len(Hand))
+    #手札に無い場合は、全対象から確認
+    if len(Hand) == 0 and (mana <= 3 or (mana >= 4 and getHandCount(resources,[]) >= 3)):
+        Hand = findAnyList(
+                [
+                    resources.ICON_COST_WHITE_6,
+                    resources.ICON_COST_BLACK_4,
+                    resources.ICON_COST_RED_4,
+                    resources.ICON_COST_RED_3,
+                    resources.ICON_COST_BLACK_2,
+                    resources.ICON_COST_RED_2,
+                    resources.ICON_COST_BLACK_3])
+
+        if len(Hand) == 0:
+            return mana
+    
+    if len(Hand) > 0:         
+        charge(resources,Hand[0])
+        mana += 1
+    return mana
+
 def SummonBasic(resources, currentMana):
     print 'SummonBasic'
     availableMana = currentMana
@@ -584,6 +718,84 @@ def SummonFatty(resources, currentMana):
             except:
                 print "failed to click"
 
+def SummonHakuho(resources, currentMana):
+    print 'SummonSpell'
+    availableMana = currentMana
+    print 'Available Mana : ' + str(availableMana)
+    count = 0
+
+    #マナゾーンの色チェック
+    for retryLoop in range(10):
+        manaColors = getManaColor(resources)
+        print manaColors
+        if manaColors["RED"] == False and manaColors["BLACK"] == False and availableMana >= 1:
+            print "retry"
+        elif (manaColors["RED"] == False or manaColors["BLACK"] == False) and availableMana >= 2:
+            print "retry"
+        else:
+            break
+    
+    for num in range(10):
+        summon_creature = None
+        r2 = findAny(resources.ICON_COST_RED_2)
+        r3 = findAny(resources.ICON_COST_RED_3)
+        r4 = findAny(resources.ICON_COST_RED_4)
+        bk2 = findAny(resources.ICON_COST_BLACK_2)
+        bk3 = findAny(resources.ICON_COST_BLACK_3)
+        bk4 = findAny(resources.ICON_COST_BLACK_4)
+        
+        
+        if len(r2) > 0 and manaColors["RED"] and availableMana == 2:
+            summon_creature = r2[0]
+            availableMana-=2
+            count += 1
+        elif len(bk2) > 0 and manaColors["BLACK"] and availableMana == 2:
+            summon_creature = bk2[0]
+            availableMana-=2
+            count += 1
+        elif len(bk3) > 0 and manaColors["BLACK"] and availableMana == 3:
+            summon_creature = bk3[0]
+            availableMana-=3
+            count += 1
+        elif len(r3) > 0 and manaColors["RED"] and availableMana == 3:
+            summon_creature = r3[0]
+            availableMana-=3
+            count += 1
+        elif len(r2) > 0 and manaColors["RED"] and availableMana >= 3:
+            summon_creature = r2[0]
+            availableMana-=2
+            count += 1
+        elif len(bk2) > 0 and manaColors["BLACK"] and availableMana >= 3:
+            summon_creature = bk2[0]
+            availableMana-=2
+            count += 1
+        elif len(bk3) > 0 and manaColors["BLACK"] and availableMana >= 4:
+            summon_creature = bk3[0]
+            availableMana-=3
+            count += 1
+        elif len(r3) > 0 and manaColors["RED"] and availableMana >= 4:
+            summon_creature = r3[0]
+            availableMana-=3
+            count += 1
+        elif len(r4) > 0 and manaColors["RED"] and availableMana >= 4:
+            summon_creature = r4[0]
+            availableMana-=4
+        elif len(bk4) > 0 and manaColors["BLACK"] and availableMana >= 4:
+            summon_creature = bk4[0]
+            availableMana-=4
+            count += 1
+        else:
+            print 'Couldnt find a summonable creature. Break loop.'
+            break
+        
+        try:
+            summon(resources,summon_creature)
+            wait(1.5)
+        except:
+            Settings.MoveMouseDelay = 0.1
+            break
+    return count
+
 def SummonSpell(resources, currentMana):
     print 'SummonSpell'
     availableMana = currentMana
@@ -682,6 +894,50 @@ def directAttack(resources, attackerW, attackerS):
                 Settings.MoveMouseDelay = 0.1
                 print "exception was occured"
                 break
+
+def directAttackHakuho(resources, attackers):
+    print 'directAttack'
+    if resources.APP_ENGINE == "NOX":
+        OFFSETX = -1000
+        OFFSETY = 400
+        WIDTH = 1270
+        HEIGHT = 150
+    elif resources.APP_ENGINE == "ANDAPP":
+        OFFSETX = -780
+        OFFSETY = 335
+        WIDTH = 1000
+        HEIGHT = 110
+    else:
+        raise Exception()
+        
+    for attacker in attackers:
+        for num in range(4):
+            print "checking Single breaker...." + str(num)
+            res = findAny(resources.ICON_ENEMY_CARD_COUNT)
+            if len(res) == 0:
+                return
+            myAttackerRegion = Region(res[0].getX()+OFFSETX,res[0]. getY()+OFFSETY,WIDTH,HEIGHT)
+            myAttackerRegion.highlight(0.1)
+            BZ = myAttackerRegion.findAny(attacker)
+            if len(BZ) == 0:
+                print "no attackers"
+                break
+            for b in BZ:
+                try:
+                    print "attacking shield...."
+                    click(b.getTarget())
+                    CommonDMLib.dragDropAtSpeed(b,resources.TARGET_POSITION_DIRECT_ATTACK,1)
+    
+                    if exists(resources.MESSAGE_SELECT_BREAK_ENEMY_SHIELD, 2) != None:
+                        print "shields were detected"
+                        click(resources.TARGET_POSITION_FIRST_SHIELD)
+                        click(resources.TARGET_POSITION_SECOND_SHIELD)
+                        click(resources.BUTTON_OK2)
+                    wait(1)
+                except:
+                    Settings.MoveMouseDelay = 0.1
+                    print "exception was occured"
+                    break
 
 
 def battle(resources):
@@ -832,6 +1088,17 @@ def irregularLoop(resources, appname):
     return 1
 
 def gameLoop(resources, strategy, appname):
+    #リタイア
+    if strategy == 6:
+        retire(resources)
+        exists(resources.BUTTON_SMALL_BATTLE_START,120)
+        return
+    elif  strategy == 103:
+        if len(findAny(resources.ICON_ENEMY_MANA0)) == 0:
+            retire(resources)
+            exists(resources.BUTTON_SMALL_BATTLE_START, 120)
+            return
+        
     for game_loop in range(50):
         print "Inside Game Loop"
         if len(findAny(resources.ICON_ENEMY_CARD_COUNT)) > 0:
@@ -858,6 +1125,8 @@ def gameLoop(resources, strategy, appname):
             currentMana = ChargeManaBasic(resources)
         elif strategy == 102:
             currentMana = ChargeManaFatty(resources)
+        elif strategy == 103:
+            currentMana = ChargeManaHakuho(resources)
         wait(1)
         
         #  召喚
@@ -873,6 +1142,8 @@ def gameLoop(resources, strategy, appname):
             SummonBasic(resources,currentMana)
         elif strategy == 102:
             SummonFatty(resources,currentMana)
+        elif strategy == 103:
+            SummonHakuho(resources,currentMana)
         wait(1)
         
         #  攻撃
@@ -889,11 +1160,56 @@ def gameLoop(resources, strategy, appname):
         elif strategy == 5:
             if random.random() < 0.7:
                 directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
-
-        #その他
-        if strategy == 6:
-            retire(resources)
-            exists(resources.BUTTON_SMALL_BATTLE_START,120)
+        elif strategy in [103]:
+            for attackLoop in range(2):
+                blockers = countEnemyBlockers(resources)
+                print "blockers : " + str(blockers)
+                if blockers == 0:
+                    directAttackHakuho(resources, [resources.ICON_MY_UNTAPPED_CREATURE])
+                    break
+                else:
+                    attackersList = []
+                    for countLoop in range(10):
+                        a = countMyAttackers(resources)
+                        print "a : " + str(a)
+                        attackersList.append(a)
+                    attackers = min(attackersList)
+                    print "attackers : " + str(attackers)
+                    if attackers - blockers * 2 > 0 or attackers >= 6:
+                        directAttackHakuho(resources, [
+                                    resources.ICON_BELBET,
+                                    resources.ICON_JOE,
+                                    resources.ICON_GREGORIA,
+                                    resources.ICON_TILER,
+                                    resources.ICON_VOGUE,
+                                    resources.ICON_TENTIKE,
+                                    resources.ICON_MEZZ,
+                                    resources.ICON_KISHA,
+                                    resources.ICON_KAMIKAZE,
+                                    resources.ICON_MY_UNTAPPED_CREATURE])
+                        break
+                    else:
+                        shields = countEnemyShields(resources)
+                        print "shields : " + str(shields)
+                        lethal = attackers - shields - blockers
+                        print "lethal : " + str(lethal)
+                        if lethal > 0:
+                            directAttackHakuho(resources, [
+                                    resources.ICON_BELBET,
+                                    resources.ICON_JOE,
+                                    resources.ICON_GREGORIA,
+                                    resources.ICON_TILER,
+                                    resources.ICON_VOGUE,
+                                    resources.ICON_TENTIKE,
+                                    resources.ICON_MEZZ,
+                                    resources.ICON_KISHA,
+                                    resources.ICON_KAMIKAZE,
+                                    resources.ICON_MY_UNTAPPED_CREATURE])
+                            break
+                        elif len(findAny(resources.ICON_BELBET)) > 0:
+                            directAttackHakuho(resources, [resources.ICON_BELBET])
+                        else:
+                            break
         
         wait(1)
         #  ターンエンド
