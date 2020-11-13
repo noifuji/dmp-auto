@@ -10,6 +10,7 @@ import CommonDMLib
 import AndAppResources
 import NoxResources
 import EnvSettings
+from spreadsheetapis import SpreadSheetApis
 
 mentionUser = EnvSettings.mentionUser
 appname = 'SP'
@@ -21,6 +22,7 @@ instances = []
 resources = None
 targetRewardFlag = False
 strategy = 101
+sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 
 #Pre-processing Start
 
@@ -37,7 +39,7 @@ elif EnvSettings.ENGINE_FOR_SP == "NOX":
     App(EnvSettings.AppPath).close()
     App(EnvSettings.AndAppPath).close()
     instances = EnvSettings.NOX_INSTANCES
-    statuses = CommonDMLib.downloadQuestStatus()
+    statuses = CommonDMLib.downloadQuestStatus(sheets)
     temp = []
     for instance in instances:
         for status in statuses:

@@ -8,6 +8,7 @@ sys.path.append(EnvSettings.LIBS_DIR_PATH)
 sys.path.append(EnvSettings.RES_DIR_PATH)
 import GameLib
 import CommonDMLib
+from spreadsheetapis import SpreadSheetApis
 
 ###################Settings######################
 NORMAL_LAST_EPISODE = 4
@@ -48,6 +49,7 @@ def isClearedStage(resources):
     return res
 
 #Pre-processing Start
+sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 if EnvSettings.ENGINE_FOR_MAIN == "ANDAPP":
     import AndAppResources
     import NoxResources
@@ -59,7 +61,7 @@ elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
     resources = NoxResources
     App(EnvSettings.AppPath).close()
     App(EnvSettings.AndAppPath).close()
-    statuses = CommonDMLib.downloadQuestStatus()
+    statuses = CommonDMLib.downloadQuestStatus(sheets)
     temp = []
     for instance in instances:
         for status in statuses:
@@ -98,9 +100,9 @@ while instanceIndex < len(instances):
                     CommonDMLib.getPresent(NoxResources)
                     CommonDMLib.getMissionRewards(NoxResources)
                     res = CommonDMLib.scanAccountInfo(NoxResources)
-                    CommonDMLib.updateAccountInfo(instances[instanceIndex], res[0], res[1], res[2], res[3],res[4], res[5])
+                    CommonDMLib.updateAccountInfo(sheets, instances[instanceIndex], res[0], res[1], res[2], res[3],res[4], res[5])
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories were cleared!', appname)
-                CommonDMLib.completeQuestStatus(instances[instanceIndex], "MAIN")
+                CommonDMLib.completeQuestStatus(sheets, instances[instanceIndex], "MAIN")
                 instanceIndex += 1
                 break
             
@@ -223,7 +225,7 @@ while instanceIndex < len(instances):
             statisticsData["RETRY"] = retryCount
             statisticsData["EXCEPTION"] = exceptionCout
             statisticsData["ENDTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-            CommonDMLib.uploadStatistics("MainStory" ,statisticsData)
+            CommonDMLib.uploadStatistics(sheets, "MainStory" ,statisticsData)
             retryCount = 0
             exceptionCout = 0
 

@@ -7,6 +7,7 @@ sys.path.append(EnvSettings.LIBS_DIR_PATH)
 sys.path.append(EnvSettings.RES_DIR_PATH)
 import DMLib
 import CommonDMLib
+from spreadsheetapis import SpreadSheetApis
 
 def sum(list) :
     result = 0
@@ -25,6 +26,7 @@ def compareList(list1, list2) :
 
 AppPath = EnvSettings.AppPath
 DMApp = App(AppPath)
+sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 
 rarities = [Pattern("1596254755989.png").similar(0.90), Pattern("1596254891002.png").similar(0.90), Pattern("1596254900848.png").similar(0.90), Pattern("1596254909843.png").similar(0.90), Pattern("1596254916984.png").similar(0.90)]
 #rarities = [Pattern("1596254900848.png").similar(0.90)]
@@ -116,7 +118,7 @@ for rarity in rarities:
     names.append(sum(confirmedCount))
     cards.append(confirmedCount[0]*1 + confirmedCount[1]*2 + confirmedCount[2]*3 + confirmedCount[3]*4)
 
-CommonDMLib.updateCardCount(ref, names, cards)
+CommonDMLib.updateCardCount(sheets, ref, names, cards)
 
 print " C:" + str(names[0]) + "Card Names / " + str(cards[0]) + "Cards"
 print "UC:" + str(names[1]) + "Card Names / " + str(cards[1]) + "Cards"

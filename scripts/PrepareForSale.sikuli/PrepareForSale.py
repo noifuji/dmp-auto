@@ -9,6 +9,7 @@ import GameLib
 import CommonDMLib
 import NoxResources
 from driveapis import DriveApis
+from spreadsheetapis import SpreadSheetApis
 
 def captureImage(keyImage, offsetY, width, height):
     keyImageObj = findAny(keyImage)
@@ -37,10 +38,15 @@ def filterCardList(rarities, dmpps):
 
 appname = 'PREPARE'
 Settings.MoveMouseDelay = 0.1
+drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
+sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 try:
     ref = input("Enter Ref")
     deckCodeRaw = input("Enter Deck Code")
-    deckCodes = deckCodeRaw.split(",")
+    if deckCodeRaw == "":
+        deckCodes = []
+    else:
+        deckCodes = deckCodeRaw.split(",")
     
     
     CommonDMLib.RestartNox(NoxResources, ref)
@@ -70,10 +76,6 @@ try:
         click("1596780684705.png")
         wait(1)
     exists("1596780703269.png",60)
-    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
-    strCredentials = f.read()
-    f.close()
-    drive = DriveApis("DMPAuto", strCredentials)
     fId = drive.createFolder(str(ref), "1ApCg9taRAEmK7QH93bxmoIzMbRaC_r7m")
     for deckCode in deckCodes:
         #対象のデッキを作成する。
@@ -110,11 +112,11 @@ try:
                 drive.uploadFile(rarity["NAME"] + str(i+1) +  ".png", image.getFilename(), fId)
     
     cardCountResult = CommonDMLib.countAllCardsByRarity(NoxResources)
-    CommonDMLib.updateCardCount(ref, cardCountResult["NAMES"], cardCountResult["CARDS"])
+    CommonDMLib.updateCardCount(sheets, ref, cardCountResult["NAMES"], cardCountResult["CARDS"])
     type(Key.ESC)
     exists(NoxResources.ICON_SOLO_PLAY, 60)
     res = CommonDMLib.scanAccountInfo(NoxResources)
-    CommonDMLib.updateAccountInfo(ref, res[0], res[1], res[2], res[3],res[4], res[5])
+    CommonDMLib.updateAccountInfo(sheets, ref, res[0], res[1], res[2], res[3],res[4], res[5])
     type(Key.ESC)
     waitVanish(NoxResources.TITLE_ITEM, 60)
     image = captureImage(NoxResources.BUTTON_BACK, -20, 1500, 860)
@@ -123,6 +125,14 @@ try:
     exists(NoxResources.TITLE_ITEM, 60)
     image = captureImage(NoxResources.TITLE_ITEM, 0, 1380, 810)
     drive.uploadFile("Packs.png", image.getFilename(), fId)
+    if len(findAny(Pattern("1605239996094.png").similar(0.93))) > 0:
+        for packLoop in range(10):
+            CommonDMLib.dragDropAtSpeed(Pattern("1605239781030.png").targetOffset(3,715), Pattern("1605239781030.png").targetOffset(1,233), 1.5)
+            image = captureImage(NoxResources.TITLE_ITEM, 0, 1380, 810)
+            drive.uploadFile("Packs" + str(packLoop + 2) + ".png", image.getFilename(), fId)
+            if len(findAny(Pattern("1605239930745.png").similar(0.90))) > 0:
+                break
+    
     click(NoxResources.BUTTON_OTHER)
     exists(NoxResources.TITLE_ITEM, 60)
     image = captureImage(NoxResources.TITLE_ITEM, 0, 1380, 810)

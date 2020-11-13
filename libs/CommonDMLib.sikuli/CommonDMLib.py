@@ -13,7 +13,6 @@ import EnvSettings
 sys.path.append(EnvSettings.JAVA_API_PATH)
 from slackapis import SlackApis
 from resizeimage import ResizeImage;
-from spreadsheetapis import SpreadSheetApis
 
 def killMultiPlayerManager():
     cmd = 'taskkill /im MultiPlayerManager.exe /t'
@@ -22,6 +21,12 @@ def killMultiPlayerManager():
 def killNoxInstance():
     cmd = 'taskkill /im Nox.exe /t /F'
     returncode = subprocess.Popen(cmd, shell=True)
+
+def getCredentials():
+    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
+    strCredentials = f.read()
+    f.close()
+    return strCredentials
 
 def isNewVersionAvailable():
     x = 10
@@ -148,16 +153,12 @@ def uploadScreenShotToSlack(userid, message,  appname):
                 print(mes)
             wait(1)
 
-def updateCardCount(ref, nameCount, cardCount):
+def updateCardCount(spreadsheet, ref, nameCount, cardCount):
     if len(nameCount) != len(cardCount) or len(nameCount) != 5:
         raise Exception
     
     row = [[nameCount[4],cardCount[4],nameCount[3],cardCount[3],nameCount[2],cardCount[2],nameCount[1],cardCount[1],nameCount[0],cardCount[0]]]
-    
-    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
-    strCredentials = f.read()
-    f.close()
-    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
+
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
             EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW +":" +
@@ -174,13 +175,8 @@ def updateCardCount(ref, nameCount, cardCount):
             EnvSettings.ACCOUNT_INFO_CARDCOUNT_END_COL + str(rowIndex), 
             row, "ROWS")
 
-def downloadQuestStatus():
+def downloadQuestStatus(spreadsheet):
     print "downloadQuestStatus"
-    
-    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
-    strCredentials = f.read()
-    f.close()
-    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
     statusRaw = spreadsheet.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             [
                 EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
@@ -201,7 +197,7 @@ def downloadQuestStatus():
 
     return status
 
-def completeQuestStatus(ref, questname):
+def completeQuestStatus(spreadsheet, ref, questname):
     column = ""
     if questname == "MAIN":
         column = EnvSettings.ACCOUNT_INFO_MAIN_COL
@@ -211,11 +207,6 @@ def completeQuestStatus(ref, questname):
         column = EnvSettings.ACCOUNT_INFO_SP_END_COL
     else:
         raise Exception("Invalid Argument")
-    
-    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
-    strCredentials = f.read()
-    f.close()
-    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
             EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
@@ -232,11 +223,7 @@ def completeQuestStatus(ref, questname):
 
 
 #return ref
-def getSetupAccountRef():
-    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
-    strCredentials = f.read()
-    f.close()
-    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
+def getSetupAccountRef(spreadsheet):
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
             EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
@@ -257,7 +244,7 @@ STATISTICS_MISSION3 = "MISSION3"
 STATISTICS_STARTTIME = "STARTTIME"
 STATISTICS_ENDTIME = "ENDTIME"
 STATISTICS_EXCEPTION = "EXCEPTION"
-def uploadStatistics(sheetname, statistics):
+def uploadStatistics(spreadsheet, sheetname, statistics):
     row = None
     if sheetname == "DailyMission":
         row = [[statistics[STATISTICS_COMPUTERNAME], statistics[STATISTICS_REF], statistics[STATISTICS_MISSION1], 
@@ -271,21 +258,10 @@ def uploadStatistics(sheetname, statistics):
         raise Exception()
     
     print row
-    
-    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
-    strCredentials = f.read()
-    f.close()
-    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
     spreadsheet.append(EnvSettings.STATISTICS_SHEET_ID, sheetname + "!A1", row, "ROWS")
 
-def updatePlayerId(ref, playerId, computername):
+def updatePlayerId(spreadsheet, ref, playerId, computername):
     print "updatePlayerId"
-    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
-    strCredentials = f.read()
-    f.close()
-    print "strCredentials were read"
-    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    print "SpreadSheetApis instance was created"
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
             EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
@@ -306,16 +282,12 @@ def updatePlayerId(ref, playerId, computername):
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
             EnvSettings.ACCOUNT_INFO_CREATEDATE_COL + str(rowIndex), [[datetime.now().strftime("%Y/%m/%d")]], "ROWS")#aaa
 
-def updateAccountInfo(ref, lv, dmp, gold, packs, srPack, bestPack):
+def updateAccountInfo(spreadsheet, ref, lv, dmp, gold, packs, srPack, bestPack):
     row = [[lv, dmp, gold]]
     row[0].extend(packs)
     row[0].append(srPack)
     row[0].append(bestPack)
     
-    f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
-    strCredentials = f.read()
-    f.close()
-    spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
             EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
@@ -843,6 +815,12 @@ def changeMission(resource):
         if exists(resource.BUTTON_OK, 10) != None:
             click(resource.BUTTON_OK)
             wait(1)
+    if exists(resource.MISSION_WIN_3["IMAGE"], 1) != None:
+        click(resource.MISSION_WIN_3["IMAGE"])
+        wait(3)
+        if exists(resource.BUTTON_OK, 10) != None:
+            click(resource.BUTTON_OK)
+            wait(1)
     wait(5)
 
 def closeMission(resource):
@@ -1122,7 +1100,7 @@ def getMissionRewards(resource):
                 click(resource.BUTTON_OK)
             except:
                 print "failed to click"
-            wait(0.5)
+            wait(5)
             if len(findAny(resource.BUTTON_OK)) == 0:
                 break
         wait(1)
@@ -1135,7 +1113,7 @@ def getMissionRewards(resource):
                 click(resource.BUTTON_OK)
             except:
                 print "failed to click"
-            wait(0.5)
+            wait(5)
             if len(findAny(resource.BUTTON_OK)) == 0:
                 break
         type(Key.ESC)

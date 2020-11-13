@@ -9,6 +9,7 @@ sys.path.append(EnvSettings.LIBS_DIR_PATH)
 sys.path.append(EnvSettings.RES_DIR_PATH)
 import CommonDMLib
 import NoxResources
+from spreadsheetapis import SpreadSheetApis
 
 bolbalzarkSec = Pattern("bolbalzarkSec.png").similar(0.90)
 bolbalzark = Pattern("bolbalzark.png").similar(0.90)
@@ -47,6 +48,7 @@ appname = 'RESET'
 mentionUser = EnvSettings.mentionUser
 Settings.MoveMouseDelay = 0.1
 DMApp = App(EnvSettings.NoxAppPath)
+sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 
 
 #resources
@@ -399,14 +401,14 @@ for count in range(100):
                 exists("1600004802890.png", 120)
                 playerId = CommonDMLib.scanNumberChangeWidth("1601082545206.png", -270, 0, 233, 38, 0, 25)
                 #ref取得
-                ref = CommonDMLib.getSetupAccountRef()
+                ref = CommonDMLib.getSetupAccountRef(sheets)
                 if ref == "":
                     CommonDMLib.sendMessagetoSlack(mentionUser,"No empty Ref numbers. Add Refs to the inventory list.", appname)
                     breakFlag = True
                     break
                 
-                CommonDMLib.updateCardCount(ref, cardCountResult["NAMES"], cardCountResult["CARDS"])
-                CommonDMLib.updatePlayerId(ref, playerId, os.environ["COMPUTERNAME"])
+                CommonDMLib.updateCardCount(sheets, ref, cardCountResult["NAMES"], cardCountResult["CARDS"])
+                CommonDMLib.updatePlayerId(sheets, ref, playerId, os.environ["COMPUTERNAME"])
                 #プレーヤー名をrefに変更する。
                 click(Pattern("1603534330138.png").targetOffset(106,81))
                 for bkLoop in range(10):

@@ -9,6 +9,7 @@ sys.path.append(EnvSettings.RES_DIR_PATH)
 import NoxDMLib
 import CommonDMLib
 import NoxResources
+from spreadsheetapis import SpreadSheetApis
 
 ####################Settings####################
 appname = 'NoxSetupAccount'
@@ -23,6 +24,7 @@ OK2 = Pattern("OK2.png").similar(0.80)
 tutorial = "tutorial.png"
 
 
+sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 CommonDMLib.downloadDeckCodes()
 
 for count in range(100):
@@ -241,7 +243,7 @@ for count in range(100):
             exists("1600004729257.png",10)
             click(Pattern("1600004729257.png").targetOffset(6,330))
             exists("1600004802890.png", 120)
-            ref = CommonDMLib.getSetupAccountRef()
+            ref = CommonDMLib.getSetupAccountRef(sheets)
             if ref == "":
                 CommonDMLib.sendMessagetoSlack(mentionUser,"No empty Ref numbers. Add Refs to the inventory list.", appname)
                 breakFlag = True
@@ -257,7 +259,7 @@ for count in range(100):
             click("1603541423678.png")
             wait(1)
             CommonDMLib.uploadScreenShotToSlack(mentionUser, str(ref), appname)
-            CommonDMLib.updatePlayerId(ref, playerId, os.environ["COMPUTERNAME"])
+            CommonDMLib.updatePlayerId(sheets, ref, playerId, os.environ["COMPUTERNAME"])
             CommonDMLib.renameRunningNoxInstance(NoxResources, str(ref))
             CommonDMLib.sendMessagetoSlack(mentionUser,'Setup has finished.', appname)
             break
@@ -265,7 +267,7 @@ for count in range(100):
             e = sys.exc_info()
             for mes in e:
                 print(mes)
-            CommonDMLib.updatePlayerId(ref, "", "")
+            CommonDMLib.updatePlayerId(sheets, ref, "", "")
             CommonDMLib.sendMessagetoSlack(mentionUser,'Error occured. Restarting..', appname)
             CommonDMLib.sendMessagetoSlack( mentionUser,traceback.format_exc(), appname)
             wait(5)

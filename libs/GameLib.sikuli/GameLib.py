@@ -85,7 +85,7 @@ def countEnemyBlockers(resources):
         count += 1
     return count
 
-def countMyAttackers(resources):
+def countMyBattleZone(resources, targetImage):
     if resources.APP_ENGINE == "NOX":
         OFFSETX = -1000
         OFFSETY = 400
@@ -104,7 +104,7 @@ def countMyAttackers(resources):
     cardListRegion = Region(res[0].getX()+OFFSETX,res[0]. getY()+OFFSETY,WIDTH,HEIGHT)
     cardListRegion.highlight(0.1)
     f = Finder(SCREEN.capture(cardListRegion))
-    f.findAll(resources.ICON_MY_UNTAPPED_CREATURE)
+    f.findAll(targetImage)
     count = 0
     while f.hasNext():
         f.next()
@@ -1108,9 +1108,6 @@ def gameLoop(resources, strategy, appname):
         if len(findAny(resources.AVATOR_DEFAULT_MALE)) > 0:
             click(resources.AVATOR_DEFAULT_MALE)
             wait(1)
-
-        if strategy == 7:
-            manaBeforeCharge = getManaNumBeforeCharge(resources)
             
         #  マナチャージ
         if strategy in [3,6]:
@@ -1152,13 +1149,25 @@ def gameLoop(resources, strategy, appname):
         elif strategy in [2,100,102]:
             directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
         elif strategy in [7]:
-            if manaBeforeCharge >= 4:
+            attackersList = []
+            for countLoop in range(5):
+                a = countMyBattleZone(resources, resources.ICON_MY_UNTAPPED_CREATURE)
+                print "a : " + str(a)
+                attackersList.append(a)
+            attackers = min(attackersList)
+            if attackers >= 3:
                 directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
         elif strategy in [3,4]:
             battle(resources)
             directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
         elif strategy == 5:
-            if random.random() < 0.7:
+            attackersList = []
+            for countLoop in range(5):
+                a = countMyBattleZone(resources, resources.ICON_W_BREAKER)
+                print "a : " + str(a)
+                attackersList.append(a)
+            attackers = min(attackersList)
+            if attackers >= 3:
                 directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
         elif strategy in [103]:
             for attackLoop in range(2):
@@ -1170,7 +1179,7 @@ def gameLoop(resources, strategy, appname):
                 else:
                     attackersList = []
                     for countLoop in range(10):
-                        a = countMyAttackers(resources)
+                        a = countMyBattleZone(resources, resources.ICON_MY_UNTAPPED_CREATURE)
                         print "a : " + str(a)
                         attackersList.append(a)
                     attackers = min(attackersList)
