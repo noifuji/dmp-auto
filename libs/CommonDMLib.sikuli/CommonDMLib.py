@@ -667,7 +667,8 @@ def chooseDeck(resource, deckImage):
         click(deckImage)
         return True
     else:
-        wheel(resource.TITLE_DECKLIST, Button.WHEEL_DOWN, 10)
+        wheel(resource.TITLE_DECKLIST, Button.WHEEL_DOWN, 7)
+        wait(5)
         if exists(deckImage, 3) != None:
             print "deckImage was found"
             click(deckImage)
@@ -1056,7 +1057,7 @@ def getDeckByStrategy(resource, strategy):
     elif strategy == 3:
          return [resource.DECKIMAGE_ST, getDeckCode("DECKCODE_ST")]
     elif strategy == 4:
-         return [resource.DECKIMAGE_ST, getDeckCode("DECKCODE_STSPELL")]
+         return [resource.DECKIMAGE_STSPELL, getDeckCode("DECKCODE_STSPELL")]
     elif strategy == 5:
         return [resource.DECKIMAGE_LARGE_CREATURE, getDeckCode("DECKCODE_LARGE_CREATURE")]
     elif strategy == 7:

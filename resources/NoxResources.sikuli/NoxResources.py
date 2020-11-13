@@ -84,8 +84,8 @@ TITLE_PACK3 = Pattern("1600523796024.png").similar(0.90)
 TITLE_PACK4 =Pattern("1600523808395.png").similar(0.90)
 TITLE_PACK5 =Pattern("1600523838234.png").similar(0.90)
 TITLE_PACK6 =Pattern("1602807194589.png").similar(0.90)
-TITLE_PACK5SR =Pattern("1603413839097.png").exact()
-TITLE_PACK6SR=Pattern("1603413856882.png").exact()
+TITLE_PACK5SR =Pattern("1605259464695.png").similar(0.95)
+TITLE_PACK6SR=Pattern("1605259510431.png").similar(0.95)
 TICKET_BEST = Pattern("1601801798254.png").similar(0.85)
 TITLE_ITEM = Pattern("1600524382930.png").targetOffset(268,239)
 TITLE_ITEM_DRAG = Pattern("1601009165140.png").targetOffset(372,392)
@@ -363,6 +363,7 @@ ICON_ENEMY_CREATURE3 = Pattern("ICON_ENEMY_CREATURE3.png").similar(0.90).targetO
 ICON_ENEMY_CREATURE4 = Pattern("ICON_ENEMY_CREATURE4.png").similar(0.93).targetOffset(10,-44)
 
 ICON_W_BREAKER = Pattern("1605230430038.png").similar(0.85).targetOffset(-60,54)#Pattern("ICON_W_BREAKER.png").similar(0.90).targetOffset(-65,39)
+ICON_CREATURE_CARD = "1605260775794.png"
 ICON_JOE = "1604890155010.png"
 ICON_VOGUE = "1604890038157.png"
 ICON_TILER = "ICON_TILER.png"
@@ -409,6 +410,7 @@ BUTTON_ST = Pattern("1596770865154.png").targetOffset(221,-1)
 BUTTON_NOST = Pattern("1596770865154.png").targetOffset(-213,0)
 TITLE_HAND1 = Pattern("1601545045624.png").similar(0.90).targetOffset(224,213)
 TITLE_HAND2 = Pattern("1601545045624.png").similar(0.90).targetOffset(438,217)
+TITLE_ENEMY_CEMETRY = Pattern("1605259885246.png").similar(0.84)
 ################BATTLE RESULT#################
 ICON_WIN = "ICON_WIN.png"
 ICON_LOSE = "ICON_LOSE.png"

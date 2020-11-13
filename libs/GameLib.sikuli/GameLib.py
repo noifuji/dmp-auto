@@ -111,6 +111,30 @@ def countMyBattleZone(resources, targetImage):
         count += 1
     return count
 
+def countEnemyCemetry(resources):
+    std = findAny(resources.ICON_ENEMY_CARD_COUNT)
+    if len(std) == 0:
+        return
+    click(Location(std[0].getX()-1090, std[0].getY()+230))
+    exists(resources.TITLE_ENEMY_CEMETRY, 10)
+    
+    res = findAny(resources.TITLE_ENEMY_CEMETRY)
+    if len(res) == 0:
+        return
+    cemetryRegion = Region(res[0].getX()+90, res[0].getY()+130, 1250, 600)
+    cemetryRegion.highlight(0.1)
+    f = Finder(SCREEN.capture(cemetryRegion))
+    f.findAll(resources.ICON_CREATURE_CARD)
+    count = 0
+    while f.hasNext():
+        f.next()
+        count += 1
+
+    click(resources.BUTTON_OK2)
+    waitVanish(resources.BUTTON_OK2, 10)
+    
+    return count
+
                         
 def countEnemyShields(resources):
     if resources.APP_ENGINE == "NOX":
@@ -370,8 +394,16 @@ def ChargeManaSpell(resources):
     print 'ManaZone(Before charge):' + str(mana)
 
     #マナゾーンの色チェック
-    manaColors = getManaColor(resources)
-    print manaColors
+    for manaColorLoop in range(20):
+        manaColors = getManaColor(resources)    
+        print manaColors
+        countTrue = 0
+        for key in manaColors:
+            if manaColors[key] == True:
+                countTrue += 1
+        if countTrue <= mana:
+            break
+    
     chargeTargets = []
     #未チャージの色を抽出
     if not manaColors["RED"]:
@@ -811,9 +843,11 @@ def SummonSpell(resources, currentMana):
         r3 = findAny(resources.ICON_COST_RED_3)
         r5 = findAny(resources.ICON_COST_RED_5)
         bk3 = findAny(resources.ICON_COST_BLACK_3)
+        bk4 = findAny(resources.ICON_COST_BLACK_4)
         b2 = findAny(resources.ICON_COST_BLUE_2)
         b4 = findAny(resources.ICON_COST_BLUE_4)
         w2 = findAny(resources.ICON_COST_WHITE_2)
+        w4 = findAny(resources.ICON_COST_WHITE_4)
         g2 = findAny(resources.ICON_COST_GREEN_2)
         g4 = findAny(resources.ICON_COST_GREEN_4)
 
@@ -834,6 +868,12 @@ def SummonSpell(resources, currentMana):
             availableMana-=2
         elif len(b4) > 0 and manaColors["BLUE"] and availableMana >= 4:
             summon_creature = b4[0]
+            availableMana-=4
+        elif len(bk4) > 0 and manaColors["BLACK"] and availableMana >= 4:
+            summon_creature = bk4[0]
+            availableMana-=4
+        elif len(w4) > 0 and manaColors["WHITE"] and availableMana >= 4:
+            summon_creature = w4[0]
             availableMana-=4
         else:
             print 'Couldnt find a summonable creature. Break loop.'
@@ -1166,7 +1206,7 @@ def gameLoop(resources, strategy, appname):
                 a = countMyBattleZone(resources, resources.ICON_W_BREAKER)
                 print "a : " + str(a)
                 attackersList.append(a)
-            attackers = min(attackersList)
+            attackers = max(attackersList)
             if attackers >= 3:
                 directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
         elif strategy in [103]:
@@ -1219,8 +1259,15 @@ def gameLoop(resources, strategy, appname):
                             directAttackHakuho(resources, [resources.ICON_BELBET])
                         else:
                             break
-        
+                
         wait(1)
+        
+        if strategy == 4:
+            if countEnemyCemetry(resources) >= 4:
+                retire(resources)
+                exists(resources.BUTTON_SMALL_BATTLE_START, 120)
+                return
+            
         #  ターンエンド
         if len(findAny(resources.BUTTON_TURN_END)) > 0:          
             turnEnd(resources)
