@@ -62,13 +62,6 @@ if %ERRORLEVEL%==50 (
  exit
 )
 
-@REM リセマラ
-java -jar sikulixide-2.0.4.jar -r .\scripts\NoxReset.sikuli
-if %ERRORLEVEL%==50 (
- start .\Tools\auto_update.bat .\Tools\%~n0%~x0
- exit
-)
-
 @REM リセマラ用メインストーリー周回
 java -jar sikulixide-2.0.4.jar -r .\scripts\AllMainStories.sikuli -- reset
 if %ERRORLEVEL%==50 (
