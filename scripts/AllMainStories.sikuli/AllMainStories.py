@@ -129,7 +129,7 @@ while instanceIndex < len(instances):
                     break
     
                 # ゲームループ
-                GameLib.gameLoop(resources, strategy, appname)
+                gameResult = GameLib.gameLoop(resources, strategy, appname)
                 # ゲームループエンド
                 for battleResultLoop in range(200):
                     print "battleResultLoop..." + str(battleResultLoop)
@@ -158,7 +158,8 @@ while instanceIndex < len(instances):
                     break
                 elif len(findAny(resources.ICON_LOSE)) > 0:
                     click(resources.BUTTON_SMALL_BATTLE_START)
-                    retryCount += 1
+                    if gameResult != "retire":
+                        retryCount += 1
                     continue
                 else:
                     raise Exception("No results. restarting...")

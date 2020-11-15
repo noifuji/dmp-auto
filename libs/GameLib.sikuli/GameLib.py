@@ -1137,7 +1137,7 @@ def gameLoop(resources, strategy, appname):
         if len(findAny(resources.ICON_ENEMY_MANA0)) == 0:
             retire(resources)
             exists(resources.BUTTON_SMALL_BATTLE_START, 120)
-            return
+            return "retire"
         
     for game_loop in range(50):
         print "Inside Game Loop"

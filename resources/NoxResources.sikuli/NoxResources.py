@@ -120,19 +120,19 @@ TITLE_EP5_STAGE10 = Pattern("1600991582416.png").similar(0.90)
 BUTTON_CONFIRM_REWARD = "1604454384807.png"
 TITLE_REWARD_INFO = "1604454401422.png"
 ICON_CLEARED = Pattern("1600991811657.png").similar(0.90)
-STAGE_REGION_OFFSETS = {"x":-240, "y":284, "w":118, "h":70}
-STAGES = [{"STAGE":1, "IMAGE":"1601267258379.png"},
-            {"STAGE":2, "IMAGE":"1601267289541.png"},
-            {"STAGE":3, "IMAGE":"1601267298169.png"},
-            {"STAGE":4, "IMAGE":"1601267308310.png"},
-            {"STAGE":5, "IMAGE":"1601267319803.png"},
-            {"STAGE":6, "IMAGE":"1601267327819.png"},
-            {"STAGE":7, "IMAGE":"1601267339419.png"},
-            {"STAGE":8, "IMAGE":"1601267349588.png"},
-            {"STAGE":9, "IMAGE":"1601267359991.png"},
+STAGE_REGION_OFFSETS = {"x":-240, "y":284, "w":170, "h":70}
+STAGES = [{"STAGE":1, "IMAGE":"1605359863440.png"},
+            {"STAGE":2, "IMAGE":"1605359927964.png"},
+            {"STAGE":3, "IMAGE":"1605361647919.png"},
+            {"STAGE":4, "IMAGE":"1605361637790.png"},
+            {"STAGE":5, "IMAGE":"1605361625653.png"},
+            {"STAGE":6, "IMAGE":"1605361611013.png"},
+            {"STAGE":7, "IMAGE":"1605361601385.png"},
+            {"STAGE":8, "IMAGE":"1605361588086.png"},
+            {"STAGE":9, "IMAGE":"1605361686165.png"},
             {"STAGE":10, "IMAGE":"1604500042189.png"},
             {"STAGE":10, "IMAGE":"1604500022267.png"},
-            {"STAGE":10, "IMAGE":"1601267368618.png"},
+            {"STAGE":10, "IMAGE":"1605361708028.png"},
             {"STAGE":1, "IMAGE":"1601269334194.png"},
             {"STAGE":2, "IMAGE":"1601269342691.png"},
             {"STAGE":3, "IMAGE":"1601269351087.png"},
@@ -194,7 +194,7 @@ MISSION_WIN_10TURNS={"GROUP":"SPEED","NAME":"MISSION_WIN_10TURNS","IMAGE":Patter
 MISSION_WIN_4SHIELD={"GROUP":"LARGE","NAME":"MISSION_WIN_4SHIELD","IMAGE":Pattern("WinWith4ShieldsRemained-1.png")}
 MISSION_WIN_2SHIELD={"GROUP":"SPEED","NAME":"MISSION_WIN_2SHIELD","IMAGE":Pattern("WinWith2ShieldsRemained.png")}
 #MISSION_WIN_5={"GROUP":"SPEED","NAME":"MISSION_WIN_5","IMAGE":Pattern("Win5Times-2.png").similar(0.85).targetOffset(514,73)}
-MISSION_WIN_3={"GROUP":"SPEED","NAME":"MISSION_WIN_3","IMAGE":Pattern("1605235875017.png").targetOffset(735,44)}#"1603257070761.png"Pattern("1603321692589.png").targetOffset(730,47)
+MISSION_WIN_3={"GROUP":"SPEED","NAME":"MISSION_WIN_3","IMAGE":Pattern("1605235875017.png").similar(0.88).targetOffset(735,44)}#"1603257070761.png"Pattern("1603321692589.png").targetOffset(730,47)
 MISSION_CREATURE_10={"GROUP":"SPEED","NAME":"MISSION_CREATURE_10","IMAGE":"1603159429496.png"}
 #MISSION_CREATURE_18_LOWER5={"GROUP":"SPEED","NAME":"MISSION_CREATURE_18_LOWER5","IMAGE":Pattern("Summon18Creatures-1.png").similar(0.85)}
 #MISSION_CREATURE_18_LOWER5000={"GROUP":"SPEED","NAME":"MISSION_CREATURE_18_LOWER5000","IMAGE":Pattern("1601359075431.png").similar(0.85)}
