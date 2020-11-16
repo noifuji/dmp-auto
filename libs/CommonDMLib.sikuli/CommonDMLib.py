@@ -15,7 +15,7 @@ from slackapis import SlackApis
 from resizeimage import ResizeImage;
 
 def killMultiPlayerManager():
-    cmd = 'taskkill /im MultiPlayerManager.exe /t'
+    cmd = 'taskkill /im MultiPlayerManager.exe /t /F'
     returncode = subprocess.Popen(cmd, shell=True)
 
 def killNoxInstance():
