@@ -282,10 +282,10 @@ def updatePlayerId(spreadsheet, ref, playerId, computername):
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
             EnvSettings.ACCOUNT_INFO_CREATEDATE_COL + str(rowIndex), [[datetime.now().strftime("%Y/%m/%d")]], "ROWS")#aaa
 
-def updateAccountInfo(spreadsheet, ref, lv, dmp, gold, packs, srPack, bestPack):
+def updateAccountInfo(spreadsheet, ref, lv, dmp, gold, packs, srPacks, bestPack):
     row = [[lv, dmp, gold]]
     row[0].extend(packs)
-    row[0].append(srPack)
+    row[0].extend(srPacks)
     row[0].append(bestPack)
     
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
@@ -430,9 +430,9 @@ def scanAccountInfo(resource):
             tempPacks["PACK4"],tempPacks["PACK5"],tempPacks["PACK6"],
             0,0,0]
 
-    srPack = str(int(tempPacks["PACK5SR"]) + int(tempPacks["PACK6SR"]))
+    srPacks = [int(tempPacks["PACK5SR"]), int(tempPacks["PACK6SR"])]
     bestPack = tempPacks["BEST"]
-    return [lv, dmp, gold, packs, srPack, bestPack]
+    return [lv, dmp, gold, packs, srPacks, bestPack]
 
 def downloadFile(url, dest):
     print "downloadFile"
@@ -892,6 +892,8 @@ def getMissionStrategy(resource, mission):
         strategyCode = 6
     elif mission["GROUP"] == "BREAK3":
         strategyCode = 7
+    elif mission["GROUP"] == "WIN4SHIELDS":
+        strategyCode = 8
         
     return strategyCode
 
@@ -1062,6 +1064,8 @@ def getDeckByStrategy(resource, strategy):
         return [resource.DECKIMAGE_LARGE_CREATURE, getDeckCode("DECKCODE_LARGE_CREATURE")]
     elif strategy == 7:
          return [resource.DECKIMAGE_RED_BLACK, getDeckCode("DECKCODE_RED_BLACK")]
+    elif strategy == 8:
+         return [resource.DECKIMAGE_LARGE_CREATURE, getDeckCode("DECKCODE_LARGE_CREATURE")]
     elif strategy == 100:
         return [resource.DECKIMAGE_MAIN, getDeckCode("DECKCODE_MAIN")]
     elif strategy == 101:

@@ -311,20 +311,55 @@ def ChargeManaLarge(resources):
     #マナ取得
     mana = getManaNumBeforeCharge(resources)
     print 'ManaZone(Before charge):' + str(mana)
-    Hand = None
+
+    if mana >= 7:
+        return mana
+
+    #マナゾーンの色チェック
+    for manaColorLoop in range(20):
+        manaColors = getManaColor(resources)    
+        print manaColors
+        countTrue = 0
+        for key in manaColors:
+            if manaColors[key] == True:
+                countTrue += 1
+        if countTrue <= mana:
+            break
+    
+    chargeTargets = []
+    #未チャージの色を抽出
+    if not manaColors["GREEN"]:
+        chargeTargets.append(resources.ICON_COST_GREEN_7)
+        chargeTargets.append(resources.ICON_COST_GREEN_3)
+        chargeTargets.append(resources.ICON_COST_GREEN_2)
+    if not manaColors["WHITE"]:
+        chargeTargets.append(resources.ICON_COST_WHITE_4)
+        chargeTargets.append(resources.ICON_COST_WHITE_7)
+        chargeTargets.append(resources.ICON_COST_WHITE_6)
+        chargeTargets.append(resources.ICON_COST_WHITE_1)
+        chargeTargets.append(resources.ICON_COST_WHITE_2)
+    #手札探索対象を作成
+    Hand = findAnyList(chargeTargets)
+    print "findAnyList result : " +  str(len(Hand))
+    
     #　チャージ
-    if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
-        Hand = findAny(
-                resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_3,
-                resources.ICON_COST_WHITE_4,resources.ICON_COST_WHITE_1,
-                resources.ICON_COST_GREEN_3,resources.ICON_COST_WHITE_2,
-                resources.ICON_COST_GREEN_2)
-    else:
-        Hand = findAny(
-                resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_3,
-                resources.ICON_COST_WHITE_4,
-                resources.ICON_COST_GREEN_3,
-                resources.ICON_COST_GREEN_2)
+    if len(Hand) == 0 and mana <= 6:
+        if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
+            Hand = findAny(
+                    resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_3,
+                    resources.ICON_COST_WHITE_4,resources.ICON_COST_WHITE_1,
+                    resources.ICON_COST_WHITE_2,
+                    resources.ICON_COST_GREEN_7,
+                    resources.ICON_COST_WHITE_7,resources.ICON_COST_WHITE_6,
+                    resources.ICON_COST_GREEN_3,
+                    resources.ICON_COST_GREEN_2)
+        else:
+            Hand = findAny(
+                    resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_3,
+                    resources.ICON_COST_WHITE_4,
+                    resources.ICON_COST_GREEN_3,
+                    resources.ICON_COST_GREEN_2,resources.ICON_COST_GREEN_7,
+                    resources.ICON_COST_WHITE_7,resources.ICON_COST_WHITE_6)
         
     if len(Hand) > 0:         
         charge(resources,Hand[0])
@@ -431,12 +466,12 @@ def ChargeManaSpell(resources):
                     resources.ICON_COST_BLACK_4,resources.ICON_COST_WHITE_4,
                     resources.ICON_COST_BLUE_4,
                     resources.ICON_COST_GREEN_4,
-                    resources.ICON_COST_RED_5,
-                    resources.ICON_COST_RED_3,
-                    resources.ICON_COST_BLACK_3,
                     resources.ICON_COST_BLUE_2,
                     resources.ICON_COST_WHITE_2,
-                    resources.ICON_COST_GREEN_2])
+                    resources.ICON_COST_GREEN_2,
+                    resources.ICON_COST_RED_5,
+                    resources.ICON_COST_RED_3,
+                    resources.ICON_COST_BLACK_3])
 
         if len(Hand) == 0:
             return mana
@@ -843,13 +878,67 @@ def SummonSpell(resources, currentMana):
         r3 = findAny(resources.ICON_COST_RED_3)
         r5 = findAny(resources.ICON_COST_RED_5)
         bk3 = findAny(resources.ICON_COST_BLACK_3)
-        bk4 = findAny(resources.ICON_COST_BLACK_4)
         b2 = findAny(resources.ICON_COST_BLUE_2)
+        b4 = findAny(resources.ICON_COST_BLUE_4)
+        w2 = findAny(resources.ICON_COST_WHITE_2)
+        g2 = findAny(resources.ICON_COST_GREEN_2)
+        g4 = findAny(resources.ICON_COST_GREEN_4)
+
+        if len(g2) > 0 and manaColors["GREEN"] and availableMana >= 2:
+            summon_creature = g2[0]
+            availableMana-=1
+        elif len(w2) > 0 and manaColors["WHITE"] and availableMana >= 2:
+            summon_creature = w2[0]
+            availableMana-=2
+        elif len(b4) > 0 and manaColors["BLUE"] and availableMana >= 4:
+            summon_creature = b4[0]
+            availableMana-=4
+        elif len(r3) > 0 and manaColors["RED"] and availableMana >= 3:
+            summon_creature = r3[0]
+            availableMana-=3
+        elif len(bk3) > 0 and manaColors["BLACK"] and availableMana >= 3:
+            summon_creature = bk3[0]
+            availableMana-=3
+        elif len(r5) > 0 and manaColors["RED"] and availableMana >= 5:
+            summon_creature = r5[0]
+            availableMana-=5
+        elif len(b2) > 0 and manaColors["BLUE"] and availableMana >= 2:
+            summon_creature = b2[0]
+            availableMana-=2
+        elif len(g4) > 0 and manaColors["GREEN"] and availableMana >= 4:
+            summon_creature = g4[0]
+            availableMana-=4
+        else:
+            print 'Couldnt find a summonable creature. Break loop.'
+            break
+        
+        try:
+            summon(resources,summon_creature)
+        except:
+            Settings.MoveMouseDelay = 0.1
+            break
+        solveEffect(resources)
+
+def SummonDest(resources, currentMana):
+    print 'SummonDest'
+    availableMana = currentMana
+    print 'Available Mana : ' + str(availableMana)
+    count = 0
+
+    #マナゾーンの色をチェック
+    manaColors = getManaColor(resources)
+    print manaColors
+    
+    for num in range(10):
+        summon_creature = None
+        r3 = findAny(resources.ICON_COST_RED_3)
+        r5 = findAny(resources.ICON_COST_RED_5)
+        bk3 = findAny(resources.ICON_COST_BLACK_3)
+        bk4 = findAny(resources.ICON_COST_BLACK_4)
         b4 = findAny(resources.ICON_COST_BLUE_4)
         w2 = findAny(resources.ICON_COST_WHITE_2)
         w4 = findAny(resources.ICON_COST_WHITE_4)
         g2 = findAny(resources.ICON_COST_GREEN_2)
-        g4 = findAny(resources.ICON_COST_GREEN_4)
 
         if len(r3) > 0 and manaColors["RED"] and availableMana >= 3:
             summon_creature = r3[0]
@@ -1156,7 +1245,7 @@ def gameLoop(resources, strategy, appname):
             currentMana = ChargeManaSpell(resources)
         elif strategy in [2,7]:
             currentMana = ChargeManaRedBlack(resources)
-        elif strategy == 5:
+        elif strategy in [5,8]:
             currentMana = ChargeManaLarge(resources)
         elif strategy == 100:
             currentMana = ChargeManaBasic(resources)
@@ -1169,11 +1258,19 @@ def gameLoop(resources, strategy, appname):
         #  召喚
         if strategy in [3,6]:
             print "no summon"
-        elif strategy in [1,4]:
+        elif strategy in [1]:
             SummonSpell(resources,currentMana)
+        elif strategy in [4]:
+            SummonDest(resources,currentMana)
         elif strategy in [2,7]:
             SummonRedBlack(resources,currentMana)
         elif strategy == 5:
+            SummonLarge(resources,currentMana)
+        elif strategy == 8:
+            if currentMana >= 3 and len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) == 0:
+                retire(resources)
+                exists(resources.BUTTON_SMALL_BATTLE_START, 120)
+                return
             SummonLarge(resources,currentMana)
         elif strategy == 100:
             SummonBasic(resources,currentMana)
@@ -1200,7 +1297,7 @@ def gameLoop(resources, strategy, appname):
         elif strategy in [3,4]:
             battle(resources)
             directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
-        elif strategy == 5:
+        elif strategy in [5,8]:
             attackersList = []
             for countLoop in range(5):
                 a = countMyBattleZone(resources, resources.ICON_W_BREAKER)
