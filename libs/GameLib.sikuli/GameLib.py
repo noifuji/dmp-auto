@@ -127,11 +127,12 @@ def countEnemyCemetry(resources):
     f.findAll(resources.ICON_CREATURE_CARD)
     count = 0
     while f.hasNext():
-        f.next()
+        c = f.next()
         count += 1
 
     click(resources.BUTTON_OK2)
     waitVanish(resources.BUTTON_OK2, 10)
+    print count
     
     return count
 
@@ -208,7 +209,8 @@ def solveEffect(resources):
                 resources.ICON_ENEMY_CREATURE1,
                 resources.ICON_ENEMY_CREATURE2,
                 resources.ICON_ENEMY_CREATURE3,
-                resources.ICON_ENEMY_CREATURE4)
+                resources.ICON_ENEMY_CREATURE4,
+                resources.ICON_ENEMY_CREATURE5)
         for b in BZ:
             click(b)
             wait(0.5)
@@ -1146,7 +1148,8 @@ def irregularLoop(resources, appname):
                         resources.ICON_ENEMY_CREATURE1,
                         resources.ICON_ENEMY_CREATURE2,
                         resources.ICON_ENEMY_CREATURE3,
-                        resources.ICON_ENEMY_CREATURE4)
+                        resources.ICON_ENEMY_CREATURE4,
+                        resources.ICON_ENEMY_CREATURE5)
                 for b in BZ:
                     click(b)
                     wait(0.5)
@@ -1267,7 +1270,7 @@ def gameLoop(resources, strategy, appname):
         elif strategy == 5:
             SummonLarge(resources,currentMana)
         elif strategy == 8:
-            if currentMana >= 3 and len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) == 0:
+            if currentMana >= 3 and currentMana <= 6 and len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) == 0:
                 retire(resources)
                 exists(resources.BUTTON_SMALL_BATTLE_START, 120)
                 return

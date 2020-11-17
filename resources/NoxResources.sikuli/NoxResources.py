@@ -239,7 +239,7 @@ MISSION_CREATURE_12_LOWER6={"GROUP":"SPEED","NAME":"MISSION_CREATURE_12_LOWER6",
 
 
 
-GROUPS = ["BATTLE","DEST","SPELL","WIN4SHIELDS","LARGE","BREAK3","SPEED","RETIRE","SKIP"]
+GROUPS = ["DEST","SPELL","WIN4SHIELDS","LARGE","BREAK3","SPEED","BATTLE","RETIRE","SKIP"]
 MISSIONS = [
         MISSION_SPELL_10,
         MISSION_WIN_3,
@@ -361,9 +361,10 @@ ICON_ENEMY_CREATURE1 = Pattern("1602824023268.png").similar(0.90).targetOffset(-
 ICON_ENEMY_CREATURE2 = Pattern("1602823904261.png").similar(0.90).targetOffset(-18,-40)
 ICON_ENEMY_CREATURE3 = Pattern("ICON_ENEMY_CREATURE3.png").similar(0.90).targetOffset(-5,-46)
 ICON_ENEMY_CREATURE4 = Pattern("ICON_ENEMY_CREATURE4.png").similar(0.93).targetOffset(10,-44)
+ICON_ENEMY_CREATURE5 = Pattern("1605604861039.png").similar(0.83).targetOffset(-1,-42)
 
-ICON_W_BREAKER = Pattern("1605230430038.png").similar(0.85).targetOffset(-60,54)#Pattern("ICON_W_BREAKER.png").similar(0.90).targetOffset(-65,39)
-ICON_CREATURE_CARD = "1605260775794.png"
+ICON_W_BREAKER = Pattern("1605601727552.png").similar(0.85).targetOffset(-58,42)#Pattern("ICON_W_BREAKER.png").similar(0.90).targetOffset(-65,39)Pattern("1605230430038.png").similar(0.85).targetOffset(-60,54)
+ICON_CREATURE_CARD = Pattern("1605260775794.png").similar(0.90)
 ICON_JOE = "1604890155010.png"
 ICON_VOGUE = "1604890038157.png"
 ICON_TILER = "ICON_TILER.png"
