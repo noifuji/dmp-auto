@@ -1233,18 +1233,19 @@ def gameLoop(resources, strategy, appname):
         
     for game_loop in range(50):
         print "Inside Game Loop"
-        if len(findAny(resources.ICON_ENEMY_CARD_COUNT)) > 0:
-            click(resources.ICON_ENEMY_CARD_COUNT)
-            wait(1)
-        #  手札選択
-        if len(findAny(resources.AVATOR_DEFAULT_MALE)) > 0:
-            click(resources.AVATOR_DEFAULT_MALE)
-            wait(1)
+        if strategy not in [1,3,6]:
+            if len(findAny(resources.ICON_ENEMY_CARD_COUNT)) > 0:
+                click(resources.ICON_ENEMY_CARD_COUNT)
+                wait(1)
+            #  手札選択
+            if len(findAny(resources.AVATOR_DEFAULT_MALE)) > 0:
+                click(resources.AVATOR_DEFAULT_MALE)
+                wait(1)
             
         #  マナチャージ
-        if strategy in [3,6]:
+        if strategy in [1,3,6]:
             print "no charge"
-        elif strategy in [1,4]:
+        elif strategy in [4]:
             currentMana = ChargeManaSpell(resources)
         elif strategy in [2,7]:
             currentMana = ChargeManaRedBlack(resources)
@@ -1259,10 +1260,8 @@ def gameLoop(resources, strategy, appname):
         wait(1)
         
         #  召喚
-        if strategy in [3,6]:
+        if strategy in [1,3,6]:
             print "no summon"
-        elif strategy in [1]:
-            SummonSpell(resources,currentMana)
         elif strategy in [4]:
             SummonDest(resources,currentMana)
         elif strategy in [2,7]:
