@@ -217,6 +217,7 @@ ICON_MY_UNTAPPED_BLOCKER2 = "1601976850151.png"
 ICON_MY_TAPPED_CREATURE = Pattern("1598096217499.png").similar(0.90).targetOffset(1,64)
 ICON_ENEMY_UNTAPPED_CREATURE = Pattern("1597464166732.png").similar(0.85).targetOffset(0,51)
 ICON_ENEMY_UNTAPPED_BLOCKER = Pattern("1601365170781.png").similar(0.85).targetOffset(-1,50)
+ICON_ENEMY_UNTAPPED_BLOCKER2 = Pattern("1605825380841.png").similar(0.86).targetOffset(-2,53)
 ICON_ENEMY_TAPPED_CREATURE_1 = Pattern("1598791717218.png").similar(0.85).targetOffset(-2,28)
 ICON_ENEMY_TAPPED_CREATURE_2 = Pattern("ICON_ENEMY_TAPPED_CREATURE_2.png").similar(0.85).targetOffset(-6,-37)
 ICON_MY_CREATURE1 = Pattern("1602826706784.png").similar(0.90).targetOffset(-15,-47)
