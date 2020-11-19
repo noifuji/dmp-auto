@@ -323,6 +323,7 @@ def isNumber(str):
 #FromRight 0
 #FromLeft 1
 def scanNumberChangeWidth(targetImage, offsetX, offsetY, width, height, RightLeft, charWidth):
+    print "scanNumberChangeWidth"
     WIDTH_A_CHAR = charWidth
     MARGIN_LEFT = 20
     res = findAny(targetImage)
@@ -397,8 +398,9 @@ def scanAccountInfo(resource):
             click(resource.BUTTON_PROFILE)
             wait(2)
         if len(findAny(resource.TITLE_PROFILE)) > 0:
+            wait(2)
             break
-    
+
     lv = scanNumberChangeWidth(resource.TITLE_PLAYER_LV, OFFSET_X_LV, OFFSET_Y_LV, WIDTH_INIT_LV, HEIGHT_LV, 1, 35)
 
     
