@@ -1233,7 +1233,7 @@ def gameLoop(resources, strategy, appname):
         
     for game_loop in range(50):
         print "Inside Game Loop"
-        if strategy not in [1,3,6]:
+        if strategy not in [1,3,4,6]:
             if len(findAny(resources.ICON_ENEMY_CARD_COUNT)) > 0:
                 click(resources.ICON_ENEMY_CARD_COUNT)
                 wait(1)
@@ -1243,10 +1243,8 @@ def gameLoop(resources, strategy, appname):
                 wait(1)
             
         #  マナチャージ
-        if strategy in [1,3,6]:
+        if strategy in [1,3,4,6]:
             print "no charge"
-        elif strategy in [4]:
-            currentMana = ChargeManaSpell(resources)
         elif strategy in [2,7]:
             currentMana = ChargeManaRedBlack(resources)
         elif strategy in [5,8]:
@@ -1260,10 +1258,8 @@ def gameLoop(resources, strategy, appname):
         wait(1)
         
         #  召喚
-        if strategy in [1,3,6]:
+        if strategy in [1,3,4,6]:
             print "no summon"
-        elif strategy in [4]:
-            SummonDest(resources,currentMana)
         elif strategy in [2,7]:
             SummonRedBlack(resources,currentMana)
         elif strategy == 5:
@@ -1298,7 +1294,6 @@ def gameLoop(resources, strategy, appname):
                 directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
         elif strategy in [3,4]:
             battle(resources)
-            directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
         elif strategy in [5,8]:
             attackersList = []
             for countLoop in range(5):
@@ -1360,12 +1355,6 @@ def gameLoop(resources, strategy, appname):
                             break
                 
         wait(1)
-        
-        if strategy == 4:
-            if countEnemyCemetry(resources) >= 4:
-                retire(resources)
-                exists(resources.BUTTON_SMALL_BATTLE_START, 120)
-                return
             
         #  ターンエンド
         if len(findAny(resources.BUTTON_TURN_END)) > 0:          

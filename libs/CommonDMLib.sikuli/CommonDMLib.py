@@ -1061,7 +1061,7 @@ def getDeckByStrategy(resource, strategy):
     elif strategy == 3:
          return [resource.DECKIMAGE_ST, getDeckCode("DECKCODE_ST")]
     elif strategy == 4:
-         return [resource.DECKIMAGE_STSPELL, getDeckCode("DECKCODE_STSPELL")]
+         return [resource.DECKIMAGE_DEST, getDeckCode("DECKCODE_DEST")]
     elif strategy == 5:
         return [resource.DECKIMAGE_LARGE_CREATURE, getDeckCode("DECKCODE_LARGE_CREATURE")]
     elif strategy == 7:
