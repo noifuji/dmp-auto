@@ -664,7 +664,7 @@ def countAllCardsByRarity(resource):
 def chooseDeck(resource, deckImage):
     print "chooseDeck"
     print deckImage
-    if len(findAny(deckImage)) > 0:
+    if exists(deckImage, 2) != None:
         print "deckImage was found"
         click(deckImage)
         return True
@@ -1044,8 +1044,10 @@ def getStrategyByMainStoryStage(episode, stage):
         strategy = 102
     elif episode == 2 and stage in [12,15]:
         strategy = 103
-    elif episode == 3 and stage in [2]:
-        strategy = 100
+    elif episode == 3 and stage in [2,9]:
+        strategy = 103
+    elif episode == 4 and stage in [1]:
+        strategy = 103
     elif episode == 4 and stage in [3,9]:
         strategy = 2
     else:
@@ -1073,9 +1075,9 @@ def getDeckByStrategy(resource, strategy):
     elif strategy == 101:
         return [resource.DECKIMAGE_SPBATTLE, getDeckCode("DECKCODE_SP")]
     elif strategy == 102:
-        return [resource.DECKIMAGE_FATTY, getDeckCode("DECKIMAGE_FATTY")]
+        return [resource.DECKIMAGE_FATTY, getDeckCode("DECKCODE_FATTY")]
     elif strategy == 103:
-        return [resource.DECKIMAGE_HAKUHO, getDeckCode("DECKIMAGE_HAKUHO")]
+        return [resource.DECKIMAGE_HAKUHO, getDeckCode("DECKCODE_HAKUHO")]
     else:
         return None
 

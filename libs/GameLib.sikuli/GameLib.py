@@ -59,7 +59,7 @@ def getManaNumBeforeCharge(resources):
     else:
         return 7
 
-def countEnemyBlockers(resources):
+def countEnemyBlockers(resources, images):
     if resources.APP_ENGINE == "NOX":
         OFFSETX = -1000
         OFFSETY = 210
@@ -77,12 +77,13 @@ def countEnemyBlockers(resources):
         return
     cardListRegion = Region(res[0].getX()+OFFSETX,res[0]. getY()+OFFSETY,WIDTH,HEIGHT)
     cardListRegion.highlight(0.1)
-    f = Finder(SCREEN.capture(cardListRegion))
-    f.findAll(resources.ICON_ENEMY_UNTAPPED_BLOCKER)
     count = 0
-    while f.hasNext():
-        f.next()
-        count += 1
+    for image in images:
+        f = Finder(SCREEN.capture(cardListRegion))
+        f.findAll(image)
+        while f.hasNext():
+            f.next()
+            count += 1
     return count
 
 def countMyBattleZone(resources, targetImage):
@@ -202,6 +203,7 @@ def solveEffect(resources):
         print 'Tap, Dest, Mana, Bounce'
         BZ = findAny(
                 resources.ICON_ENEMY_UNTAPPED_BLOCKER,
+                resources.ICON_ENEMY_UNTAPPED_BLOCKER2,
                 resources.ICON_MY_CREATURE1,
                 resources.ICON_MY_CREATURE2,
                 resources.ICON_MY_CREATURE3,
@@ -1145,6 +1147,7 @@ def irregularLoop(resources, appname):
                         resources.ICON_MY_CREATURE3,
                         resources.ICON_MY_CREATURE4,
                         resources.ICON_ENEMY_UNTAPPED_BLOCKER,
+                        resources.ICON_ENEMY_UNTAPPED_BLOCKER2,
                         resources.ICON_ENEMY_CREATURE1,
                         resources.ICON_ENEMY_CREATURE2,
                         resources.ICON_ENEMY_CREATURE3,
@@ -1305,7 +1308,8 @@ def gameLoop(resources, strategy, appname):
                 directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
         elif strategy in [103]:
             for attackLoop in range(2):
-                blockers = countEnemyBlockers(resources)
+                blockers = countEnemyBlockers(resources, [resources.ICON_ENEMY_UNTAPPED_BLOCKER,
+                            resources.ICON_ENEMY_UNTAPPED_BLOCKER2])
                 print "blockers : " + str(blockers)
                 if blockers == 0:
                     directAttackHakuho(resources, [resources.ICON_MY_UNTAPPED_CREATURE])
