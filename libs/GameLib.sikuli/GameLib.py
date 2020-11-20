@@ -64,12 +64,12 @@ def countEnemyBlockers(resources, images):
         OFFSETX = -1000
         OFFSETY = 210
         WIDTH = 1270
-        HEIGHT = 100
+        HEIGHT = 150
     elif resources.APP_ENGINE == "ANDAPP":
         OFFSETX = -780
         OFFSETY = 200
         WIDTH = 1000
-        HEIGHT = 70
+        HEIGHT = 110
     else:
         raise Exception()
     res = findAny(resources.ICON_ENEMY_CARD_COUNT)
@@ -204,6 +204,8 @@ def solveEffect(resources):
         BZ = findAny(
                 resources.ICON_ENEMY_UNTAPPED_BLOCKER,
                 resources.ICON_ENEMY_UNTAPPED_BLOCKER2,
+                resources.ICON_ENEMY_UNTAPPED_BLOCKER3,
+                resources.ICON_ENEMY_UNTAPPED_BLOCKER4,
                 resources.ICON_MY_CREATURE1,
                 resources.ICON_MY_CREATURE2,
                 resources.ICON_MY_CREATURE3,
@@ -1148,6 +1150,8 @@ def irregularLoop(resources, appname):
                         resources.ICON_MY_CREATURE4,
                         resources.ICON_ENEMY_UNTAPPED_BLOCKER,
                         resources.ICON_ENEMY_UNTAPPED_BLOCKER2,
+                        resources.ICON_ENEMY_UNTAPPED_BLOCKER3,
+                        resources.ICON_ENEMY_UNTAPPED_BLOCKER4,
                         resources.ICON_ENEMY_CREATURE1,
                         resources.ICON_ENEMY_CREATURE2,
                         resources.ICON_ENEMY_CREATURE3,
@@ -1228,7 +1232,7 @@ def gameLoop(resources, strategy, appname):
         retire(resources)
         exists(resources.BUTTON_SMALL_BATTLE_START,120)
         return
-    elif  strategy == 103:
+    elif  strategy in [103,104]:
         if len(findAny(resources.ICON_ENEMY_MANA0)) == 0:
             retire(resources)
             exists(resources.BUTTON_SMALL_BATTLE_START, 120)
@@ -1256,7 +1260,7 @@ def gameLoop(resources, strategy, appname):
             currentMana = ChargeManaBasic(resources)
         elif strategy == 102:
             currentMana = ChargeManaFatty(resources)
-        elif strategy == 103:
+        elif strategy in [103,104]:
             currentMana = ChargeManaHakuho(resources)
         wait(1)
         
@@ -1277,7 +1281,7 @@ def gameLoop(resources, strategy, appname):
             SummonBasic(resources,currentMana)
         elif strategy == 102:
             SummonFatty(resources,currentMana)
-        elif strategy == 103:
+        elif strategy in [103,104]:
             SummonHakuho(resources,currentMana)
         wait(1)
         
@@ -1306,10 +1310,12 @@ def gameLoop(resources, strategy, appname):
             attackers = max(attackersList)
             if attackers >= 3:
                 directAttack(resources,[resources.ICON_W_BREAKER],[resources.ICON_MY_UNTAPPED_CREATURE, resources.ICON_MY_UNTAPPED_CREATURE2])
-        elif strategy in [103]:
+        elif strategy in [103,104]:
             for attackLoop in range(2):
                 blockers = countEnemyBlockers(resources, [resources.ICON_ENEMY_UNTAPPED_BLOCKER,
-                            resources.ICON_ENEMY_UNTAPPED_BLOCKER2])
+                            resources.ICON_ENEMY_UNTAPPED_BLOCKER2,
+                            resources.ICON_ENEMY_UNTAPPED_BLOCKER3,
+                            resources.ICON_ENEMY_UNTAPPED_BLOCKER4])
                 print "blockers : " + str(blockers)
                 if blockers == 0:
                     directAttackHakuho(resources, [resources.ICON_MY_UNTAPPED_CREATURE])

@@ -1038,13 +1038,15 @@ def getStrategyByMainStoryStage(episode, stage):
     strategy = 100
     if episode == 1 and stage in [1,2,3,4,5,6,7,8,9,10,11,13,14,15]:
         strategy = 2
-    elif episode == 2 and stage in [4,6,13]:
+    elif episode == 2 and stage in [6,13]:
         strategy = 2
+    elif episode == 2 and stage in [4]:
+        strategy = 104
     elif episode == 2 and stage in [10]:
         strategy = 102
     elif episode == 2 and stage in [12,15]:
         strategy = 103
-    elif episode == 3 and stage in [2,9]:
+    elif episode == 3 and stage in [2,9,10]:
         strategy = 103
     elif episode == 4 and stage in [1]:
         strategy = 103
@@ -1078,6 +1080,8 @@ def getDeckByStrategy(resource, strategy):
         return [resource.DECKIMAGE_FATTY, getDeckCode("DECKCODE_FATTY")]
     elif strategy == 103:
         return [resource.DECKIMAGE_HAKUHO, getDeckCode("DECKCODE_HAKUHO")]
+    elif strategy == 104:
+        return [resource.DECKIMAGE_AGRO, getDeckCode("DECKCODE_AGRO")]
     else:
         return None
 

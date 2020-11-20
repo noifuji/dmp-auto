@@ -80,6 +80,7 @@ CommonDMLib.downloadDeckCodes()
 instanceIndex = 0
 while instanceIndex < len(instances):
     try:
+        CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(instances[instanceIndex])+"]"+'launching...', appname)
         if EnvSettings.ENGINE_FOR_MAIN == "NOX":
             CommonDMLib.RestartNox(resources, instances[instanceIndex])
         CommonDMLib.RestartApp(resources)
@@ -222,7 +223,7 @@ while instanceIndex < len(instances):
 
             if EnvSettings.RUN_MODE == "DEV":
                 wait(1)
-                CommonDMLib.sendMessagetoSlack(mentionUser, '[EP:'+str(episode)+',ST:'+str(stage)+']Battle Loop Count : ' + str(retryCount), appname)
+                CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(instances[instanceIndex])+"]"+'[EP:'+str(episode)+',ST:'+str(stage)+']Battle Loop Count : ' + str(retryCount), appname)
             statisticsData["RETRY"] = retryCount
             statisticsData["EXCEPTION"] = exceptionCout
             statisticsData["ENDTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
