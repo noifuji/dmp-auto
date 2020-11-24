@@ -1040,18 +1040,16 @@ def getStrategyByMainStoryStage(episode, stage):
         strategy = 2
     elif episode == 2 and stage in [6,13]:
         strategy = 2
-    elif episode == 2 and stage in [4]:
+    elif episode == 2 and stage in [4,9]:
         strategy = 104
     elif episode == 2 and stage in [10]:
         strategy = 102
-    elif episode == 2 and stage in [12,15]:
+    elif episode == 2 and stage in [12,13,15]:
         strategy = 103
-    elif episode == 3 and stage in [2,9,10]:
+    elif episode == 3 and stage in [2,5,6,9,10]:
         strategy = 103
-    elif episode == 4 and stage in [1]:
+    elif episode == 4 and stage in [1,3,7,9]:
         strategy = 103
-    elif episode == 4 and stage in [3,9]:
-        strategy = 2
     else:
         strategy = 100
         
