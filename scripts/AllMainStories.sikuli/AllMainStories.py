@@ -72,7 +72,6 @@ elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
     
-CommonDMLib.downloadDeckCodes()
 #Pre-processing End
 
 
@@ -80,6 +79,7 @@ CommonDMLib.downloadDeckCodes()
 instanceIndex = 0
 while instanceIndex < len(instances):
     try:
+        CommonDMLib.downloadDeckCodes()
         CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(instances[instanceIndex])+"]"+'launching...', appname)
         if EnvSettings.ENGINE_FOR_MAIN == "NOX":
             CommonDMLib.RestartNox(resources, instances[instanceIndex])
