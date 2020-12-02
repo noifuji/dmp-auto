@@ -139,7 +139,8 @@ def backupDMPdata(resource, backupDir, ref):
         if os.path.exists(backupFilePath):
             return
         
-    cmd = EnvSettings.NoxAdbPath + ' backup -f ' + backupFilePath + ' jp.co.takaratomy.duelmastersplays'
+    #cmd = EnvSettings.NoxAdbPath + ' backup -f ' + backupFilePath + ' jp.co.takaratomy.duelmastersplays'
+    cmd = [EnvSettings.NoxAdbPath, 'backup', '-f', backupFilePath, 'jp.co.takaratomy.duelmastersplays']
 
     #バックアップの起動
     subprocess.Popen(cmd, shell=True)
