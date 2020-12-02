@@ -1,0 +1,1 @@
+%1 backup -f %2 jp.co.takaratomy.duelmastersplays

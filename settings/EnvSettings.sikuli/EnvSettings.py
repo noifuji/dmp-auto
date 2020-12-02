@@ -12,6 +12,7 @@ DATA_DIR_PATH = os.path.join(DMP_AUTO_HOME , r"data")
 REMOVE_DATA_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\noxRemoveDMData\noxRemovePkgData.bat")
 NOX_START_APP_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\noxRemoveDMData\startDMPApp.bat")
 NOX_KILL_APP_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\noxRemoveDMData\killDMPApp.bat")
+NOX_BACKUP_APP_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\noxRemoveDMData\backupDMPApp.bat")
 JAVA_API_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib/javaapis/build/libs/javaapis-all.jar")
 COMPLETED_INSTANCES_JSON_FILE = "CompletedInstance.json"
 DECK_CODE_JSON_FILE = "DMPAutoDeckCodes.json"
@@ -111,6 +112,8 @@ try:
     ENGINE_FOR_MAIN = userSettings["ENGINE_FOR_MAIN"]
     ENGINE_FOR_LEGEND = userSettings["ENGINE_FOR_LEGEND"]
     ENGINE_FOR_SP = userSettings["ENGINE_FOR_SP"]
+    BACKUP_DIRECTORY = userSettings["BACKUP_DIRECTORY"]
+    BACKUP_CONDITION = userSettings["BACKUP_CONDITION"]
     
     
     NOX_INSTANCES = userSettings['NOX_INSTANCES']

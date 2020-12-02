@@ -6,6 +6,7 @@ import sys
 import urllib2
 import copy
 import subprocess
+import shutil
 from datetime import datetime
 from pytz import timezone
 sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
@@ -126,6 +127,52 @@ def noxCallKillDMPApp():
     command = cmd_file + " " + '"'+ EnvSettings.NoxAdbPath + '"'
     print command
     os.system(command)
+
+def backupDMPdata(resource, backupDir, ref):
+    dirname = datetime.now().strftime("%Y%m%d")
+    saveDirPath = os.path.join(backupDir,dirname)
+    backupFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
+
+    if not os.path.exists(saveDirPath):
+        os.makedirs(saveDirPath)
+    else:
+        if os.path.exists(backupFilePath):
+            return
+        
+    cmd = EnvSettings.NoxAdbPath + ' backup -f ' + backupFilePath + ' jp.co.takaratomy.duelmastersplays'
+
+    #バックアップの起動
+    subprocess.Popen(cmd, shell=True)
+    
+    #バックアップ開始をクリック
+    exists(resource.TITLE_FULLBACKUP, 60)
+    wait(5)
+    click(resource.BUTTON_DO_BACKUP)
+    #完了まで待機
+    if waitVanish(resource.TITLE_FULLBACKUP, 900):
+        return
+    else:
+        raise Exception("Timeout. Backup failed.")
+    
+
+def rotateBackupDirs(backupDir):
+    if not os.path.exists(backupDir):
+        print "No backup dirs."
+        return
+
+    countDir = 0
+    dirnames = []
+    for name in os.listdir(backupDir):
+        if os.path.isdir(os.path.join(backupDir, name)):
+            countDir += 1
+            dirnames.append(name)
+
+    if countDir < 3:
+        print "The number of backup dirs doesn't excess the limit."
+        return
+
+    dirnames.sort()
+    shutil.rmtree(os.path.join(backupDir, dirnames[0]))
 
 #url:slackのwebhookのURL
 #userid:slackのmemberID

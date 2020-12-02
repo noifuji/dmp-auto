@@ -32,8 +32,8 @@ retryCount = 0
 while instanceIndex < len(instances):
     try:
         CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
-        CommonDMLib.RestartApp(NoxResources)
-        CommonDMLib.getPresent(NoxResources)
+        CommonDMLib.backupDMPdata(NoxResources, EnvSettings.BACKUP_DIRECTORY, instances[instanceIndex])
+        CommonDMLib.rotateBackupDirs(EnvSettings.BACKUP_DIRECTORY)
         
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Instance ' + str(instances[instanceIndex]) + 'was completed.', appname)
         instanceIndex += 1
