@@ -78,6 +78,7 @@ while instanceIndex < len(instances):
         if datetime.now().day % 10 == int(EnvSettings.BACKUP_CONDITION):
             CommonDMLib.backupDMPdata(NoxResources, EnvSettings.BACKUP_DIRECTORY, instances[instanceIndex])
             CommonDMLib.rotateBackupDirs(EnvSettings.BACKUP_DIRECTORY)
+            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']Backup was completed.', appname)
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
         CommonDMLib.changeMission(NoxResources)
