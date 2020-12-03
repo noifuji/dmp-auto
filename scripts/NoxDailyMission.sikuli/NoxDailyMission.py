@@ -75,7 +75,7 @@ while instanceIndex < len(instances):
     try:
         CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
         #末尾2の日にバックアップをとる。
-        if datetime.now().day % 10 in [int(EnvSettings.BACKUP_CONDITION), int(EnvSettings.BACKUP_CONDITION)+1]:
+        if datetime.now().day % 15 in [int(EnvSettings.BACKUP_CONDITION), int(EnvSettings.BACKUP_CONDITION)+1]:
             backupResult = CommonDMLib.backupDMPdata(NoxResources, EnvSettings.BACKUP_DIRECTORY, instances[instanceIndex])
             CommonDMLib.rotateBackupDirs(EnvSettings.BACKUP_DIRECTORY)
             if backupResult:
