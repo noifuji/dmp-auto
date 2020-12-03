@@ -137,9 +137,8 @@ def backupDMPdata(resource, backupDir, ref):
         os.makedirs(saveDirPath)
     else:
         if os.path.exists(backupFilePath):
-            return
+            return True
         
-    #cmd = EnvSettings.NoxAdbPath + ' backup -f ' + backupFilePath + ' jp.co.takaratomy.duelmastersplays'
     cmd = [EnvSettings.NoxAdbPath, 'backup', '-f', backupFilePath, 'jp.co.takaratomy.duelmastersplays']
 
     #バックアップの起動
@@ -151,8 +150,10 @@ def backupDMPdata(resource, backupDir, ref):
     click(resource.BUTTON_DO_BACKUP)
     #完了まで待機
     if waitVanish(resource.TITLE_FULLBACKUP, 900):
-        return
+        return True
     else:
+        if os.path.exists(backupFilePath):
+            os.remove(backupFilePath)
         raise Exception("Timeout. Backup failed.")
     
 
