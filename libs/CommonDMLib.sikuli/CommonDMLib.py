@@ -128,9 +128,8 @@ def noxCallKillDMPApp():
     print command
     os.system(command)
 
-def backupDMPdata(resource, backupDir, ref):
-    dirname = datetime.now().strftime("%Y%m%d")
-    saveDirPath = os.path.join(backupDir,dirname)
+def backupDMPdata(resource, backupDirPath, backupDirName, ref):
+    saveDirPath = os.path.join(backupDirPath,backupDirName)
     backupFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
 
     if not os.path.exists(saveDirPath):

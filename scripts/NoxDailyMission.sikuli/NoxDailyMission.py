@@ -1,7 +1,7 @@
 import sys
 import traceback
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
 import EnvSettings
 sys.path.append(EnvSettings.LIBS_DIR_PATH)
@@ -76,7 +76,12 @@ while instanceIndex < len(instances):
         CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
         #末尾2の日にバックアップをとる。
         if datetime.now().day % 15 in [int(EnvSettings.BACKUP_CONDITION), int(EnvSettings.BACKUP_CONDITION)+1]:
-            backupResult = CommonDMLib.backupDMPdata(NoxResources, EnvSettings.BACKUP_DIRECTORY, instances[instanceIndex])
+            if datetime.now().day % 15 == int(EnvSettings.BACKUP_CONDITION):
+                backupDirName = datetime.strftime(datetime.now(), '%Y%m%d')
+            elif datetime.now().day % 15 == (int(EnvSettings.BACKUP_CONDITION)+1):
+                backupDirName = datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d')
+                
+            backupResult = CommonDMLib.backupDMPdata(NoxResources, EnvSettings.BACKUP_DIRECTORY,backupDirName, instances[instanceIndex])
             CommonDMLib.rotateBackupDirs(EnvSettings.BACKUP_DIRECTORY)
             if backupResult:
                 CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']Backup is OK.', appname)
