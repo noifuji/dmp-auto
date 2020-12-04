@@ -140,6 +140,11 @@ def backupDMPdata(resource, backupDirPath, backupDirName, ref):
         
     cmd = [EnvSettings.NoxAdbPath, 'backup', '-f', backupFilePath, 'jp.co.takaratomy.duelmastersplays']
 
+    command = ""
+    for c in cmd:
+        command += (c + " ")
+    print command
+
     #バックアップの起動
     subprocess.Popen(cmd, shell=True)
     
