@@ -74,17 +74,9 @@ while instanceIndex < len(instances):
     
     try:
         CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
-        #末尾2の日にバックアップをとる。
-        if datetime.now().day % 15 in [int(EnvSettings.BACKUP_CONDITION), int(EnvSettings.BACKUP_CONDITION)+1]:
-            if datetime.now().day % 15 == int(EnvSettings.BACKUP_CONDITION):
-                backupDirName = datetime.strftime(datetime.now(), '%Y%m%d')
-            elif datetime.now().day % 15 == (int(EnvSettings.BACKUP_CONDITION)+1):
-                backupDirName = datetime.strftime(datetime.now() - timedelta(1), '%Y%m%d')
-                
-            backupResult = CommonDMLib.backupDMPdata(NoxResources, EnvSettings.BACKUP_DIRECTORY,backupDirName, instances[instanceIndex])
-            CommonDMLib.rotateBackupDirs(EnvSettings.BACKUP_DIRECTORY)
-            if backupResult:
-                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']Backup is OK.', appname)
+        backupResult = CommonDMLib.backupDMPdata(NoxResources, EnvSettings.BACKUP_DIRECTORY, EnvSettings.BACKUP_DIR_NAME, instances[instanceIndex])
+        if backupResult:
+            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']Backup is OK.', appname)
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
         CommonDMLib.changeMission(NoxResources)

@@ -17,6 +17,7 @@ JAVA_API_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib/javaapis/build
 COMPLETED_INSTANCES_JSON_FILE = "CompletedInstance.json"
 DECK_CODE_JSON_FILE = "DMPAutoDeckCodes.json"
 CREDENTIALS_JSON_FILE = "credentials.json"
+BACKUP_DIR_NAME = "20201203"
 
 #account status
 ACCOUNT_INFO_SHEET_NAME = "raw"
