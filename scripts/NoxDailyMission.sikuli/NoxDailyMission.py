@@ -74,9 +74,9 @@ while instanceIndex < len(instances):
     
     try:
         CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
-        #backupResult = CommonDMLib.backupDMPdata(NoxResources, EnvSettings.BACKUP_DIRECTORY, EnvSettings.BACKUP_DIR_NAME, instances[instanceIndex])
-        #if backupResult:
-       #     CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']Backup is OK.', appname)
+        backupResult = CommonDMLib.backupDMPdata(NoxResources, EnvSettings.BACKUP_DIRECTORY, EnvSettings.BACKUP_DIR_NAME, instances[instanceIndex])
+        if backupResult:
+            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']Backup is OK.', appname)
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
         CommonDMLib.changeMission(NoxResources)

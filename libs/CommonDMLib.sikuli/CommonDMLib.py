@@ -128,6 +128,42 @@ def noxCallKillDMPApp():
     print command
     os.system(command)
 
+def backupDMPIdentifier(resource, ref):
+    saveDirPath = EnvSettings.BACKUP_DIR_PATH
+    backupFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
+
+    if not os.path.exists(saveDirPath):
+        os.makedirs(saveDirPath)
+    else:
+        if os.path.exists(backupFilePath):
+            if os.path.getsize(backupFilePath) < 1:
+                os.remove(backupFilePath)
+            else:
+                return True
+            
+    changeDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1"]
+    subprocess.call(changeDirnameCmd)
+    
+    cmd = [EnvSettings.NoxAdbPath, 'backup', '-f', backupFilePath, 'jp.co.takaratomy.duelmastersplays']
+    subprocess.Popen(cmd, shell=True)
+    
+    #バックアップ開始をクリック
+    exists(resource.TITLE_FULLBACKUP, 60)
+    wait(5)
+    click(resource.BUTTON_DO_BACKUP)
+    #完了まで待機
+    if waitVanish(resource.TITLE_FULLBACKUP, 60):
+        restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
+        subprocess.call(restoreDirnameCmd)
+        return True
+    else:
+        if os.path.exists(backupFilePath):
+            os.remove(backupFilePath)
+        
+        restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
+        subprocess.call(restoreDirnameCmd)
+        raise Exception("Timeout. Backup failed.")
+
 def backupDMPdata(resource, backupDirPath, backupDirName, ref):
     saveDirPath = os.path.join(backupDirPath,backupDirName)
     backupFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
@@ -136,14 +172,12 @@ def backupDMPdata(resource, backupDirPath, backupDirName, ref):
         os.makedirs(saveDirPath)
     else:
         if os.path.exists(backupFilePath):
-            return True
+            if os.path.getsize(backupFilePath) < 1000000:
+                os.remove(backupFilePath)
+            else:
+                return True
         
     cmd = [EnvSettings.NoxAdbPath, 'backup', '-f', backupFilePath, 'jp.co.takaratomy.duelmastersplays']
-
-    command = ""
-    for c in cmd:
-        command += (c + " ")
-    print command
 
     #バックアップの起動
     subprocess.Popen(cmd, shell=True)
