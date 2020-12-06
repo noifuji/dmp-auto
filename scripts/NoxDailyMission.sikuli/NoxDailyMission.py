@@ -45,7 +45,7 @@ def finishMissions(instance, statisticsData):
     CommonDMLib.uploadStatistics(sheets, "DailyMission" ,statisticsData)
     if CommonDMLib.isNewVersionAvailable():
         exit(50)
-    CommonDMLib.noxCallKillDMPApp()
+    #CommonDMLib.noxCallKillDMPApp()
 
 statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_REF:"",
         CommonDMLib.STATISTICS_MISSION1:"",CommonDMLib.STATISTICS_MISSION2:"",
@@ -54,7 +54,6 @@ statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_
 
 instanceIndex = 0
 retryCount = 0
-CommonDMLib.RestartNox(NoxResources, "MAIN")
 while instanceIndex < len(instances):
     
     if statisticsData[CommonDMLib.STATISTICS_REF] != str(instances[instanceIndex]):
@@ -75,7 +74,8 @@ while instanceIndex < len(instances):
         continue
     
     try:
-        CommonDMLib.loadRef(NoxResources, instances[instanceIndex])
+        CommonDMLib.RestartNox(NoxResources, "MAIN")
+        #CommonDMLib.loadRef(NoxResources, instances[instanceIndex])
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
         CommonDMLib.changeMission(NoxResources)
@@ -178,4 +178,4 @@ while instanceIndex < len(instances):
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
-        CommonDMLib.RestartNox(NoxResources, "MAIN")
+        #CommonDMLib.RestartNox(NoxResources, "MAIN")
