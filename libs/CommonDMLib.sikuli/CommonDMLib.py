@@ -128,39 +128,7 @@ def noxCallKillDMPApp():
     print command
     os.system(command)
 
-def loadRef(resources, ref):
-    saveDirPath = EnvSettings.BACKUP_DIR_PATH
-    restoreFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
 
-    if not os.path.exists(restoreFilePath):
-        raise Exception("No backup file")
-            
-    #フォルダ名変更 call
-    changeDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1"]
-    subprocess.call(changeDirnameCmd)
-    #レストア popen
-    restoreCmd = [EnvSettings.NoxAdbPath, "restore", restoreFilePath]
-    subprocess.Popen(restoreCmd, shell=True)
-
-    exists(resources.TITLE_FULLRESTORE, 60)
-    wait(5)
-    click(resources.BUTTON_DO_RESTORE)
-
-    #完了まで待機
-    if waitVanish(resources.TITLE_FULLRESTORE, 60):
-        restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "rm", "-r" ,r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
-        subprocess.call(restoreDirnameCmd)
-        print "dir removed"
-        restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
-        subprocess.call(restoreDirnameCmd)
-        print "dir restored"
-        return True
-    else:
-        if os.path.exists(backupFilePath):
-            os.remove(backupFilePath)
-        restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
-        subprocess.call(restoreDirnameCmd)
-        raise Exception("Timeout. Backup failed.")
 
 def backupDMPIdentifier(resource, ref):
     saveDirPath = EnvSettings.BACKUP_DIR_PATH
@@ -187,6 +155,9 @@ def backupDMPIdentifier(resource, ref):
     click(resource.BUTTON_DO_BACKUP)
     #完了まで待機
     if waitVanish(resource.TITLE_FULLBACKUP, 60):
+        restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "rm", "-r" ,r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
+        subprocess.call(restoreDirnameCmd)
+        print "dir removed"
         restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
         subprocess.call(restoreDirnameCmd)
         return True
@@ -226,6 +197,42 @@ def backupDMPdata(resource, backupDirPath, backupDirName, ref):
     else:
         if os.path.exists(backupFilePath):
             os.remove(backupFilePath)
+        raise Exception("Timeout. Backup failed.")
+
+def loadRef(resources, ref):
+    saveDirPath = EnvSettings.BACKUP_DIR_PATH
+    restoreFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
+
+    if not os.path.exists(restoreFilePath):
+        RestartNox(resources, ref)
+        backupDMPIdentifier(resources, ref)
+        RestartNox(resources, "MAIN")
+            
+    #フォルダ名変更 call
+    changeDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1"]
+    subprocess.call(changeDirnameCmd)
+    #レストア popen
+    restoreCmd = [EnvSettings.NoxAdbPath, "restore", restoreFilePath]
+    subprocess.Popen(restoreCmd, shell=True)
+
+    exists(resources.TITLE_FULLRESTORE, 60)
+    wait(5)
+    click(resources.BUTTON_DO_RESTORE)
+
+    #完了まで待機
+    if waitVanish(resources.TITLE_FULLRESTORE, 60):
+        restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "rm", "-r" ,r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
+        subprocess.call(restoreDirnameCmd)
+        print "dir removed"
+        restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
+        subprocess.call(restoreDirnameCmd)
+        print "dir restored"
+        return True
+    else:
+        if os.path.exists(backupFilePath):
+            os.remove(backupFilePath)
+        restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
+        subprocess.call(restoreDirnameCmd)
         raise Exception("Timeout. Backup failed.")
     
 
@@ -1272,6 +1279,26 @@ def isNoxOn():
     
     stdout_data, stderr_data = proc2.communicate()
     return stdout_data != ""
+
+def isMainOn(resources):
+    App(EnvSettings.NoxMultiPlayerPath).open()
+    if exists(resources.TITLE_MULTI_PLAYER,120) == None:
+        killMultiPlayerManager()
+        raise Exception("MultiPlayerManager has error. Please retry to launch.")
+    exists(resources.BUTTON_NOX_PLAY, 120)
+    click(resources.ICON_SEARCH)
+    wait(2)
+    type("MAIN")
+    wait(1)
+    type(Key.ENTER)
+    wait(10)
+    if len(findAny(resources.BUTTON_NOX_STOP)) > 0:
+        result = True
+    else:
+        result = False
+    App(EnvSettings.NoxMultiPlayerPath).close()
+    wait(5)
+    return result
 
 def exitNox(resources):
     if isNoxOn() == False:

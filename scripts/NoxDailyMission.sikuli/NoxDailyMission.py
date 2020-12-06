@@ -74,8 +74,10 @@ while instanceIndex < len(instances):
         instanceIndex += 1
         continue
     try:
-        CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
-        #CommonDMLib.loadRef(NoxResources, instances[instanceIndex])
+        if not CommonDMLib.isMainOn(NoxResources):
+            print "MAIN is off"
+            CommonDMLib.RestartNox(NoxResources, "MAIN")
+        CommonDMLib.loadRef(NoxResources, instances[instanceIndex])
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
         CommonDMLib.changeMission(NoxResources)
@@ -178,3 +180,4 @@ while instanceIndex < len(instances):
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
+        CommonDMLib.exitNox(NoxResources)
