@@ -138,7 +138,7 @@ def backupDMPIdentifier(resource, ref):
         os.makedirs(saveDirPath)
     else:
         if os.path.exists(backupFilePath):
-            if os.path.getsize(backupFilePath) < 1:
+            if os.path.getsize(backupFilePath) < 5000:
                 os.remove(backupFilePath)
             else:
                 return True
