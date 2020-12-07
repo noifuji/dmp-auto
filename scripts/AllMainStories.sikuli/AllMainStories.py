@@ -82,7 +82,8 @@ while instanceIndex < len(instances):
         CommonDMLib.downloadDeckCodes()
         CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(instances[instanceIndex])+"]"+'launching...', appname)
         if EnvSettings.ENGINE_FOR_MAIN == "NOX":
-            CommonDMLib.RestartNox(resources, instances[instanceIndex])
+            CommonDMLib.RestartNox(resources, "MAIN")
+            CommonDMLib.loadRef(NoxResources, instances[instanceIndex])
         CommonDMLib.RestartApp(resources)
         CommonDMLib.openMainStory(resources)
         
