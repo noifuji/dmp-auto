@@ -19,6 +19,7 @@ BUTTON_NOX_STOP = Pattern("1596777933938.png").similar(0.90)
 BUTTON_NOX_RENAME = Pattern("1603533707676.png").similar(0.90).targetOffset(-337,-1)
 BUTTON_NOX_PLAY = Pattern("1601077335160.png").similar(0.95)
 ICON_SEARCH = Pattern("1601532705094.png").similar(0.83).targetOffset(-84,4)
+BUTTON_HOME = Pattern("1607354280695.png").similar(0.85)
 BUTTON_NOX_OK_BLUE = Pattern("1601533049989.png").similar(0.90)
 ICON_BROWSER = "ICON_BROWSER.png"
 TITLE_FULLBACKUP = Pattern("1606875287576.png").similar(0.86)

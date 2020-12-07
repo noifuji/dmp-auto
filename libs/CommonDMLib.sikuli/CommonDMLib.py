@@ -208,9 +208,10 @@ def loadRef(resources, ref):
 
     if not os.path.exists(restoreFilePath):
         RestartNox(resources, ref)
-        RestartApp(resources)
+        noxCallStartDMPApp()
+        exists(resources.BUTTON_TAKEOVER,180)
         wait(5)
-        noxCallKillDMPApp()
+        click(resources.BUTTON_HOME)
         wait(5)
         backupDMPIdentifier(resources, ref)
         RestartNox(resources, "MAIN")
