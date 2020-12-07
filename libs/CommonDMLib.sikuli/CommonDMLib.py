@@ -203,6 +203,9 @@ def loadRef(resources, ref):
     saveDirPath = EnvSettings.BACKUP_DIR_PATH
     restoreFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
 
+    if os.path.exists(restoreFilePath) and os.path.getsize(restoreFilePath) < 5000:
+        os.remove(restoreFilePath)
+
     if not os.path.exists(restoreFilePath):
         RestartNox(resources, ref)
         backupDMPIdentifier(resources, ref)
