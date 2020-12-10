@@ -1259,32 +1259,29 @@ def getPresent(resource):
 def getMissionRewards(resource):
     if len(findAny(resource.ICON_MISSION_WITH_SIGN)) > 0:
         click(resource.ICON_MISSION_WITH_SIGN) 
-        exists(resource.BUTTON_ACHIEVEMENT, 60)
-        click(resource.BUTTON_ACHIEVEMENT)
-        wait(2)
-        click(resource.BUTTON_RECIEVE)
-        exists(resource.BUTTON_OK, 10)
-        for waitLoop in range(10):
-            try:
+        exists(resource.TITLE_MISSION, 60)
+        if len(findAny(resource.BUTTON_MISSION_WITH_SIGN)) > 0:
+            if len(findAny(resource.BUTTON_DAILY_REWARD_RECEIVE_ALL)) > 0:
+                click(resource.BUTTON_DAILY_REWARD_RECEIVE_ALL)
+                exists(resource.BUTTON_OK, 60)
+                type(Key.ESC)
+                wait(3)
+            for num in range(10):
+                if len(findAny(resource.ICON_ACHIEVED)) > 0:
+                    click(resource.ICON_ACHIEVED)
+                    exists(resource.BUTTON_OK, 60)
+                    type(Key.ESC)
+                    waitVanish(resource.TITLE_REWARD_DAILY, 5)
+                else:
+                    break
+
+        if len(findAny(resource.BUTON_ACHIEVEMENTS_WITH_SIGN)) > 0:
+            if len(findAny(resource.BUTTON_DAILY_REWARD_RECEIVE_ALL)) > 0:
+                click(resource.BUTTON_DAILY_REWARD_RECEIVE_ALL)
+                exists(resource.BUTTON_OK, 60)
                 click(resource.BUTTON_OK)
-            except:
-                print "failed to click"
-            wait(5)
-            if len(findAny(resource.BUTTON_OK)) == 0:
-                break
-        wait(1)
-        click(resource.BUTTON_EVENT)
-        wait(2)
-        click(resource.BUTTON_RECIEVE)
-        exists(resource.BUTTON_OK, 10)
-        for waitLoop in range(100):
-            try:
-                click(resource.BUTTON_OK)
-            except:
-                print "failed to click"
-            wait(5)
-            if len(findAny(resource.BUTTON_OK)) == 0:
-                break
+                waitVanish(resource.TITLE_REWARD_DAILY, 5)
+            
         type(Key.ESC)
         waitVanish(resource.TITLE_MISSION)
 
