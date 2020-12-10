@@ -10,6 +10,7 @@ import GameLib
 import CommonDMLib
 import NoxResources
 from spreadsheetapis import SpreadSheetApis
+from driveapis import DriveApis
 
 ####################Settings####################
 instances = EnvSettings.NOX_INSTANCES
@@ -31,16 +32,18 @@ if CommonDMLib.isNewVersionAvailable():
 CommonDMLib.downloadDeckCodes()
 instances = CommonDMLib.removeCompletedInstances(instances)
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
+drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 #Pre-processing End
 
-def finishMissions(instance, statisticsData):
-    CommonDMLib.sendMessagetoSlack(mentionUser, 'Account' + str(instances[instanceIndex]) + ' was completed.', appname)
+def finishMissions(instance, statisticsData, sheets):
+    CommonDMLib.sendMessagetoSlack(mentionUser, 'Account' + str(instance) + ' was completed.', appname)
     CommonDMLib.closeMission(NoxResources)
     CommonDMLib.getPresent(NoxResources)
     CommonDMLib.getMissionRewards(NoxResources)
     res = CommonDMLib.scanAccountInfo(NoxResources)
     CommonDMLib.updateAccountInfo(sheets, instance, res[0], res[1], res[2], res[3],res[4], res[5])
-    CommonDMLib.updateCompletedInstanceJson(instance)
+    CommonDMLib.completeDailyMissionRef(sheets, instance)
+    #CommonDMLib.updateCompletedInstanceJson(instance)
     statisticsData[CommonDMLib.STATISTICS_ENDTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     CommonDMLib.uploadStatistics(sheets, "DailyMission" ,statisticsData)
     if CommonDMLib.isNewVersionAvailable():
@@ -56,11 +59,15 @@ statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_
 
 instanceIndex = 0
 retryCount = 0
-while instanceIndex < len(instances):
-    if statisticsData[CommonDMLib.STATISTICS_REF] != str(instances[instanceIndex]):
+while True:
+    workingRef = CommonDMLib.getNextRef(sheets)
+    if workingRef == None:
+        break
+    
+    if statisticsData[CommonDMLib.STATISTICS_REF] != str(workingRef):
         print "Initializing Statistics Data"
         statisticsData[CommonDMLib.STATISTICS_COMPUTERNAME] = os.environ["COMPUTERNAME"]
-        statisticsData[CommonDMLib.STATISTICS_REF] = str(instances[instanceIndex])
+        statisticsData[CommonDMLib.STATISTICS_REF] = str(workingRef)
         statisticsData[CommonDMLib.STATISTICS_MISSION1] = ""
         statisticsData[CommonDMLib.STATISTICS_MISSION2] = ""
         statisticsData[CommonDMLib.STATISTICS_MISSION3] = ""
@@ -77,7 +84,7 @@ while instanceIndex < len(instances):
         if not CommonDMLib.isMainOn(NoxResources):
             print "MAIN is off"
             CommonDMLib.RestartNox(NoxResources, "MAIN")
-        CommonDMLib.loadRef(NoxResources, instances[instanceIndex])
+        CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
         CommonDMLib.changeMission(NoxResources)
@@ -86,7 +93,7 @@ while instanceIndex < len(instances):
         
         if mode == "DEV":
             wait(1)
-            CommonDMLib.sendMessagetoSlack(mentionUser,'Account' + str(instances[instanceIndex]) + ' is in process.', appname)
+            CommonDMLib.sendMessagetoSlack(mentionUser,'Account' + str(workingRef) + ' is in process.', appname)
         
         if statisticsData[CommonDMLib.STATISTICS_MISSION1] == "":
             for i in range(len(missions)):
@@ -99,7 +106,7 @@ while instanceIndex < len(instances):
             print statisticsData
             
         if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("GROUP") for d in missions])):
-            finishMissions(instances[instanceIndex], statisticsData)
+            finishMissions(workingRef, statisticsData ,sheets)
             instanceIndex += 1
             retryCount = 0
             continue
@@ -146,12 +153,14 @@ while instanceIndex < len(instances):
                         print "failed to click smallStart"
                 if len(findAny(NoxResources.BUTTON_LARGE_BATTLE_START)) > 0:
                     break
-            if dailyReward > 0:
+            if dailyReward >= 0:
                 CommonDMLib.openMission(NoxResources)
                 missions = CommonDMLib.getTargetMissions(NoxResources)
-                
                 if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("GROUP") for d in missions])):
-                    finishMissions(instances[instanceIndex], statisticsData)
+                    click(NoxResources.BUTTON_DAILY_REWARD_RECEIVE_ALL)
+                    exists(NoxResources.BUTTON_OK, 60)
+                    click(NoxResources.BUTTON_OK)
+                    finishMissions(workingRef, statisticsData, sheets)
                     break
                 strategy = CommonDMLib.getMissionStrategy(NoxResources,missions[0])
                 CommonDMLib.closeMission(NoxResources)
@@ -167,7 +176,7 @@ while instanceIndex < len(instances):
         retryCount = 0
     except SystemExit as e:
         if e == 50:
-            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
+            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
     except:
         statisticsData["EXCEPTION"] += 1
@@ -176,7 +185,7 @@ while instanceIndex < len(instances):
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(instances[instanceIndex]) + '. Retrying....' , appname)
+        CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)

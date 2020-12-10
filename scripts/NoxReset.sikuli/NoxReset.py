@@ -10,6 +10,7 @@ sys.path.append(EnvSettings.RES_DIR_PATH)
 import CommonDMLib
 import NoxResources
 from spreadsheetapis import SpreadSheetApis
+from driveapis import DriveApis
 
 bolbalzarkSec = Pattern("bolbalzarkSec.png").similar(0.90)
 bolbalzark = Pattern("bolbalzark.png").similar(0.90)
@@ -49,6 +50,7 @@ mentionUser = EnvSettings.mentionUser
 Settings.MoveMouseDelay = 0.1
 DMApp = App(EnvSettings.NoxAppPath)
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
+drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 
 
 #resources
@@ -97,7 +99,7 @@ for count in range(100):
     try:
         #仮のrefを設定
         ref = "marathon"
-        CommonDMLib.RestartNox(NoxResources,ref)
+        CommonDMLib.RestartNox(NoxResources,"MAIN")
         CommonDMLib.callRemoveDataBat()
     except:
         e = sys.exc_info()
@@ -272,9 +274,13 @@ for count in range(100):
             for shopTutorialLoop in range(5):
                 click(Pattern("1603247550151.png").targetOffset(3,75))
                 wait(1)
+
+            if exists("1607588302723.png", 1) != None:
+                clcik(Pattern("1607588302723.png").targetOffset(116,0))
+                wait(3)
             
             
-            DMPPs = ["1603247648602.png","1603247659238.png","1603247666375.png","1603247673472.png","1603247697352.png","1603247681473.png"]
+            DMPPs = ["1607588363753.png","1603247648602.png","1603247659238.png","1603247666375.png","1603247673472.png","1603247697352.png","1603247681473.png"]
             #DMPPs = ["1603247648602.png","1603247659238.png","1603247666375.png","1603247673472.png","1603247681473.png","1603247697352.png"]
             DMPP_loop_count = 0
             continue_flag = False
@@ -352,9 +358,10 @@ for count in range(100):
                     click("1596590582220.png")
                     click("1596590589379.png")
                     click("1596590596951.png")
-                    click("1596590604315.png")
+                    click("1607588468352.png")
                     click("1597921929724.png")
                     click("1603248373413.png")
+                    click("1607588456771.png")
                     click("1596590612922.png")
                     wait(3)
                     if i == 0:
@@ -418,8 +425,13 @@ for count in range(100):
                 wait(0.5)
                 click("1603541423678.png")
                 CommonDMLib.uploadScreenShotToSlack(mentionUser, str(ref), appname)
-                #インスタンス名をrefに変更する。
-                CommonDMLib.renameRunningNoxInstance(NoxResources, str(ref))
+                #identifierをバックアップし、Driveへアップロードする。
+                CommonDMLib.backupDMPIdentifier(resource, ref)
+                identifierFilename = "dmps" + ref + ".ab"
+                drive.uploadFile(identifierFilename, 
+                        os.path.join(EnvSettings.BACKUP_DIR_PATH,identifierFilename),
+                        EnvSettings.IDENTIFIER_DRIVE_DIR_ID, 
+                        "application/octet-stream")
                 
                 break
             else:

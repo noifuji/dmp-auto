@@ -19,6 +19,7 @@ DECK_CODE_JSON_FILE = "DMPAutoDeckCodes.json"
 CREDENTIALS_JSON_FILE = "credentials.json"
 BACKUP_DIR_NAME = "20201203"
 BACKUP_DIR_PATH = os.path.join(DMP_AUTO_HOME , r"data\identifier")
+USER_SETTINGS_SHEET_ID = UserSettings.USER_SETTINGS_SHEET_ID
 
 #account status
 ACCOUNT_INFO_SHEET_NAME = "raw"
@@ -68,7 +69,7 @@ def downloadUserSettings(computername):
     strCredentials = f.read()
     f.close()
     spreadsheet = SpreadSheetApis("DMPAuto", strCredentials)
-    usersettingsRaw = spreadsheet.read(UserSettings.USER_SETTINGS_SHEET_ID, "UserSettings!A1:Z300", "COLUMNS")
+    usersettingsRaw = spreadsheet.read(USER_SETTINGS_SHEET_ID, "UserSettings!A1:Z300", "COLUMNS")
     usersettings = []
     for i in range(len(usersettingsRaw)-1):
         usersettings.append({key: val for key, val in zip_longer(usersettingsRaw[0], usersettingsRaw[i+1])})
@@ -114,8 +115,7 @@ try:
     ENGINE_FOR_MAIN = userSettings["ENGINE_FOR_MAIN"]
     ENGINE_FOR_LEGEND = userSettings["ENGINE_FOR_LEGEND"]
     ENGINE_FOR_SP = userSettings["ENGINE_FOR_SP"]
-    BACKUP_DIRECTORY = userSettings["BACKUP_DIRECTORY"]
-    BACKUP_CONDITION = userSettings["BACKUP_CONDITION"]
+    IDENTIFIER_DRIVE_DIR_ID = userSettings["IDENTIFIER_DRIVE_DIR_ID"]
     
     
     NOX_INSTANCES = userSettings['NOX_INSTANCES']

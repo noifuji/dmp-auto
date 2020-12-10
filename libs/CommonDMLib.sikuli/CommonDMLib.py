@@ -128,7 +128,57 @@ def noxCallKillDMPApp():
     print command
     os.system(command)
 
+def getNextRef(sheets):
+    COMPUTERNAME = os.environ["COMPUTERNAME"]
+    #空いてるrefを取得する。
+    refs = sheets.read(EnvSettings.USER_SETTINGS_SHEET_ID, "DAILY_PROGRESS" + "!A2:D500", "ROWS")
+    incompletedAccount = None
+    #途中のアカウントをチェック
+    for ref in refs:
+        if len(ref) >= 4 and ref[2] == COMPUTERNAME and ref[3] == "working":
+            print "working account was found"
+            incompletedAccount = ref
+            
+    #新規のアカウントをチェック
+    if incompletedAccount == None:
+        for ref in refs:
+            if len(ref) == 2:
+                print "new account was found"
+                incompletedAccount = ref
+                break
+                
+    if incompletedAccount == None:
+        return None
+    
+    incompletedRefRow = incompletedAccount[0]
+    incompletedRef = incompletedAccount[1]
+    #空いてるrefのWORKERとSTATUSに書き込む
+    sheets.write(EnvSettings.USER_SETTINGS_SHEET_ID, 
+            "DAILY_PROGRESS" + "!C" + str(incompletedRefRow) + ":D" + str(incompletedRefRow), 
+            [[COMPUTERNAME, "working"]], "ROWS")
 
+    wait(3)
+    updatedRef = sheets.read(EnvSettings.USER_SETTINGS_SHEET_ID, 
+            "DAILY_PROGRESS" + "!A" + incompletedRefRow + ":D" + incompletedRefRow, "ROWS")
+    
+    if updatedRef[0][2] == COMPUTERNAME and updatedRef[0][3] == "working":
+        return incompletedRef
+    else:
+        return None
+
+def completeDailyMissionRef(sheets, ref):
+    progressList = sheets.read(EnvSettings.USER_SETTINGS_SHEET_ID, "DAILY_PROGRESS" + "!A2:C500", "ROWS")
+    #指定のrefに対して、statusをcompletedにする
+    for progress in progressList:
+        if progress[1] == str(ref):
+            targetRow = progress[0]
+
+    if targetRow == None:
+        raise Exception("No working ref")
+    
+    sheets.write("1TtgkiErtcn3lrRZwdwzV94pUGiuDIAvXZs5eUDwmNSI", 
+            "DAILY_PROGRESS" + "!D" + str(targetRow) + ":D" + str(targetRow), 
+            [["completed"]], "ROWS")
 
 def backupDMPIdentifier(resource, ref):
     saveDirPath = EnvSettings.BACKUP_DIR_PATH
@@ -169,52 +219,18 @@ def backupDMPIdentifier(resource, ref):
         subprocess.call(restoreDirnameCmd)
         raise Exception("Timeout. Backup failed.")
 
-def backupDMPdata(resource, backupDirPath, backupDirName, ref):
-    saveDirPath = os.path.join(backupDirPath,backupDirName)
-    backupFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
-
-    if not os.path.exists(saveDirPath):
-        os.makedirs(saveDirPath)
-    else:
-        if os.path.exists(backupFilePath):
-            if os.path.getsize(backupFilePath) < 1000000:
-                os.remove(backupFilePath)
-            else:
-                return True
-        
-    cmd = [EnvSettings.NoxAdbPath, 'backup', '-f', backupFilePath, 'jp.co.takaratomy.duelmastersplays']
-
-    #バックアップの起動
-    subprocess.Popen(cmd, shell=True)
-    
-    #バックアップ開始をクリック
-    exists(resource.TITLE_FULLBACKUP, 60)
-    wait(5)
-    click(resource.BUTTON_DO_BACKUP)
-    #完了まで待機
-    if waitVanish(resource.TITLE_FULLBACKUP, 900):
-        return True
-    else:
-        if os.path.exists(backupFilePath):
-            os.remove(backupFilePath)
-        raise Exception("Timeout. Backup failed.")
-
-def loadRef(resources, ref):
+def loadRef(resources, ref, driveInstance):
     saveDirPath = EnvSettings.BACKUP_DIR_PATH
-    restoreFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
+    restoreFilename = 'dmps' + str(ref) + '.ab'
+    restoreFilePath = os.path.join(saveDirPath,restoreFilename)
 
     if os.path.exists(restoreFilePath) and os.path.getsize(restoreFilePath) < 5000:
         os.remove(restoreFilePath)
 
     if not os.path.exists(restoreFilePath):
-        RestartNox(resources, ref)
-        noxCallStartDMPApp()
-        exists(resources.BUTTON_TAKEOVER,180)
-        wait(5)
-        click(resources.BUTTON_HOME)
-        wait(5)
-        backupDMPIdentifier(resources, ref)
-        RestartNox(resources, "MAIN")
+        dlResult = driveInstance.downloadIdentifierFile(restoreFilename, EnvSettings.IDENTIFIER_DRIVE_DIR_ID, EnvSettings.BACKUP_DIR_PATH)
+        if not dlResult:
+            raise Exception("Ref Number " + ref + " doesn't exist.")
             
     #フォルダ名変更 call
     changeDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1"]
@@ -237,31 +253,10 @@ def loadRef(resources, ref):
         print "dir restored"
         return True
     else:
-        if os.path.exists(backupFilePath):
-            os.remove(backupFilePath)
         restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
         subprocess.call(restoreDirnameCmd)
         raise Exception("Timeout. Backup failed.")
-    
 
-def rotateBackupDirs(backupDir):
-    if not os.path.exists(backupDir):
-        print "No backup dirs."
-        return
-
-    countDir = 0
-    dirnames = []
-    for name in os.listdir(backupDir):
-        if os.path.isdir(os.path.join(backupDir, name)):
-            countDir += 1
-            dirnames.append(name)
-
-    if countDir < 3:
-        print "The number of backup dirs doesn't excess the limit."
-        return
-
-    dirnames.sort()
-    shutil.rmtree(os.path.join(backupDir, dirnames[0]))
 
 #url:slackのwebhookのURL
 #userid:slackのmemberID
@@ -969,29 +964,56 @@ def closeMission(resource):
 
 def getTargetMissions(resource):
     print "getTargetMissions"
-    offsetX1 = 10
-    offsetY1 = 185
-    offsetY2 = 355
-    offsetY3 = 525
-    width = 1270
-    height = 140
     
     missionTitle = findAny(resource.TITLE_MISSION)
     if len(missionTitle) <= 0:
         return []
     
+    offsetRBX1 = 956
+    offsetRBY1 = 225
+    offsetRBY2 = 339
+    offsetRBY3 = 459
+    RBWidth = 180
+    RBHeight = 78
+    RBRegs = [
+            Region(missionTitle[0].getX() + offsetRBX1, missionTitle[0].getY() + offsetRBY1, RBWidth, RBHeight),
+            Region(missionTitle[0].getX() + offsetRBX1, missionTitle[0].getY() + offsetRBY2, RBWidth, RBHeight),
+            Region(missionTitle[0].getX() + offsetRBX1, missionTitle[0].getY() + offsetRBY3, RBWidth, RBHeight)
+            ]
+    isMissionCompleted = []
+    for region in RBRegs:
+        region.highlight(2)
+        detected = region.findAny(resource.BUTTON_DAILY_REWARD_RECIEVE)
+        if len(detected) > 0:
+            isMissionCompleted.append(True)
+        else:
+            isMissionCompleted.append(False)
+
+    offsetX1 = 325#10
+    offsetY1 = 193#185
+    offsetY2 = 310#355
+    offsetY3 = 425#525
+    width = 821
+    height = 53
     missionRegs = [
             Region(missionTitle[0].getX() + offsetX1, missionTitle[0].getY() + offsetY1, width, height),
             Region(missionTitle[0].getX() + offsetX1, missionTitle[0].getY() + offsetY2, width, height),
             Region(missionTitle[0].getX() + offsetX1, missionTitle[0].getY() + offsetY3, width, height)
             ]
+    missionsList = []
+    for num in range(3):
+        missionsList.append([ m for m in resource.MISSIONS if m["POSITION"] == (num+1) ])
 
+        
     targetMissions = []
-    for reg in missionRegs:
+    for reg, missions, isCompleted in zip(missionRegs, missionsList, isMissionCompleted):
+        if isCompleted:
+            continue
+        
         reg.highlight(0.5)
         scores = []
-        for image in [d.get("IMAGE") for d in resource.MISSIONS]:
-           detected = reg.findAny(image)
+        for ms in missions:
+           detected = reg.findAny(ms["IMAGE"])
            if len(detected) > 0:
                scores.append(detected[0].getScore())
                print detected[0].getScore()
@@ -1001,7 +1023,7 @@ def getTargetMissions(resource):
         max_value = max(scores)
         if max_value >= 0.7:
             max_index = scores.index(max_value)
-            targetMissions.append(resource.MISSIONS[max_index])
+            targetMissions.append(missions[max_index])
                 
     results = []
     #sort by mission group
@@ -1481,15 +1503,15 @@ def RestartApp(resource):
             click(resource.BUTTON_AGREE)
     
     exists(resource.BUTTON_TAKEOVER,180)
-    click(resource.BUTTON_MENU)
-    exists(resource.BUTTON_CLEAR_CACHE,180)
-    click(resource.BUTTON_CLEAR_CACHE)
-    exists(resource.BUTTON_OK,180)
-    click(resource.BUTTON_OK)
-    wait(0.5)
-    exists(resource.BUTTON_OK,180)
-    click(resource.BUTTON_OK)
-    wait(0.5)
+    #click(resource.BUTTON_MENU)
+    #exists(resource.BUTTON_CLEAR_CACHE,180)
+    #click(resource.BUTTON_CLEAR_CACHE)
+    #exists(resource.BUTTON_OK,180)
+   #click(resource.BUTTON_OK)
+    #wait(0.5)
+    #exists(resource.BUTTON_OK,180)
+    #click(resource.BUTTON_OK)
+    #wait(0.5)
     click(resource.BUTTON_TAKEOVER)
     skipDownloadFlag = False
     for num in range(180):

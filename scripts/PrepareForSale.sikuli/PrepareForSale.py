@@ -84,7 +84,7 @@ try:
         exists(NoxResources.TITLE_DECK, 60)
         image = captureImage(NoxResources.TITLE_DECK, 45, 1270, 650)
         print image.getFilename()
-        drive.uploadFile("DeckImage_" + deckCode + ".png", image.getFilename(), fId)
+        drive.uploadFile("DeckImage_" + deckCode + ".png", image.getFilename(), fId, "image/png")
         type(Key.ESC)
         waitVanish(NoxResources.TITLE_DECK, 60)
     
@@ -104,12 +104,12 @@ try:
         filterCardList([rarity], TARGET_DMPP[0] + TARGET_DMPP[1])
         if exists(NoxResources.SCROLL1,1) == None:
             image = captureImage(NoxResources.TITLE_CARD_LIST, 47, 1340, 620)
-            drive.uploadFile(rarity["NAME"] + ".png", image.getFilename(), fId)
+            drive.uploadFile(rarity["NAME"] + ".png", image.getFilename(), fId, "image/png")
         else:
             for i in range(len(TARGET_DMPP)):
                 filterCardList([rarity], TARGET_DMPP[i])
                 image = captureImage(NoxResources.TITLE_CARD_LIST, 47, 1340, 620)
-                drive.uploadFile(rarity["NAME"] + str(i+1) +  ".png", image.getFilename(), fId)
+                drive.uploadFile(rarity["NAME"] + str(i+1) +  ".png", image.getFilename(), fId, "image/png")
     
     cardCountResult = CommonDMLib.countAllCardsByRarity(NoxResources)
     CommonDMLib.updateCardCount(sheets, ref, cardCountResult["NAMES"], cardCountResult["CARDS"])
@@ -120,23 +120,23 @@ try:
     type(Key.ESC)
     waitVanish(NoxResources.TITLE_ITEM, 60)
     image = captureImage(NoxResources.BUTTON_BACK, -20, 1500, 860)
-    drive.uploadFile("Profile.png", image.getFilename(), fId)
+    drive.uploadFile("Profile.png", image.getFilename(), fId, "image/png")
     click(NoxResources.BUTTON_ITEM)
     exists(NoxResources.TITLE_ITEM, 60)
     image = captureImage(NoxResources.TITLE_ITEM, 0, 1380, 810)
-    drive.uploadFile("Packs.png", image.getFilename(), fId)
+    drive.uploadFile("Packs.png", image.getFilename(), fId, "image/png")
     if len(findAny(Pattern("1605239996094.png").similar(0.93))) > 0:
         for packLoop in range(10):
             CommonDMLib.dragDropAtSpeed(Pattern("1605239781030.png").targetOffset(3,715), Pattern("1605239781030.png").targetOffset(1,233), 1.5)
             image = captureImage(NoxResources.TITLE_ITEM, 0, 1380, 810)
-            drive.uploadFile("Packs" + str(packLoop + 2) + ".png", image.getFilename(), fId)
+            drive.uploadFile("Packs" + str(packLoop + 2) + ".png", image.getFilename(), fId, "image/png")
             if len(findAny(Pattern("1605239930745.png").similar(0.90))) > 0:
                 break
     
     click(NoxResources.BUTTON_OTHER)
     exists(NoxResources.TITLE_ITEM, 60)
     image = captureImage(NoxResources.TITLE_ITEM, 0, 1380, 810)
-    drive.uploadFile("Others.png", image.getFilename(), fId)
+    drive.uploadFile("Others.png", image.getFilename(), fId, "image/png")
 except:
     e = sys.exc_info()
     for mes in e:

@@ -24,6 +24,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Arrays;
+import java.io.FileOutputStream;
 
 public class DriveApis {
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -51,16 +52,16 @@ public class DriveApis {
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
   }
 	
-  public String uploadFile(String filename, String path, String parentFolderId) throws IOException {
+  public String uploadFile(String filename, String path, String parentFolderId, String mimeType) throws IOException {
     File fileMetadata = new File();
     fileMetadata.setName(filename);
     fileMetadata.setParents(Collections.singletonList(parentFolderId));
     java.io.File filePath = new java.io.File(path);
-    FileContent mediaContent = new FileContent("image/png", filePath);
+    FileContent mediaContent = new FileContent(mimeType, filePath);
     File file = service.files().create(fileMetadata, mediaContent)
               .setFields("id")
               .execute();
-  	return file.getId();
+    return file.getId();
   }
 	
   public String createFolder(String foldername, String parentFolderId) throws IOException {
@@ -72,6 +73,36 @@ public class DriveApis {
     File file = service.files().create(fileMetadata)
               .setFields("id")
               .execute();
-  	return file.getId();
+    return file.getId();
+  }
+	
+  public boolean downloadIdentifierFile(String filename, String driveDirId , String localSaveDirname) throws IOException {
+    String pageToken = null;
+    FileList result = service.files().list()
+                    .setQ("name = '" + filename + "' and '" + driveDirId + "' in parents")
+                    .setSpaces("drive")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setPageToken(pageToken)
+                    .execute();
+    if (result.getFiles().size() != 1) {
+      return false;
+    }
+  	
+    String fileId = "";
+    for (File file : result.getFiles()) {
+      System.out.printf("Found file: %s (%s)\n", file.getName(), file.getId());
+      fileId = file.getId();
+    }
+  	
+    FileOutputStream fos = new FileOutputStream(localSaveDirname + "/" + filename);
+    service.files().get(fileId).executeMediaAndDownloadTo(fos);
+  	
+    fos.flush();
+    fos.close();
+  	
+  	return true;
   }
 }
+
+
+
