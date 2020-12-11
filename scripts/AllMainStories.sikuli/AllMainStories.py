@@ -9,6 +9,7 @@ sys.path.append(EnvSettings.RES_DIR_PATH)
 import GameLib
 import CommonDMLib
 from spreadsheetapis import SpreadSheetApis
+from driveapis import DriveApis
 
 ###################Settings######################
 NORMAL_LAST_EPISODE = 4
@@ -68,6 +69,7 @@ elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
             if status["REF"] == str(instance) and status["MAIN"] == "incomplete":
                 temp.append(instance)
     instances = temp
+    drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
@@ -83,7 +85,7 @@ while instanceIndex < len(instances):
         CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(instances[instanceIndex])+"]"+'launching...', appname)
         if EnvSettings.ENGINE_FOR_MAIN == "NOX":
             CommonDMLib.RestartNox(resources, "MAIN")
-            CommonDMLib.loadRef(NoxResources, instances[instanceIndex])
+            CommonDMLib.loadRef(NoxResources, instances[instanceIndex], drive)
         CommonDMLib.RestartApp(resources)
         CommonDMLib.openMainStory(resources)
         
