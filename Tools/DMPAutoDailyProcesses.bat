@@ -48,13 +48,6 @@ if %ERRORLEVEL%==50 (
 )
 
 
-@REM レジェンド周回
-java -jar sikulixide-2.0.4.jar -r .\scripts\LegendBattleBasic.sikuli
-if %ERRORLEVEL%==50 (
- start .\Tools\auto_update.bat .\Tools\%~n0%~x0
- exit
-)
-
 @REM デイリーミッション
 java -jar sikulixide-2.0.4.jar -r .\scripts\NoxDailyMission.sikuli
 if %ERRORLEVEL%==50 (
@@ -64,6 +57,13 @@ if %ERRORLEVEL%==50 (
 
 @REM リセマラ用メインストーリー周回
 java -jar sikulixide-2.0.4.jar -r .\scripts\AllMainStories.sikuli -- reset
+if %ERRORLEVEL%==50 (
+ start .\Tools\auto_update.bat .\Tools\%~n0%~x0
+ exit
+)
+
+@REM レジェンド周回
+java -jar sikulixide-2.0.4.jar -r .\scripts\LegendBattleBasic.sikuli
 if %ERRORLEVEL%==50 (
  start .\Tools\auto_update.bat .\Tools\%~n0%~x0
  exit

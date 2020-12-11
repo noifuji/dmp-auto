@@ -10,9 +10,10 @@ import CommonDMLib
 import AndAppResources
 import NoxResources
 from spreadsheetapis import SpreadSheetApis
+from driveapis import DriveApis
 
 #####Settings####
-LOOP_LEVEL = 2
+LOOP_LEVEL = 3
 #####Settings####
 
 mentionUser = EnvSettings.mentionUser
@@ -47,6 +48,7 @@ elif EnvSettings.ENGINE_FOR_LEGEND == "NOX":
             if status["REF"] == str(instance) and status["LEGEND"] == "incomplete":
                 temp.append(instance)
     instances = temp
+    drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 #Pre-processing End
 
 
@@ -61,7 +63,8 @@ instanceIndex = 0
 while instanceIndex < len(instances):
     try:
         if EnvSettings.ENGINE_FOR_LEGEND == "NOX":
-            CommonDMLib.RestartNox(resources, instances[instanceIndex])
+            CommonDMLib.RestartNox(resources, "MAIN")
+            CommonDMLib.loadRef(NoxResources, instances[instanceIndex], drive)
         CommonDMLib.RestartApp(resources)
         click(resources.ICON_EXTRA)
         wait(3)
@@ -74,8 +77,13 @@ while instanceIndex < len(instances):
                 for skipTutorialLoop in range(10):
                     click(resources.BUTTON_BACK2)
                     wait(0.2)
-            if len(findAny(resources.TITLE_LEGEND_STAGE3)) > 0 and LOOP_LEVEL >= 3:
+            if len(findAny(resources.TITLE_LEGEND_STAGE4)) > 0 and LOOP_LEVEL >= 4:
+                level = 4
+                strategy = 103
+                click(resources.TITLE_LEGEND_STAGE4)
+            elif len(findAny(resources.TITLE_LEGEND_STAGE3)) > 0 and LOOP_LEVEL >= 3:
                 level = 3
+                strategy = 103
                 click(resources.TITLE_LEGEND_STAGE3)
             elif len(findAny(resources.TITLE_LEGEND_STAGE2)) > 0  and LOOP_LEVEL >= 2:
                 level = 2
@@ -109,7 +117,7 @@ while instanceIndex < len(instances):
         click(resources.BUTTON_LARGE_BATTLE_START)
         #バトルループ
         for battle_loop in range(200):
-            if total_duel_count % 10 == 0:
+            if total_duel_count % 5 == 0:
                 CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']win/total = ' + str(win_count) + "/" + str(total_duel_count), appname)
             #バトル開始まで待機
             if CommonDMLib.waitStartingGame(resources) == -1:
@@ -117,9 +125,10 @@ while instanceIndex < len(instances):
                 continue
             wait(10)
             # ゲームループ
-            GameLib.gameLoop(resources, strategy, appname)
+            gameResult = GameLib.gameLoop(resources, strategy, appname)
             # ゲームループエンド
-            total_duel_count+=1
+            if not gameResult == "retire":
+                total_duel_count+=1
             breakBattleLoopFlag = False
             winFlag = False
             for battleResultLoop in range(200):
