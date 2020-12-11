@@ -41,7 +41,7 @@ def finishMissions(instance, statisticsData, sheets):
     CommonDMLib.getPresent(NoxResources)
     CommonDMLib.getMissionRewards(NoxResources)
     res = CommonDMLib.scanAccountInfo(NoxResources)
-    CommonDMLib.updateAccountInfo(sheets, instance, res[0], res[1], res[2], res[3],res[4], res[5])
+    CommonDMLib.updateAccountInfo(sheets, instance, res[0], res[1], res[2], res[3],res[4])
     CommonDMLib.completeDailyMissionRef(sheets, instance)
     #CommonDMLib.updateCompletedInstanceJson(instance)
     statisticsData[CommonDMLib.STATISTICS_ENDTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")

@@ -116,7 +116,7 @@ try:
     type(Key.ESC)
     exists(NoxResources.ICON_SOLO_PLAY, 60)
     res = CommonDMLib.scanAccountInfo(NoxResources)
-    CommonDMLib.updateAccountInfo(sheets, ref, res[0], res[1], res[2], res[3],res[4], res[5])
+    CommonDMLib.updateAccountInfo(sheets, ref, res[0], res[1], res[2], res[3],res[4])
     type(Key.ESC)
     waitVanish(NoxResources.TITLE_ITEM, 60)
     image = captureImage(NoxResources.BUTTON_BACK, -20, 1500, 860)

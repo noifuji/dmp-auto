@@ -102,7 +102,7 @@ while instanceIndex < len(instances):
                     CommonDMLib.getPresent(NoxResources)
                     CommonDMLib.getMissionRewards(NoxResources)
                     res = CommonDMLib.scanAccountInfo(NoxResources)
-                    CommonDMLib.updateAccountInfo(sheets, instances[instanceIndex], res[0], res[1], res[2], res[3],res[4], res[5])
+                    CommonDMLib.updateAccountInfo(sheets, instances[instanceIndex], res[0], res[1], res[2], res[3],res[4])
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories were cleared!', appname)
                 CommonDMLib.completeQuestStatus(sheets, instances[instanceIndex], "MAIN")
                 instanceIndex += 1

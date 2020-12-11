@@ -413,11 +413,10 @@ def updatePlayerId(spreadsheet, ref, playerId, computername):
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
             EnvSettings.ACCOUNT_INFO_CREATEDATE_COL + str(rowIndex), [[datetime.now().strftime("%Y/%m/%d")]], "ROWS")#aaa
 
-def updateAccountInfo(spreadsheet, ref, lv, dmp, gold, packs, srPacks, bestPack):
+def updateAccountInfo(spreadsheet, ref, lv, dmp, gold, packs, specialPacks):
     row = [[lv, dmp, gold]]
     row[0].extend(packs)
-    row[0].extend(srPacks)
-    row[0].append(bestPack)
+    row[0].extend(specialPacks)
     
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
@@ -503,14 +502,17 @@ def scanAccountInfo(resource):
             {"NAME":"PACK5SR","IMAGE":resource.TITLE_PACK5SR},
             {"NAME":"PACK6","IMAGE":resource.TITLE_PACK6},
             {"NAME":"PACK6SR","IMAGE":resource.TITLE_PACK6SR},
-            {"NAME":"BEST","IMAGE":resource.TICKET_BEST}]
+            {"NAME":"BEST","IMAGE":resource.TICKET_BEST},
+            {"NAME":"PACK7","IMAGE":resource.TITLE_PACK7},
+            {"NAME":"PACK7SR","IMAGE":resource.TITLE_PACK7SR},
+            {"NAME":"BUILDER","IMAGE":resource.TICKET_BUILDER},]
 
     dmp = 0
     gold = 0
     tempPacks = {}
     lv = ""
 
-    OFFSET_X = 78
+    OFFSET_X = 80
     OFFSET_Y = 96
     WIDTH_INIT = 60
     HEIGHT = 27
@@ -561,11 +563,15 @@ def scanAccountInfo(resource):
 
     packs = [tempPacks["PACK1"],tempPacks["PACK2"],tempPacks["PACK3"],
             tempPacks["PACK4"],tempPacks["PACK5"],tempPacks["PACK6"],
-            0,0,0]
+            tempPacks["PACK7"],0,0]
 
-    srPacks = [int(tempPacks["PACK5SR"]), int(tempPacks["PACK6SR"])]
-    bestPack = tempPacks["BEST"]
-    return [lv, dmp, gold, packs, srPacks, bestPack]
+    specialPacks = [
+            int(tempPacks["PACK5SR"]), 
+            int(tempPacks["PACK6SR"]), 
+            int(tempPacks["BEST"]),
+            int(tempPacks["PACK7SR"]),
+            int(tempPacks["BUILDER"])]
+    return [lv, dmp, gold, packs, specialPacks]
 
 def downloadFile(url, dest):
     print "downloadFile"
