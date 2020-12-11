@@ -59,9 +59,17 @@ statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_
 
 instanceIndex = 0
 retryCount = 0
+endFlag = False
 while True:
-    workingRef = CommonDMLib.getNextRef(sheets)
-    if workingRef == None:
+    for retryCountGetNextRef in range(10):
+        workingRef = CommonDMLib.getNextRef(sheets)
+        if workingRef != None:
+            break
+        if retryCountGetNextRef == 9:
+            endFlag = True
+            break
+    if endFlag:
+        CommonDMLib.sendMessagetoSlack(mentionUser,'All daily missions were completed.', appname)
         break
     
     if statisticsData[CommonDMLib.STATISTICS_REF] != str(workingRef):
