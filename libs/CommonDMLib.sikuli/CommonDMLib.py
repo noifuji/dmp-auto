@@ -989,11 +989,11 @@ def getTargetMissions(resource):
     isMissionCompleted = []
     for region in RBRegs:
         region.highlight(2)
-        detected = region.findAny(resource.BUTTON_DAILY_REWARD_RECIEVE)
+        detected = region.findAny(resource.BUTTON_CHANGE_MISSION)
         if len(detected) > 0:
-            isMissionCompleted.append(True)
-        else:
             isMissionCompleted.append(False)
+        else:
+            isMissionCompleted.append(True)
 
     offsetX1 = 325#10
     offsetY1 = 193#185
@@ -1008,7 +1008,8 @@ def getTargetMissions(resource):
             ]
     missionsList = []
     for num in range(3):
-        missionsList.append([ m for m in resource.MISSIONS if m["POSITION"] == (num+1) ])
+        #missionsList.append([ m for m in resource.MISSIONS if m["POSITION"] == (num+1) ])
+        missionsList.append([ m for m in resource.MISSIONS ])
 
         
     targetMissions = []
