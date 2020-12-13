@@ -7,7 +7,7 @@ import NoxResources
 from driveapis import DriveApis
 
 drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
-#ref = input()
+ref = input()
 refs = [
         1104,
 1040,
@@ -113,14 +113,14 @@ refs = [
 1166,
 1167]
 
-for ref in  refs:
-    CommonDMLib.loadRef(NoxResources, ref, drive)
-    CommonDMLib.RestartApp(NoxResources)
-    CommonDMLib.openMission(NoxResources)
-    missions = CommonDMLib.getTargetMissions(NoxResources)
-    str = ""
-    for m in missions:
-        str = str + m["NAME"] + ","
-    CommonDMLib.uploadScreenShotToSlack(EnvSettings.mentionUser, str, "TEST")
-    wait(1)
-    CommonDMLib.noxCallKillDMPApp()
+#for ref in  refs:
+CommonDMLib.loadRef(NoxResources, ref, drive)
+CommonDMLib.RestartApp(NoxResources)
+CommonDMLib.openMission(NoxResources)
+missions = CommonDMLib.getTargetMissions(NoxResources)
+str = ""
+for m in missions:
+    str = str + m["NAME"] + ","
+CommonDMLib.uploadScreenShotToSlack(EnvSettings.mentionUser, str, "TEST")
+wait(1)
+CommonDMLib.noxCallKillDMPApp()

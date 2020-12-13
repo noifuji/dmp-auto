@@ -1264,8 +1264,8 @@ def getPresent(resource):
 
 #only for Nox
 def getMissionRewards(resource):
-    if len(findAny(resource.ICON_MISSION_WITH_SIGN)) > 0:
-        click(resource.ICON_MISSION_WITH_SIGN) 
+    if len(findAny(resource.ICON_MISSION)) > 0:
+        click(resource.ICON_MISSION) 
         exists(resource.TITLE_MISSION, 60)
         if len(findAny(resource.BUTTON_MISSION_WITH_SIGN)) > 0:
             if len(findAny(resource.BUTTON_DAILY_REWARD_RECEIVE_ALL)) > 0:
