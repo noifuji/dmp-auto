@@ -30,7 +30,7 @@ def filterCardList(rarities, dmpps):
         click(r["IMAGE"])
     wait(1)
     wheel(Pattern("1599973746387.png").targetOffset(227,-209), Button.WHEEL_DOWN, 10)
-    wait(2)
+    wait(5)
     for dmpp in dmpps:
         click(dmpp)
     click("1596590612922.png")
@@ -42,53 +42,69 @@ drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 try:
     ref = input("Enter Ref")
-    deckCodeRaw = input("Enter Deck Code")
-    if deckCodeRaw == "":
-        deckCodes = []
+    allDivDeckCodeRaw = input("Enter All Division Deck Code(ex>XXXXX,YYYYY,ZZZZZ)")
+    newDivDeckCodeRaw = input("Enter New Division Deck Code(ex>XXXXX,YYYYY,ZZZZZ)")
+    if allDivDeckCodeRaw == "":
+        allDivDeckCodes = []
     else:
-        deckCodes = deckCodeRaw.split(",")
+        allDivDeckCodes = allDivDeckCodeRaw.split(",")
+
+    if newDivDeckCodeRaw == "":
+        newDivDeckCodes = []
+    else:
+        newDivDeckCodes = newDivDeckCodeRaw.split(",")
     
-    
-    CommonDMLib.RestartNox(NoxResources, ref)
+    if not CommonDMLib.isMainOn(NoxResources):
+        print "MAIN is off"
+        CommonDMLib.RestartNox(NoxResources, "MAIN")
+    CommonDMLib.loadRef(NoxResources, ref, drive)
     CommonDMLib.RestartApp(NoxResources)
-    #全てのデッキを削除
-    for openCardListLoop in range(100):
-        if len(findAny(NoxResources.ICON_CARD)) > 0:
-            try:
-                click(NoxResources.ICON_CARD)
-            except:
-                print "failed to click"
-            wait(1)
-        if len(findAny("1596780592222.png")) > 0:
-            try:
-                click("1596780592222.png")
-            except:
-                print "failed to click"
-            wait(1)
-        if len(findAny("1596780703269.png")) > 0:
-            break
-                
-    for deleteDeck in range(30):
-        if exists("1597553140601.png", 1) != None:
-            break
-        click("1596780671063.png")
-        wait(2)
-        click("1596780684705.png")
-        wait(1)
-    exists("1596780703269.png",60)
-    fId = drive.createFolder(str(ref), "1ApCg9taRAEmK7QH93bxmoIzMbRaC_r7m")
-    for deckCode in deckCodes:
-        #対象のデッキを作成する。
-        CommonDMLib.addNewDeckByCode(NoxResources, deckCode)
-        click("1603869466863-1.png")
-        exists(NoxResources.TITLE_DECK, 60)
-        image = captureImage(NoxResources.TITLE_DECK, 45, 1270, 650)
-        print image.getFilename()
-        drive.uploadFile("DeckImage_" + deckCode + ".png", image.getFilename(), fId, "image/png")
+
+    for deckCodes, btnDiv in zip([allDivDeckCodes, newDivDeckCodes],[NoxResources.BUTTON_ORGANIZE_ALLDIV_DECK, NoxResources.BUTTON_ORGANIZE_NEWDIV_DECK]):
+        #全てのデッキを削除
+        for openCardListLoop in range(100):
+            if len(findAny(NoxResources.ICON_CARD)) > 0:
+                try:
+                    click(NoxResources.ICON_CARD)
+                except:
+                    print "failed to click"
+                wait(1)
+            if len(findAny(NoxResources.BUTTON_ORGANIZE_DECK)) > 0:
+                try:
+                    click(NoxResources.BUTTON_ORGANIZE_DECK)
+                except:
+                    print "failed to click"
+                wait(1)
+            if len(findAny(btnDiv)) > 0:
+                try:
+                    click(btnDiv)
+                except:
+                    print "failed to click"
+                wait(1)
+            if len(findAny("1596780703269.png")) > 0:
+                break
+                    
+        for deleteDeck in range(30):
+            if exists("1597553140601.png", 1) != None:
+                break
+            click("1596780671063.png")
+            wait(2)
+            click("1596780684705.png")
+            wait(5)
+        exists("1596780703269.png",60)
+        fId = drive.createFolder(str(ref), "1ApCg9taRAEmK7QH93bxmoIzMbRaC_r7m")
+        for deckCode in deckCodes:
+            #対象のデッキを作成する。
+            CommonDMLib.addNewDeckByCode(NoxResources, deckCode)
+            click("1603869466863-1.png")
+            exists(NoxResources.TITLE_DECK, 60)
+            image = captureImage(NoxResources.TITLE_DECK, 45, 1270, 650)
+            print image.getFilename()
+            drive.uploadFile("DeckImage_" + deckCode + ".png", image.getFilename(), fId, "image/png")
+            type(Key.ESC)
+            waitVanish(NoxResources.TITLE_DECK, 60)
+        
         type(Key.ESC)
-        waitVanish(NoxResources.TITLE_DECK, 60)
-    
-    type(Key.ESC)
     exists(NoxResources.ICON_SOLO_PLAY, 60)
     click(Pattern("1596593310453.png").targetOffset(-2,-214))
     if exists("1596593154431.png", 120) != None:
@@ -99,7 +115,7 @@ try:
     TARGET_RARITY = [{"NAME":"VR", "IMAGE":NoxResources.BUTTON_RARITY_VERYRARE}, 
             {"NAME":"SR", "IMAGE":NoxResources.BUTTON_RARITY_SUPERRARE}]
     TARGET_DMPP = [[NoxResources.BUTTON_DMPP01, NoxResources.BUTTON_DMPP02,NoxResources.BUTTON_DMPP03], 
-            [NoxResources.BUTTON_DMPP04, NoxResources.BUTTON_DMPP05,NoxResources.BUTTON_DMPP06]]
+            [NoxResources.BUTTON_DMPP04, NoxResources.BUTTON_DMPP05,NoxResources.BUTTON_DMPP06,NoxResources.BUTTON_DMPP07]]
     for rarity in TARGET_RARITY:
         filterCardList([rarity], TARGET_DMPP[0] + TARGET_DMPP[1])
         if exists(NoxResources.SCROLL1,1) == None:
@@ -110,6 +126,15 @@ try:
                 filterCardList([rarity], TARGET_DMPP[i])
                 image = captureImage(NoxResources.TITLE_CARD_LIST, 47, 1340, 620)
                 drive.uploadFile(rarity["NAME"] + str(i+1) +  ".png", image.getFilename(), fId, "image/png")
+    #PRIZE
+    TARGET_RARITY = [[{"NAME":"VR", "IMAGE":NoxResources.BUTTON_RARITY_VERYRARE}], 
+            [{"NAME":"C", "IMAGE":NoxResources.BUTTON_RARITY_COMMON},
+                {"NAME":"UC", "IMAGE":NoxResources.BUTTON_RARITY_UNCOMMON},
+                {"NAME":"R", "IMAGE":NoxResources.BUTTON_RARITY_RARE}]]
+    for i in range(len(TARGET_RARITY)):
+        filterCardList(TARGET_RARITY[i], ["1607823678517.png"])
+        image = captureImage(NoxResources.TITLE_CARD_LIST, 47, 1340, 620)
+        drive.uploadFile("PRIZE" + str(i) + ".png", image.getFilename(), fId, "image/png")
     
     cardCountResult = CommonDMLib.countAllCardsByRarity(NoxResources)
     CommonDMLib.updateCardCount(sheets, ref, cardCountResult["NAMES"], cardCountResult["CARDS"])
