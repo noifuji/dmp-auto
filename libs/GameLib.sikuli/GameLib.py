@@ -1211,7 +1211,7 @@ def irregularLoop(resources, appname):
                 #game_loopを終了する。
                 click(resources.BUTTON_RETRY)
                 
-        if appname not in ["LEGEND", "DAILY"]:
+        if appname not in ["DAILY"]:
             #デモニックバイス
             if len(findAny(resources.TITLE_HAND1)) > 0:
                 print 'Player need to select his hands.'
