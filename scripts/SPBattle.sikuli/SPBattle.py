@@ -23,7 +23,7 @@ Settings.MoveMouseDelay = 0.1
 instances = []
 resources = None
 targetRewardFlag = False
-strategy = 101
+strategy = 2
 
 def waitStartingGame(resource):
     print 'waitStartingGame'
