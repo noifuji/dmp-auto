@@ -12,6 +12,7 @@ import AndAppResources
 import NoxResources
 import EnvSettings
 from spreadsheetapis import SpreadSheetApis
+from driveapis import DriveApis
 
 mentionUser = EnvSettings.mentionUser
 appname = 'SP'
@@ -84,6 +85,7 @@ elif EnvSettings.ENGINE_FOR_SP == "NOX":
             if status["REF"] == str(instance) and status["SP"] == "incomplete":
                 temp.append(instance)
     instances = temp
+    drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 #Pre-processing End
 
 instanceIndex = 0
@@ -91,7 +93,8 @@ while instanceIndex < len(instances):
     try:
         CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']launching instance...', appname)
         if EnvSettings.ENGINE_FOR_SP == "NOX":
-            CommonDMLib.RestartNox(resources, instances[instanceIndex])
+            CommonDMLib.RestartNox(resources, "MAIN")
+            CommonDMLib.loadRef(NoxResources, instances[instanceIndex], drive)
         CommonDMLib.RestartApp(resources)
         wait(3)
         if len(findAny(resources.BUTTON_SP_BATTLE)) > 0:
