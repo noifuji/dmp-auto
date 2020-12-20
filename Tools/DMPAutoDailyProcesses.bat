@@ -41,6 +41,13 @@ set PIDFile=./data/pid.txt
 powershell "Get-WmiObject win32_process -filter processid=$pid | ForEach-Object{$_.parentprocessid;}" > %PIDFile%
 
 
+@REM SPバトル
+java -jar sikulixide-2.0.4.jar -r .\scripts\SPBattle.sikuli
+if %ERRORLEVEL%==50 (
+ start .\Tools\auto_update.bat .\Tools\%~n0%~x0
+ exit
+)
+
 @REM デイリーミッション
 java -jar sikulixide-2.0.4.jar -r .\scripts\NoxDailyMission.sikuli
 if %ERRORLEVEL%==50 (
@@ -48,12 +55,6 @@ if %ERRORLEVEL%==50 (
  exit
 )
 
-@REM SPバトル
-java -jar sikulixide-2.0.4.jar -r .\scripts\SPBattle.sikuli
-if %ERRORLEVEL%==50 (
- start .\Tools\auto_update.bat .\Tools\%~n0%~x0
- exit
-)
 
 @REM レジェンド周回
 java -jar sikulixide-2.0.4.jar -r .\scripts\LegendBattleBasic.sikuli
