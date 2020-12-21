@@ -128,57 +128,153 @@ def noxCallKillDMPApp():
     print command
     os.system(command)
 
-def getNextRef(sheets):
+#PROCESSNAME
+#DAILY, MAIN, LEGEND
+def getNextRef(sheets, processname):
     COMPUTERNAME = os.environ["COMPUTERNAME"]
-    #空いてるrefを取得する。
-    refs = sheets.read(EnvSettings.USER_SETTINGS_SHEET_ID, "DAILY_PROGRESS" + "!A2:D500", "ROWS")
-    incompletedAccount = None
-    #途中のアカウントをチェック
-    for ref in refs:
-        if len(ref) >= 4 and ref[2] == COMPUTERNAME and ref[3] == "working":
-            print "working account was found"
-            incompletedAccount = ref
-            
-    #新規のアカウントをチェック
-    if incompletedAccount == None:
-        for ref in refs:
-            if len(ref) == 2:
-                print "new account was found"
-                incompletedAccount = ref
-                break
-                
-    if incompletedAccount == None:
-        return None
     
-    incompletedRefRow = incompletedAccount[0]
-    incompletedRef = incompletedAccount[1]
+    col = ""
+    if processname == "DAILY":
+        col = "AL"
+    elif processname == "MAIN":
+        col = "AH"
+    elif processname == "LEGEND":
+        col = "AI"
+    progressRange = "raw!" + col + "3:" + col + "1000"
+
+    #在庫表のステータス変更設定とrawを取得する。
+    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1000","raw!C3:C1000", "raw!AG3:AG1000", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    refs = rawData[0] if not rawData[0] == None else []
+    ids = rawData[1] if not rawData[1] == None else []
+    pcnames = rawData[2] if not rawData[2] == None else []
+    status = rawData[3] if not rawData[3] == None else []
+    refInfo = []
+    for i in range(len(refs)):
+        tmp = {}
+        tmp["REF"] = refs[i][0]
+        tmp["ROW_NO"] = i + 3
+        if  i < len(ids) and len(ids[i]) > 0:
+            tmp["ID"] = ids[i][0]
+        else:
+            tmp["ID"] = ""
+            
+        if  i < len(pcnames) and len(pcnames[i]) > 0:
+            tmp["PC_NAME"] = pcnames[i][0]
+        else:
+            tmp["PC_NAME"] = ""
+            
+        if  i < len(status) and len(status[i]) > 0:
+            tmp["STATUS"] = status[i][0]
+        else:
+            tmp["STATUS"] = ""
+        refInfo.append(tmp)
+
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:E1000", "ROWS")
+    rawData = rawData if not rawData == None else []
+    availableRefs = []
+    for raw in rawData:
+        tmp = {}
+        if raw[1] == "sold":
+            continue
+        if processname == "DAILY":
+            if raw[2] == "" or raw[2] == "skip":
+                continue
+        elif processname == "MAIN":
+            if raw[3] == "" or raw[3] == "skip":
+                continue
+        elif processname == "LEGEND":
+            if raw[4] == "" or raw[4] == "skip":
+                continue
+        availableRefs.append(raw[0])
+
+    
+    candidates = []
+    for ref in refInfo:
+        if (ref["REF"] in availableRefs) and \
+                (not ref["ID"] == "") and \
+                (ref["PC_NAME"] == "" or ref["PC_NAME"] == COMPUTERNAME.decode('utf-8')) and \
+                (ref["STATUS"] == "" or ref["STATUS"] == u"incomplete"):
+            candidates.append(ref)
+
+    if len(candidates) == 0:
+        return None
+
+    print candidates
+
+    targetRef = None
+    for c in candidates:
+        if not c["PC_NAME"] == "":
+            targetRef = c
+            break
+    if targetRef == None:
+        targetRef = candidates[0]
+        
     #空いてるrefのWORKERとSTATUSに書き込む
-    sheets.write(EnvSettings.USER_SETTINGS_SHEET_ID, 
-            "DAILY_PROGRESS" + "!C" + str(incompletedRefRow) + ":D" + str(incompletedRefRow), 
-            [[COMPUTERNAME, "working"]], "ROWS")
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            "raw" + "!AG" + str(targetRef["ROW_NO"]), 
+            [[COMPUTERNAME]], "ROWS")
 
     wait(3)
-    updatedRef = sheets.read(EnvSettings.USER_SETTINGS_SHEET_ID, 
-            "DAILY_PROGRESS" + "!A" + incompletedRefRow + ":D" + incompletedRefRow, "ROWS")
+    updatedPcname = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            "raw" + "!AG" + str(targetRef["ROW_NO"]), "ROWS")
     
-    if updatedRef[0][2] == COMPUTERNAME and updatedRef[0][3] == "working":
-        return incompletedRef
+    if updatedPcname[0][0] == COMPUTERNAME:
+        return targetRef["REF"]
     else:
         return None
 
-def completeDailyMissionRef(sheets, ref):
-    progressList = sheets.read(EnvSettings.USER_SETTINGS_SHEET_ID, "DAILY_PROGRESS" + "!A2:C500", "ROWS")
-    #指定のrefに対して、statusをcompletedにする
-    for progress in progressList:
-        if progress[1] == str(ref):
-            targetRow = progress[0]
+def completeDailyMissionRef(sheets, ref, processname):
+    col = ""
+    if processname == "DAILY":
+        col = "AL"
+    elif processname == "MAIN":
+        col = "AH"
+    elif processname == "LEGEND":
+        col = "AI"
+    progressRange = "raw!" + col + "3:" + col + "1000"
 
-    if targetRow == None:
+    #在庫表のステータス変更設定とrawを取得する。
+    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1000","raw!C3:C1000", "raw!AG3:AG1000", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    refs = rawData[0] if not rawData[0] == None else []
+    ids = rawData[1] if not rawData[1] == None else []
+    pcnames = rawData[2] if not rawData[2] == None else []
+    status = rawData[3] if not rawData[3] == None else []
+    refInfo = []
+    for i in range(len(refs)):
+        tmp = {}
+        tmp["REF"] = refs[i][0]
+        tmp["ROW_NO"] = i + 3
+        if  i < len(ids) and len(ids[i]) > 0:
+            tmp["ID"] = ids[i][0]
+        else:
+            tmp["ID"] = ""
+            
+        if  i < len(pcnames) and len(pcnames[i]) > 0:
+            tmp["PC_NAME"] = pcnames[i][0]
+        else:
+            tmp["PC_NAME"] = ""
+            
+        if  i < len(status) and len(status[i]) > 0:
+            tmp["STATUS"] = status[i][0]
+        else:
+            tmp["STATUS"] = ""
+        refInfo.append(tmp)
+
+    targetRow = ""
+    for r in refInfo:
+        if r["REF"] == str(ref):
+            targetRow = r["ROW_NO"]
+            break
+    
+    if targetRow == "":
         raise Exception("No working ref")
     
-    sheets.write("1TtgkiErtcn3lrRZwdwzV94pUGiuDIAvXZs5eUDwmNSI", 
-            "DAILY_PROGRESS" + "!D" + str(targetRow) + ":D" + str(targetRow), 
-            [["completed"]], "ROWS")
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            "raw" + "!" + col + str(targetRow), 
+            [["complete"]], "ROWS")
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            "raw" + "!AG" + str(targetRow), 
+            [[""]], "ROWS")
 
 def backupDMPIdentifier(resource, ref):
     saveDirPath = EnvSettings.BACKUP_DIR_PATH
