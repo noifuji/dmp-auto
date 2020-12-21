@@ -10,6 +10,7 @@ import NoxDMLib
 import CommonDMLib
 import NoxResources
 from spreadsheetapis import SpreadSheetApis
+from driveapis import DriveApis
 
 ####################Settings####################
 appname = 'NoxSetupAccount'
@@ -25,13 +26,14 @@ tutorial = "tutorial.png"
 
 
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
+drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 CommonDMLib.downloadDeckCodes()
 
 for count in range(100):
     try:
-        ref = "setup"
-        username = ref
-        CommonDMLib.RestartNox(NoxResources,ref)
+        if not CommonDMLib.isMainOn(NoxResources):
+            print "MAIN is off"
+            CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.callRemoveDataBat()
     except:
         e = sys.exc_info()
@@ -95,7 +97,7 @@ for count in range(100):
                     except:
                         print "failed to click name"
                     wait(0.5)
-                    type(str(username))
+                    type("player")
                     try:
                         click(Pattern("1596591807133-1.png").targetOffset(-44,101))
                         click(OK)
@@ -187,7 +189,7 @@ for count in range(100):
                     
             wait(5)
             CommonDMLib.getPresent(NoxResources)
-            
+
             for openCardListLoop in range(100):
                 if len(findAny(NoxResources.ICON_CARD)) > 0:
                     try:
@@ -195,13 +197,19 @@ for count in range(100):
                     except:
                         print "failed to click"
                     wait(1)
-                if len(findAny("1596780592222.png")) > 0:
+                if len(findAny(NoxResources.BUTTON_ORGANIZE_DECK)) > 0:
                     try:
-                        click("1596780592222.png")
+                        click(NoxResources.BUTTON_ORGANIZE_DECK)
                     except:
                         print "failed to click"
                     wait(1)
-                if len(findAny("1596780703269.png")) > 0:
+                if len(findAny(NoxResources.BUTTON_ORGANIZE_ALLDIV_DECK)) > 0:
+                    try:
+                        click(NoxResources.BUTTON_ORGANIZE_ALLDIV_DECK)
+                    except:
+                        print "failed to click"
+                    wait(1)
+                if len(findAny("1596780703269-1.png")) > 0:
                     break
                         
             for deleteDeck in range(5):
@@ -212,12 +220,6 @@ for count in range(100):
                 click("1596780684705.png")
                 wait(1)
             exists("1596780703269.png",60)
-            
-            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_STSPELL"))
-            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_RED_BLACK"))
-            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_ST"))
-            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_LARGE_CREATURE"))
-            CommonDMLib.addNewDeckByCode(NoxResources, CommonDMLib.getDeckCode("DECKCODE_MAIN"))
             click("1597235437582.png")
             exists(NoxResources.ICON_SOLO_PLAY,60)
             click(NoxResources.ICON_OTHER)
@@ -259,8 +261,13 @@ for count in range(100):
             click("1603541423678.png")
             wait(1)
             CommonDMLib.uploadScreenShotToSlack(mentionUser, str(ref), appname)
-            CommonDMLib.updatePlayerId(sheets, ref, playerId, os.environ["COMPUTERNAME"])
-            CommonDMLib.renameRunningNoxInstance(NoxResources, str(ref))
+            CommonDMLib.updatePlayerId(sheets, str(ref), playerId, os.environ["COMPUTERNAME"])
+            CommonDMLib.backupDMPIdentifier(NoxResources, str(ref))
+            identifierFilename = "dmps" + str(ref) + ".ab"
+            drive.uploadFile(identifierFilename, 
+                    os.path.join(EnvSettings.BACKUP_DIR_PATH,identifierFilename),
+                    EnvSettings.IDENTIFIER_DRIVE_DIR_ID, 
+                    "application/octet-stream")
             CommonDMLib.sendMessagetoSlack(mentionUser,'Setup has finished.', appname)
             break
         except:

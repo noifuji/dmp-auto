@@ -199,8 +199,6 @@ def getNextRef(sheets, processname):
     if len(candidates) == 0:
         return None
 
-    print candidates
-
     targetRef = None
     for c in candidates:
         if not c["PC_NAME"] == "":
@@ -502,9 +500,6 @@ def updatePlayerId(spreadsheet, ref, playerId, computername):
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
             EnvSettings.ACCOUNT_INFO_PLAYERID_COL + str(rowIndex), [[playerId]], "ROWS")
-    spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
-            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
-            EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(rowIndex), [[computername]], "ROWS")
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
             EnvSettings.ACCOUNT_INFO_CREATEDATE_COL + str(rowIndex), [[datetime.now().strftime("%Y/%m/%d")]], "ROWS")#aaa
