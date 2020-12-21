@@ -65,7 +65,7 @@ def finishMissions(instance, statisticsData, sheets):
     exists(NoxResources.ICON_SOLO_PLAY, 60)
     res = CommonDMLib.scanAccountInfo(NoxResources)
     CommonDMLib.updateAccountInfo(sheets, instance, res[0], res[1], res[2], res[3],res[4])
-    CommonDMLib.completeDailyMissionRef(sheets, instance, appname)
+    CommonDMLib.completeRef(sheets, instance, appname)
     #CommonDMLib.updateCompletedInstanceJson(instance)
     statisticsData[CommonDMLib.STATISTICS_ENDTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     CommonDMLib.uploadStatistics(sheets, "DailyMission" ,statisticsData)

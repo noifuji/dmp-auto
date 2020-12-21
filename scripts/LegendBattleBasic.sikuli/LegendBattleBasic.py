@@ -22,7 +22,6 @@ Settings.MoveMouseDelay = 0.1
 Settings.DelayBeforeDrag = 0.5
 total_duel_count = 0
 win_count =0
-instances = []
 resources = None
 
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
@@ -35,19 +34,10 @@ CommonDMLib.downloadDeckCodes()
 if EnvSettings.ENGINE_FOR_LEGEND == "ANDAPP":
     resources = AndAppResources
     CommonDMLib.exitNox(resources)
-    instances = [0]
 elif EnvSettings.ENGINE_FOR_LEGEND == "NOX":
     resources = NoxResources
     App(EnvSettings.AppPath).close()
     App(EnvSettings.AndAppPath).close()
-    instances = EnvSettings.NOX_INSTANCES
-    statuses = CommonDMLib.downloadQuestStatus(sheets)
-    temp = []
-    for instance in instances:
-        for status in statuses:
-            if status["REF"] == str(instance) and status["LEGEND"] == "incomplete":
-                temp.append(instance)
-    instances = temp
     drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 #Pre-processing End
 
@@ -59,12 +49,25 @@ exitFlag = False
 entire_loop_flag = True
 level = 0
 strategy = 100
-instanceIndex = 0
-while instanceIndex < len(instances):
+endFlag = False
+while True:
     try:
+        workingRef = "0"
         if EnvSettings.ENGINE_FOR_LEGEND == "NOX":
+            workingRef = None
+            #Load Ref No
+            for retryCountGetNextRef in range(10):
+                workingRef = CommonDMLib.getNextRef(sheets, appname)
+                if workingRef != None:
+                    break
+                if retryCountGetNextRef == 9:
+                    endFlag = True
+                    break
+            if endFlag:
+                CommonDMLib.sendMessagetoSlack(mentionUser,'All Main Stories were completed.', appname)
+                break
             CommonDMLib.RestartNox(resources, "MAIN")
-            CommonDMLib.loadRef(NoxResources, instances[instanceIndex], drive)
+            CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(resources)
         click(resources.ICON_EXTRA)
         wait(3)
@@ -118,7 +121,7 @@ while instanceIndex < len(instances):
         #バトルループ
         for battle_loop in range(200):
             if total_duel_count % 5 == 0:
-                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']win/total = ' + str(win_count) + "/" + str(total_duel_count), appname)
+                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']win/total = ' + str(win_count) + "/" + str(total_duel_count), appname)
             #バトル開始まで待機
             if CommonDMLib.waitStartingGame(resources) == -1:
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
@@ -153,12 +156,11 @@ while instanceIndex < len(instances):
                 targetRewardFlag = True
                 
             if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
-                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A target reward was acquired.', appname)
-                CommonDMLib.completeQuestStatus(sheets, instances[instanceIndex], "LEGEND")
+                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A target reward was acquired.', appname)
+                CommonDMLib.completeRef(sheets, workingRef, "MAIN")
                 targetRewardFlag = False
                 total_duel_count = 0
                 win_count =0
-                instanceIndex += 1
                 break
 
             if CommonDMLib.isNewVersionAvailable():
@@ -181,7 +183,7 @@ while instanceIndex < len(instances):
         #バトルループエンド
     except SystemExit as e:
         if e == 50:
-            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
+            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
     except:
         e = sys.exc_info()

@@ -223,7 +223,7 @@ def getNextRef(sheets, processname):
     else:
         return None
 
-def completeDailyMissionRef(sheets, ref, processname):
+def completeRef(sheets, ref, processname):
     col = ""
     if processname == "DAILY":
         col = "AL"

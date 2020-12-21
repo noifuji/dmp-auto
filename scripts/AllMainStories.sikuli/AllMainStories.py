@@ -25,18 +25,15 @@ Settings.DelayBeforeDrag = 0.5
 retryCount = 0
 exceptionCout = 0
 statisticsData = {"EPISODE":0,"STAGE":0}
-instances = []
 resources = None
 
 if len(sys.argv) >= 2 and sys.argv[1] == "reset":
     print "reset mode is selected."
     LAST_EPISODE = RESET_LAST_EPISODE
     LAST_STAGE = RESET_LAST_STAGE
-    instances = EnvSettings.NOX_RESET_INSTANCES
 else:
     LAST_EPISODE = NORMAL_LAST_EPISODE
     LAST_STAGE = NORMAL_LAST_STAGE
-    instances = EnvSettings.NOX_INSTANCES
 
 def isClearedStage(resources):
     res = False
@@ -56,19 +53,11 @@ if EnvSettings.ENGINE_FOR_MAIN == "ANDAPP":
     import NoxResources
     resources = AndAppResources
     CommonDMLib.exitNox(NoxResources)
-    instances = [0]
 elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
     import NoxResources
     resources = NoxResources
     App(EnvSettings.AppPath).close()
     App(EnvSettings.AndAppPath).close()
-    statuses = CommonDMLib.downloadQuestStatus(sheets)
-    temp = []
-    for instance in instances:
-        for status in statuses:
-            if status["REF"] == str(instance) and status["MAIN"] == "incomplete":
-                temp.append(instance)
-    instances = temp
     drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 
 if CommonDMLib.isNewVersionAvailable():
@@ -78,14 +67,27 @@ if CommonDMLib.isNewVersionAvailable():
 
 
 #全体ループ
-instanceIndex = 0
-while instanceIndex < len(instances):
+endFlag = False
+while True:
     try:
         CommonDMLib.downloadDeckCodes()
-        CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(instances[instanceIndex])+"]"+'launching...', appname)
+        workingRef = "0"
         if EnvSettings.ENGINE_FOR_MAIN == "NOX":
+            workingRef = None
+            #Load Ref No
+            for retryCountGetNextRef in range(10):
+                workingRef = CommonDMLib.getNextRef(sheets, appname)
+                if workingRef != None:
+                    break
+                if retryCountGetNextRef == 9:
+                    endFlag = True
+                    break
+            if endFlag:
+                CommonDMLib.sendMessagetoSlack(mentionUser,'All Main Stories were completed.', appname)
+                break
             CommonDMLib.RestartNox(resources, "MAIN")
-            CommonDMLib.loadRef(NoxResources, instances[instanceIndex], drive)
+            CommonDMLib.loadRef(NoxResources, workingRef, drive)
+        CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(workingRef)+"]"+'launching...', appname)
         CommonDMLib.RestartApp(resources)
         CommonDMLib.openMainStory(resources)
         
@@ -104,10 +106,9 @@ while instanceIndex < len(instances):
                     CommonDMLib.getPresent(NoxResources)
                     CommonDMLib.getMissionRewards(NoxResources)
                     res = CommonDMLib.scanAccountInfo(NoxResources)
-                    CommonDMLib.updateAccountInfo(sheets, instances[instanceIndex], res[0], res[1], res[2], res[3],res[4])
+                    CommonDMLib.updateAccountInfo(sheets, workingRef, res[0], res[1], res[2], res[3],res[4])
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories were cleared!', appname)
-                CommonDMLib.completeQuestStatus(sheets, instances[instanceIndex], "MAIN")
-                instanceIndex += 1
+                CommonDMLib.completeRef(sheets, workingRef, "MAIN")
                 break
             
             strategy = CommonDMLib.getStrategyByMainStoryStage(episode, stage)
@@ -226,7 +227,7 @@ while instanceIndex < len(instances):
 
             if EnvSettings.RUN_MODE == "DEV":
                 wait(1)
-                CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(instances[instanceIndex])+"]"+'[EP:'+str(episode)+',ST:'+str(stage)+']Battle Loop Count : ' + str(retryCount), appname)
+                CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(workingRef)+"]"+'[EP:'+str(episode)+',ST:'+str(stage)+']Battle Loop Count : ' + str(retryCount), appname)
             statisticsData["RETRY"] = retryCount
             statisticsData["EXCEPTION"] = exceptionCout
             statisticsData["ENDTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
@@ -237,7 +238,7 @@ while instanceIndex < len(instances):
         #stage_loop End
     except SystemExit as e:
         if e == 50:
-            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(instances[instanceIndex]) + ']A new version is detected. The instance will be restarted.', appname)
+            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
     except:
         exceptionCout += 1
