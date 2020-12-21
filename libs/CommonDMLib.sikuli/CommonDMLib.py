@@ -1274,14 +1274,14 @@ def getMissionRewards(resource):
                 exists(resource.BUTTON_OK, 60)
                 type(Key.ESC)
                 wait(3)
-            for num in range(10):
-                if len(findAny(resource.ICON_ACHIEVED)) > 0:
-                    click(resource.ICON_ACHIEVED)
-                    exists(resource.BUTTON_OK, 60)
-                    type(Key.ESC)
-                    waitVanish(resource.TITLE_REWARD_DAILY, 5)
-                else:
-                    break
+            #for num in range(10):
+            #    if len(findAny(resource.ICON_ACHIEVED)) > 0:
+            #        click(resource.ICON_ACHIEVED)
+            #        exists(resource.BUTTON_OK, 60)
+            #        type(Key.ESC)
+            #        waitVanish(resource.TITLE_REWARD_DAILY, 5)
+            #    else:
+            #        break
 
         if len(findAny(resource.BUTON_ACHIEVEMENTS_WITH_SIGN)) > 0:
             if len(findAny(resource.BUTTON_DAILY_REWARD_RECEIVE_ALL)) > 0:
