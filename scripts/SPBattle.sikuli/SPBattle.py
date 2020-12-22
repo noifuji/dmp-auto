@@ -220,3 +220,4 @@ while True:
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
+        CommonDMLib.exitNox(NoxResources)

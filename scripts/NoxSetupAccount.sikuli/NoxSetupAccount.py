@@ -263,6 +263,8 @@ for count in range(100):
             wait(1)
             CommonDMLib.uploadScreenShotToSlack(mentionUser, str(ref), appname)
             CommonDMLib.updatePlayerId(sheets, str(ref), playerId, os.environ["COMPUTERNAME"])
+            CommonDMLib.noxCallKillDMPApp()
+            wait(5)
             CommonDMLib.backupDMPIdentifier(NoxResources, str(ref))
             identifierFilename = "dmps" + str(ref) + ".ab"
             drive.uploadFile(identifierFilename, 

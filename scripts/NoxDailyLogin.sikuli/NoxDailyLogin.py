@@ -58,8 +58,9 @@ while True:
         CommonDMLib.completeRef(sheets, workingRef, appname)
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Instance ' + str(workingRef) + 'was completed.', appname)
         if CommonDMLib.isNewVersionAvailable():
-        exit(50)
+            exit(50)
         CommonDMLib.noxCallKillDMPApp()
+        wait(5)
     except:
         Settings.MoveMouseDelay = 0.1
         e = sys.exc_info()
@@ -68,4 +69,6 @@ while True:
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(workingRef) + '.', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.sendMessagetoSlack(mentionUser, "Screenshot" ,appname)
+        if CommonDMLib.isNewVersionAvailable():
+            exit(50)
         CommonDMLib.exitNox(NoxResources)

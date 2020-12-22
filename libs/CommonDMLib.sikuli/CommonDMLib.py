@@ -140,10 +140,12 @@ def getNextRef(sheets, processname):
         col = "AH"
     elif processname == "LEGEND":
         col = "AI"
-    progressRange = "raw!" + col + "3:" + col + "1000"
+    elif processname == "LOGIN":
+        col = "AM"
+    progressRange = "raw!" + col + "3:" + col + "3000"
 
     #在庫表のステータス変更設定とrawを取得する。
-    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1000","raw!C3:C1000", "raw!AG3:AG1000", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B3000","raw!C3:C3000", "raw!AG3:AG3000", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
     refs = rawData[0] if not rawData[0] == None else []
     ids = rawData[1] if not rawData[1] == None else []
     pcnames = rawData[2] if not rawData[2] == None else []
@@ -169,7 +171,7 @@ def getNextRef(sheets, processname):
             tmp["STATUS"] = ""
         refInfo.append(tmp)
 
-    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:E1000", "ROWS")
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:F3000", "ROWS")
     rawData = rawData if not rawData == None else []
     availableRefs = []
     for raw in rawData:
@@ -184,6 +186,9 @@ def getNextRef(sheets, processname):
                 continue
         elif processname == "LEGEND":
             if raw[4] == "" or raw[4] == "skip":
+                continue
+        elif processname == "LOGIN":
+            if raw[5] == "" or raw[5] == "skip":
                 continue
         availableRefs.append(raw[0])
 
@@ -229,10 +234,12 @@ def completeRef(sheets, ref, processname):
         col = "AH"
     elif processname == "LEGEND":
         col = "AI"
-    progressRange = "raw!" + col + "3:" + col + "1000"
+    elif processname == "LOGIN":
+        col = "AM"
+    progressRange = "raw!" + col + "3:" + col + "3000"
 
     #在庫表のステータス変更設定とrawを取得する。
-    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1000","raw!C3:C1000", "raw!AG3:AG1000", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B3000","raw!C3:C3000", "raw!AG3:AG3000", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
     refs = rawData[0] if not rawData[0] == None else []
     ids = rawData[1] if not rawData[1] == None else []
     pcnames = rawData[2] if not rawData[2] == None else []
