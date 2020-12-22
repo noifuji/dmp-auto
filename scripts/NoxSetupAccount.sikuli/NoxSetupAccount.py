@@ -24,6 +24,8 @@ OK = Pattern("OK.png").similar(0.90)
 OK2 = Pattern("OK2.png").similar(0.80)
 tutorial = "tutorial.png"
 
+if CommonDMLib.isNewVersionAvailable():
+    exit(50)
 
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
@@ -272,6 +274,8 @@ for count in range(100):
                     EnvSettings.IDENTIFIER_DRIVE_DIR_ID, 
                     "application/octet-stream")
             CommonDMLib.sendMessagetoSlack(mentionUser,'Setup has finished.', appname)
+            if CommonDMLib.isNewVersionAvailable():
+                exit(50)
             wait(5)
             break
         except:
@@ -281,4 +285,6 @@ for count in range(100):
             CommonDMLib.updatePlayerId(sheets, ref, "", "")
             CommonDMLib.sendMessagetoSlack(mentionUser,'Error occured. Restarting..', appname)
             CommonDMLib.sendMessagetoSlack( mentionUser,traceback.format_exc(), appname)
+            if CommonDMLib.isNewVersionAvailable():
+                exit(50)
             wait(5)
