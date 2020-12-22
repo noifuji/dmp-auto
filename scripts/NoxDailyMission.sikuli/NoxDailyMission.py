@@ -13,7 +13,6 @@ from spreadsheetapis import SpreadSheetApis
 from driveapis import DriveApis
 
 ####################Settings####################
-instances = EnvSettings.NOX_INSTANCES
 ####################Settings####################
 
 mentionUser = EnvSettings.mentionUser
@@ -30,7 +29,6 @@ App(EnvSettings.AndAppPath).close()
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
 CommonDMLib.downloadDeckCodes()
-instances = CommonDMLib.removeCompletedInstances(instances)
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 #Pre-processing End

@@ -8,6 +8,8 @@ sys.path.append(EnvSettings.RES_DIR_PATH)
 import NoxDMLib
 import CommonDMLib
 import NoxResources
+from spreadsheetapis import SpreadSheetApis
+from driveapis import DriveApis
 
 ####################Settings####################
 instances = EnvSettings.NOX_INSTANCES
@@ -25,27 +27,44 @@ App(EnvSettings.AndAppPath).close()
 
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
+sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
+drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 #Pre-processing End
 
-instanceIndex = 0
 retryCount = 0
-while instanceIndex < len(instances):
+endFlag = False
+while True:
     try:
-        CommonDMLib.RestartNox(NoxResources, instances[instanceIndex])
-        CommonDMLib.backupDMPIdentifier(NoxResources, instances[instanceIndex])
-        
-        CommonDMLib.sendMessagetoSlack(mentionUser, 'Instance ' + str(instances[instanceIndex]) + 'was completed.', appname)
-        instanceIndex += 1
+        for retryCountGetNextRef in range(10):
+            workingRef = CommonDMLib.getNextRef(sheets, appname)
+            if workingRef != None:
+                break
+            if retryCountGetNextRef == 9:
+                endFlag = True
+                break
+        if endFlag:
+            CommonDMLib.sendMessagetoSlack(mentionUser,'All daily login were completed.', appname)
+            break
+        if not CommonDMLib.isMainOn(NoxResources):
+            print "MAIN is off"
+            CommonDMLib.RestartNox(NoxResources, "MAIN")
+        CommonDMLib.loadRef(NoxResources, workingRef, drive)
+        CommonDMLib.RestartApp(NoxResources)
+        CommonDMLib.getPresent(NoxResources)
+        CommonDMLib.getMissionRewards(NoxResources)
+        exists(NoxResources.ICON_SOLO_PLAY, 60)
+        res = CommonDMLib.scanAccountInfo(NoxResources)
+        CommonDMLib.updateAccountInfo(sheets, workingRef, res[0], res[1], res[2], res[3],res[4])
+        CommonDMLib.completeRef(sheets, workingRef, appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser, 'Instance ' + str(workingRef) + 'was completed.', appname)
+        if CommonDMLib.isNewVersionAvailable():
+        exit(50)
+        CommonDMLib.noxCallKillDMPApp()
     except:
         Settings.MoveMouseDelay = 0.1
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(instances[instanceIndex]) + '. This instance was skipped.', appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(workingRef) + '.', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.sendMessagetoSlack(mentionUser, "Screenshot" ,appname)
-        if retryCount >= 4:
-            instanceIndex += 1
-            retryCount = 0
-        else:
-            retryCount += 1

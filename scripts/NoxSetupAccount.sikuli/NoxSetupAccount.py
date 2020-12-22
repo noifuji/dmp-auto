@@ -35,6 +35,7 @@ for count in range(100):
             print "MAIN is off"
             CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.callRemoveDataBat()
+        wait(5)
     except:
         e = sys.exc_info()
         for mes in e:
