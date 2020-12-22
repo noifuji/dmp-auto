@@ -270,6 +270,7 @@ for count in range(100):
                     EnvSettings.IDENTIFIER_DRIVE_DIR_ID, 
                     "application/octet-stream")
             CommonDMLib.sendMessagetoSlack(mentionUser,'Setup has finished.', appname)
+            wait(5)
             break
         except:
             e = sys.exc_info()

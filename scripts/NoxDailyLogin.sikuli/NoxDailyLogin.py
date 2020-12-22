@@ -68,3 +68,4 @@ while True:
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(workingRef) + '.', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.sendMessagetoSlack(mentionUser, "Screenshot" ,appname)
+        CommonDMLib.exitNox(NoxResources)
