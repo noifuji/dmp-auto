@@ -72,11 +72,11 @@ if %ERRORLEVEL%==50 (
 )
 
 @REM リセマラ用メインストーリー周回
-java -jar sikulixide-2.0.4.jar -r .\scripts\AllMainStories.sikuli -- reset
-if %ERRORLEVEL%==50 (
- start .\Tools\auto_update.bat .\Tools\%~n0%~x0
- exit
-)
+@REM java -jar sikulixide-2.0.4.jar -r .\scripts\AllMainStories.sikuli -- reset
+@REM if %ERRORLEVEL%==50 (
+@REM  start .\Tools\auto_update.bat .\Tools\%~n0%~x0
+@REM  exit
+@REM )
 
 @REM メインストーリー周回
 java -jar sikulixide-2.0.4.jar -r .\scripts\AllMainStories.sikuli
