@@ -40,26 +40,27 @@ def finishMissions(instance, statisticsData, sheets):
     CommonDMLib.closeMission(NoxResources)
     CommonDMLib.getPresent(NoxResources)
     CommonDMLib.getMissionRewards(NoxResources)
-    for openCardListLoop in range(100):
-        if len(findAny(NoxResources.ICON_CARD)) > 0:
-            try:
-                click(NoxResources.ICON_CARD)
-            except:
-                print "failed to click"
-            wait(1)
-        if len(findAny(NoxResources.BUTTON_CARD_LIST)) > 0:
-            try:
-                click(NoxResources.BUTTON_CARD_LIST)
-            except:
-                print "failed to click"
-            wait(1)
-        if len(findAny(NoxResources.BUTTON_BACK2)) > 0:
-            break
-    if exists(NoxResources.BUTTON_BACK2, 120) != None:
-        for listTutorialLoop in range(10):
-            click(NoxResources.BUTTON_BACK2)
-            wait(0.2)
-    cardCountResult = CommonDMLib.countAllCardsByRarity(NoxResources)
+    if datetime.now().day == 2 or datetime.now().day == 16:
+        for openCardListLoop in range(100):
+            if len(findAny(NoxResources.ICON_CARD)) > 0:
+                try:
+                    click(NoxResources.ICON_CARD)
+                except:
+                    print "failed to click"
+                wait(1)
+            if len(findAny(NoxResources.BUTTON_CARD_LIST)) > 0:
+                try:
+                    click(NoxResources.BUTTON_CARD_LIST)
+                except:
+                    print "failed to click"
+                wait(1)
+            if len(findAny(NoxResources.BUTTON_BACK2)) > 0:
+                break
+        if exists(NoxResources.BUTTON_BACK2, 120) != None:
+            for listTutorialLoop in range(10):
+                click(NoxResources.BUTTON_BACK2)
+                wait(0.2)
+        cardCountResult = CommonDMLib.countAllCardsByRarity(NoxResources)
     CommonDMLib.updateCardCount(sheets, instance, cardCountResult["NAMES"], cardCountResult["CARDS"])
     type(Key.ESC)
     exists(NoxResources.ICON_SOLO_PLAY, 60)

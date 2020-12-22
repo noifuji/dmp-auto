@@ -1043,17 +1043,18 @@ def changeMission(resource):
     print "changeMission"
     if exists(resource.MISSION_DRAW_20["IMAGE"], 1) != None:
         click(resource.MISSION_DRAW_20["IMAGE"])
-        wait(3)
         if exists(resource.BUTTON_OK, 10) != None:
             click(resource.BUTTON_OK)
             wait(1)
+        wait(5)
+        return
     if exists(resource.MISSION_WIN_3["IMAGE"], 1) != None:
         click(resource.MISSION_WIN_3["IMAGE"])
-        wait(3)
         if exists(resource.BUTTON_OK, 10) != None:
             click(resource.BUTTON_OK)
             wait(1)
-    wait(5)
+        wait(5)
+        return
 
 def closeMission(resource):
     print "closeMission"
