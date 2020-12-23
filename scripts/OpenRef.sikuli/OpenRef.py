@@ -5,122 +5,18 @@ sys.path.append(EnvSettings.RES_DIR_PATH)
 import CommonDMLib
 import NoxResources
 from driveapis import DriveApis
+from spreadsheetapis import SpreadSheetApis
 
+sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 ref = input()
-refs = [
-        1104,
-1040,
-1042,
-1047,
-1048,
-1050,
-1051,
-1052,
-1055,
-1057,
-1058,
-1059,
-1060,
-1062,
-1063,
-1064,
-1065,
-1066,
-1067,
-1068,
-1069,
-1070,
-1071,
-1072,
-1073,
-1074,
-1075,
-1076,
-1077,
-1078,
-1079,
-1080,
-1081,
-1082,
-1083,
-1086,
-1087,
-1088,
-1089,
-1090,
-1091,
-1092,
-1093,
-1094,
-1095,
-1097,
-1098,
-1099,
-1100,
-1101,
-1102,
-1103,
-1104,
-1112,
-1117,
-1118,
-1119,
-1120,
-1121,
-1122,
-1123,
-1124,
-1125,
-1126,
-1127,
-1128,
-1129,
-1130,
-1131,
-1134,
-1135,
-1136,
-1137,
-1138,
-1139,
-1140,
-1141,
-1142,
-1143,
-1144,
-1145,
-1146,
-1147,
-1148,
-1149,
-1150,
-1151,
-1152,
-1153,
-1154,
-1155,
-1156,
-1157,
-1158,
-1159,
-1160,
-1161,
-1162,
-1163,
-1164,
-1165,
-1166,
-1167]
 
-#for ref in  refs:
+rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:F3000", "ROWS")
+rawData = rawData if not rawData == None else []
+availableRefs = []
+for raw in rawData:
+    if raw[0] == ref and raw[1] == "sold":
+        print "This ref was already sold. Don't open."
+        exit()
 CommonDMLib.loadRef(NoxResources, ref, drive)
 CommonDMLib.RestartApp(NoxResources)
-CommonDMLib.openMission(NoxResources)
-missions = CommonDMLib.getTargetMissions(NoxResources)
-str = ""
-for m in missions:
-    str = str + m["NAME"] + ","
-CommonDMLib.uploadScreenShotToSlack(EnvSettings.mentionUser, str, "TEST")
-wait(1)
-CommonDMLib.noxCallKillDMPApp()

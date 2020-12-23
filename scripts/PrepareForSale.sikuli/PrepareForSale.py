@@ -53,12 +53,22 @@ try:
         newDivDeckCodes = []
     else:
         newDivDeckCodes = newDivDeckCodeRaw.split(",")
+
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:F3000", "ROWS")
+    rawData = rawData if not rawData == None else []
+    availableRefs = []
+    for raw in rawData:
+        if raw[0] == ref and raw[1] == "sold":
+            print "This ref was already sold. Don't open."
+            exit()
     
     if not CommonDMLib.isMainOn(NoxResources):
         print "MAIN is off"
         CommonDMLib.RestartNox(NoxResources, "MAIN")
     CommonDMLib.loadRef(NoxResources, ref, drive)
     CommonDMLib.RestartApp(NoxResources)
+    
+    fId = drive.createFolder(str(ref), "1ApCg9taRAEmK7QH93bxmoIzMbRaC_r7m")
 
     for deckCodes, btnDiv in zip([allDivDeckCodes, newDivDeckCodes],[NoxResources.BUTTON_ORGANIZE_ALLDIV_DECK, NoxResources.BUTTON_ORGANIZE_NEWDIV_DECK]):
         #全てのデッキを削除
@@ -92,7 +102,6 @@ try:
             click("1596780684705.png")
             wait(5)
         exists("1596780703269.png",60)
-        fId = drive.createFolder(str(ref), "1ApCg9taRAEmK7QH93bxmoIzMbRaC_r7m")
         for deckCode in deckCodes:
             #対象のデッキを作成する。
             CommonDMLib.addNewDeckByCode(NoxResources, deckCode)
