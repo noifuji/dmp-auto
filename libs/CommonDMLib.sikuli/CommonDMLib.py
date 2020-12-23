@@ -600,9 +600,10 @@ def scanAccountInfo(resource):
             {"NAME":"PACK5SR","IMAGE":resource.TITLE_PACK5SR},
             {"NAME":"PACK6","IMAGE":resource.TITLE_PACK6},
             {"NAME":"PACK6SR","IMAGE":resource.TITLE_PACK6SR},
-            {"NAME":"BEST","IMAGE":resource.TICKET_BEST},
             {"NAME":"PACK7","IMAGE":resource.TITLE_PACK7},
             {"NAME":"PACK7SR","IMAGE":resource.TITLE_PACK7SR},
+            {"NAME":"BEST","IMAGE":resource.TICKET_BEST},
+            {"NAME":"SUPER","IMAGE":resource.TICKET_SUPER2021},
             {"NAME":"BUILDER","IMAGE":resource.TICKET_BUILDER},]
 
     dmp = 0
@@ -668,7 +669,8 @@ def scanAccountInfo(resource):
             int(tempPacks["PACK6SR"]), 
             int(tempPacks["BEST"]),
             int(tempPacks["PACK7SR"]),
-            int(tempPacks["BUILDER"])]
+            int(tempPacks["BUILDER"]),
+            int(tempPacks["SUPER"])]
     return [lv, dmp, gold, packs, specialPacks]
 
 def downloadFile(url, dest):
