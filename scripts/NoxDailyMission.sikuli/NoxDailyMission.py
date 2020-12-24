@@ -65,7 +65,6 @@ def finishMissions(instance, statisticsData, sheets):
     res = CommonDMLib.scanAccountInfo(NoxResources)
     CommonDMLib.updateAccountInfo(sheets, instance, res[0], res[1], res[2], res[3],res[4])
     CommonDMLib.completeRef(sheets, instance, appname)
-    #CommonDMLib.updateCompletedInstanceJson(instance)
     statisticsData[CommonDMLib.STATISTICS_ENDTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     CommonDMLib.uploadStatistics(sheets, "DailyMission" ,statisticsData)
     if CommonDMLib.isNewVersionAvailable():
@@ -169,21 +168,10 @@ while True:
             dailyReward = 0
             for checkRewardLoop in range(180):
                 CommonDMLib.skipStory(NoxResources)
-                #rewardResult = CommonDMLib.skipRewards(NoxResources)
-                #dailyReward += rewardResult["daily"]
-                #if dailyReward > 0:
                 if len(findAny(NoxResources.BUTTON_BACK)) > 0:
                     click(NoxResources.BUTTON_BACK)
                 if len(findAny("1604812430562.png")) > 0:
                     break
-                #if len(findAny(NoxResources.BUTTON_SMALL_BATTLE_START)) > 0 and dailyReward == 0:
-                #    try:
-#                        click(NoxResources.BUTTON_SMALL_BATTLE_START)
- #                   except:
-  #                      print "failed to click smallStart"
-                #if len(findAny(NoxResources.BUTTON_LARGE_BATTLE_START)) > 0:
-              #      break
-            #if dailyReward >= 0:
             CommonDMLib.openMission(NoxResources)
             missions = CommonDMLib.getTargetMissions(NoxResources)
             if len(missions) <= 0 or (all(elem == "SKIP" for elem in [d.get("GROUP") for d in missions])):
@@ -198,9 +186,6 @@ while True:
             CommonDMLib.chooseMainStoryStage(NoxResources, 1, NoxResources.TITLE_EP1_STAGE1)
             deck = CommonDMLib.getDeckByStrategy(NoxResources, strategy)
             CommonDMLib.startMainStoryBattle(NoxResources, deck[0], deck[1])
-            #else:
-             #   deck = CommonDMLib.getDeckByStrategy(NoxResources, strategy)
-              #  CommonDMLib.startMainStoryBattle(NoxResources, deck[0], deck[1])
         #バトルループエンド
         instanceIndex += 1
         retryCount = 0
