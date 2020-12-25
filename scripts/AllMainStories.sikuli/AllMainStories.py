@@ -52,7 +52,7 @@ if EnvSettings.ENGINE_FOR_MAIN == "ANDAPP":
     import AndAppResources
     import NoxResources
     resources = AndAppResources
-    CommonDMLib.exitNox(NoxResources)
+    App(EnvSettings.NoxAppPath).close()
 elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
     import NoxResources
     resources = NoxResources
@@ -85,7 +85,8 @@ while True:
             if endFlag:
                 CommonDMLib.sendMessagetoSlack(mentionUser,'All Main Stories were completed.', appname)
                 break
-            CommonDMLib.RestartNox(resources, "MAIN")
+            if not CommonDMLib.isNoxOn():
+                CommonDMLib.RestartNox(resources, "MAIN")
             CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(workingRef)+"]"+'launching...', appname)
         CommonDMLib.RestartApp(resources)
@@ -109,6 +110,7 @@ while True:
                     CommonDMLib.updateAccountInfo(sheets, workingRef, res[0], res[1], res[2], res[3],res[4])
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories were cleared!', appname)
                 CommonDMLib.completeRef(sheets, workingRef, "MAIN")
+                CommonDMLib.noxCallKillDMPApp()
                 break
             
             strategy = CommonDMLib.getStrategyByMainStoryStage(episode, stage)
@@ -250,4 +252,5 @@ while True:
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "Screenshot" , appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
-        CommonDMLib.exitNox(NoxResources)
+        if EnvSettings.ENGINE_FOR_MAIN == "NOX":
+            App(EnvSettings.NoxAppPath).close()

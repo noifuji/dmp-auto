@@ -110,7 +110,7 @@ while True:
         instanceIndex += 1
         continue
     try:
-        if not CommonDMLib.isMainOn(NoxResources):
+        if not CommonDMLib.isNoxOn():
             print "MAIN is off"
             CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.loadRef(NoxResources, workingRef, drive)
@@ -204,4 +204,4 @@ while True:
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
-        CommonDMLib.exitNox(NoxResources)
+        App(EnvSettings.NoxAppPath).close()
