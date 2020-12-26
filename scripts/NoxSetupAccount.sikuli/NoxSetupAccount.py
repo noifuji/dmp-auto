@@ -2,6 +2,7 @@ import sys
 import urllib2
 import json
 import traceback
+import subprocess
 sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
 import EnvSettings
 sys.path.append(EnvSettings.LIBS_DIR_PATH)
@@ -33,7 +34,7 @@ CommonDMLib.downloadDeckCodes()
 
 for count in range(100):
     try:
-        if not CommonDMLib.isMainOn(NoxResources):
+        if not CommonDMLib.isNoxOn():
             print "MAIN is off"
             CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.callRemoveDataBat()
@@ -265,7 +266,8 @@ for count in range(100):
             wait(1)
             CommonDMLib.uploadScreenShotToSlack(mentionUser, str(ref), appname)
             CommonDMLib.updatePlayerId(sheets, str(ref), playerId, os.environ["COMPUTERNAME"])
-            CommonDMLib.noxCallKillDMPApp()
+            restoreCmd = [EnvSettings.NoxAdbPath, "shell", "input", "keyevent", "KEYCODE_HOME"]
+            subprocess.Popen(restoreCmd, shell=True)
             wait(5)
             CommonDMLib.backupDMPIdentifier(NoxResources, str(ref))
             identifierFilename = "dmps" + str(ref) + ".ab"
@@ -288,3 +290,4 @@ for count in range(100):
             if CommonDMLib.isNewVersionAvailable():
                 exit(50)
             wait(5)
+            App(EnvSettings.NoxAppPath).close()
