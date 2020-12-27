@@ -1090,7 +1090,7 @@ def getTargetMissions(resource):
             ]
     isMissionCompleted = []
     for region in RBRegs:
-        region.highlight(2)
+        region.highlight(0.1)
         detected = region.findAny(resource.BUTTON_CHANGE_MISSION)
         if len(detected) > 0:
             isMissionCompleted.append(False)
@@ -1119,7 +1119,7 @@ def getTargetMissions(resource):
         if isCompleted:
             continue
         
-        reg.highlight(0.5)
+        reg.highlight(0.1)
         scores = []
         for ms in missions:
            detected = reg.findAny(ms["IMAGE"])
@@ -1393,6 +1393,95 @@ def getMissionRewards(resource):
             
         type(Key.ESC)
         waitVanish(resource.TITLE_MISSION)
+
+def getBeginnerRewards(resources):
+    #通知あり初心者アイコンあり
+    if exists(resources.ICON_CLOVER_WITH_SIGN, 3) != None:
+        try:
+            click(resources.ICON_CLOVER_WITH_SIGN)
+        except:
+            print "failed to click"
+        for num in range(100):
+            type(Key.ESC)
+            if exists(resources.MESSAGE_CONFIRM_BACK_TITLE,1) != None:
+                wait(1)
+                type(Key.ESC)
+                break
+    wait(1)
+    packRewardFlag = False
+    if exists(resources.ICON_CLOVER, 3) != None:
+        try:
+            click(resources.ICON_CLOVER)
+        except:
+            print "failed to click"
+        exists(resources.BUTTON_CLOSE, 60)
+        if len(findAny(resources.OPEN_CARD_PACK_REWARD)) == 0:
+            packRewardFlag = False
+        else:
+            packRewardFlag = True
+        
+        for num in range(100):
+            type(Key.ESC)
+            if exists(resources.MESSAGE_CONFIRM_BACK_TITLE,1) != None:
+                wait(1)
+                type(Key.ESC)
+                break
+    return packRewardFlag
+
+def openCardPack(resources):
+    click(resources.ICON_SHOP)
+    for shopTutorialLoop in range(5):
+        click(Pattern("1604912893427.png").targetOffset(79,-49))
+        wait(1)
+    wait(5)
+    click(Pattern("1596592864693.png").similar(0.90).targetOffset(-5,-237))
+    wait(5)
+    click(Pattern("1596592907696.png").similar(0.90).targetOffset(-6,-215))
+    exists(resources.BUTTON_BACK, 120)
+    for shopTutorialLoop in range(5):
+        click(Pattern("1603247550151.png").targetOffset(3,75))
+        wait(1)
+        
+    print 'Opening pack'
+    if exists("1608821210779.png",2) != None:
+        click(Pattern("1608821210779.png").targetOffset(-1,60))
+    else:
+        for num in range(100):
+            type(Key.ESC)
+            if exists(resources.MESSAGE_CONFIRM_BACK_TITLE, 1) != None:
+                type(Key.ESC)
+                return
+    exists("1603251877777.png",30)
+    click(resources.BUTTON_OK)
+    wait(1)
+    click(resources.BUTTON_OK)
+    exists("1596593059270.png",10)
+    click("1596593059270.png")
+
+    for pack_loop in range(10):
+        if exists(resources.BUTTON_OK,5) == None:
+            print 'You got super rare.'
+            #スーパーレア発生
+            click(Pattern("1597929821232.png").targetOffset(561,167))
+            continue
+        else:
+            break
+
+    for pack_loop in range(10):
+        if exists(resources.BUTTON_OK,1) != None:
+            click(resources.BUTTON_OK)
+            print 'OK is clicked to confirm pack results.'
+            wait(2)
+            continue
+        else:
+            break
+    wait(1)
+    exists("1596593154431.png",10)
+    for num in range(100):
+        type(Key.ESC)
+        if exists(resources.MESSAGE_CONFIRM_BACK_TITLE, 1) != None:
+            type(Key.ESC)
+            break
 
 #True : On
 #False : Off

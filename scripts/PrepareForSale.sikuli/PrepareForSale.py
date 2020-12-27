@@ -62,7 +62,7 @@ try:
             print "This ref was already sold. Don't open."
             exit()
     
-    if not CommonDMLib.isMainOn(NoxResources):
+    if not CommonDMLib.isNoxOn():
         print "MAIN is off"
         CommonDMLib.RestartNox(NoxResources, "MAIN")
     CommonDMLib.loadRef(NoxResources, ref, drive)

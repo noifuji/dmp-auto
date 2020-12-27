@@ -38,6 +38,8 @@ def finishMissions(instance, statisticsData, sheets):
     CommonDMLib.closeMission(NoxResources)
     CommonDMLib.getPresent(NoxResources)
     CommonDMLib.getMissionRewards(NoxResources)
+    if CommonDMLib.getBeginnerRewards(NoxResources):
+        CommonDMLib.openCardPack(NoxResources)
     if datetime.now().day == 2 or datetime.now().day == 16:
         for openCardListLoop in range(100):
             if len(findAny(NoxResources.ICON_CARD)) > 0:
@@ -80,6 +82,7 @@ statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_
 
 instanceIndex = 0
 retryCount = 0
+exceptionFlag = False
 endFlag = False
 while True:
     for retryCountGetNextRef in range(10):
@@ -110,8 +113,9 @@ while True:
         instanceIndex += 1
         continue
     try:
-        if not CommonDMLib.isNoxOn():
-            print "MAIN is off"
+        if not CommonDMLib.isNoxOn() or exceptionFlag:
+            print "restarting Nox..."
+            exceptionFlag = False
             CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(NoxResources)
@@ -168,8 +172,9 @@ while True:
             dailyReward = 0
             for checkRewardLoop in range(180):
                 CommonDMLib.skipStory(NoxResources)
-                if len(findAny(NoxResources.BUTTON_BACK)) > 0:
-                    click(NoxResources.BUTTON_BACK)
+                type(Key.ESC)
+                #if len(findAny(NoxResources.BUTTON_BACK)) > 0:
+                #    click(NoxResources.BUTTON_BACK)
                 if len(findAny("1604812430562.png")) > 0:
                     break
             CommonDMLib.openMission(NoxResources)
@@ -204,4 +209,4 @@ while True:
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
-        App(EnvSettings.NoxAppPath).close()
+        exceptionFlag = True

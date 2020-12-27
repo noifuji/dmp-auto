@@ -32,10 +32,12 @@ sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 CommonDMLib.downloadDeckCodes()
 
+exceptionFlag = False
 for count in range(100):
     try:
-        if not CommonDMLib.isNoxOn():
-            print "MAIN is off"
+        if not CommonDMLib.isNoxOn() or exceptionFlag:
+            print "restarting Nox..."
+            exceptionFlag = False
             CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.callRemoveDataBat()
         wait(5)
@@ -80,7 +82,7 @@ for count in range(100):
                 action_flag = False
                 
             if breakFlag == True:
-                continue
+                break
     
             breakFlag = False
             loop_without_action_count = 0
@@ -290,4 +292,4 @@ for count in range(100):
             if CommonDMLib.isNewVersionAvailable():
                 exit(50)
             wait(5)
-            App(EnvSettings.NoxAppPath).close()
+            exceptionFlag = True

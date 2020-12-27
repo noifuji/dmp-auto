@@ -68,6 +68,7 @@ if CommonDMLib.isNewVersionAvailable():
 
 #全体ループ
 endFlag = False
+exceptionFlag = False
 while True:
     try:
         CommonDMLib.downloadDeckCodes()
@@ -85,7 +86,8 @@ while True:
             if endFlag:
                 CommonDMLib.sendMessagetoSlack(mentionUser,'All Main Stories were completed.', appname)
                 break
-            if not CommonDMLib.isNoxOn():
+            if not CommonDMLib.isNoxOn() or exceptionFlag:
+                exceptionFlag = False
                 CommonDMLib.RestartNox(resources, "MAIN")
             CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(workingRef)+"]"+'launching...', appname)
@@ -253,4 +255,4 @@ while True:
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
         if EnvSettings.ENGINE_FOR_MAIN == "NOX":
-            App(EnvSettings.NoxAppPath).close()
+            exceptionFlag = True

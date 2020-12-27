@@ -33,6 +33,7 @@ drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 
 retryCount = 0
 endFlag = False
+exceptionFlag = False
 while True:
     try:
         for retryCountGetNextRef in range(10):
@@ -45,8 +46,9 @@ while True:
         if endFlag:
             CommonDMLib.sendMessagetoSlack(mentionUser,'All daily login were completed.', appname)
             break
-        if not CommonDMLib.isNoxOn():
+        if not CommonDMLib.isNoxOn() or exceptionFlag:
             print "MAIN is off"
+            exceptionFlag = True
             CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(NoxResources)
@@ -71,4 +73,4 @@ while True:
         CommonDMLib.sendMessagetoSlack(mentionUser, "Screenshot" ,appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
-        App(EnvSettings.NoxAppPath).close()
+        exceptionFlag = True
