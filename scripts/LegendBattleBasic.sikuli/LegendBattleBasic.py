@@ -38,6 +38,7 @@ elif EnvSettings.ENGINE_FOR_LEGEND == "NOX":
     resources = NoxResources
     App(EnvSettings.AppPath).close()
     App(EnvSettings.AndAppPath).close()
+    CommonDMLib.deleteIdentifiers()
     drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 #Pre-processing End
 

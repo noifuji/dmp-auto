@@ -28,6 +28,7 @@ App(EnvSettings.AndAppPath).close()
 
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
+CommonDMLib.deleteIdentifiers()
 CommonDMLib.downloadDeckCodes()
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())

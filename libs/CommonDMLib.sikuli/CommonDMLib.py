@@ -281,6 +281,11 @@ def completeRef(sheets, ref, processname):
             "raw" + "!AG" + str(targetRow), 
             [[""]], "ROWS")
 
+def deleteIdentifiers():
+    cmd = ["del", EnvSettings.BACKUP_DIR_PATH+"\\", "/Q"]
+    subprocess.Popen(cmd, shell=True)
+    wait(3)
+
 def backupDMPIdentifier(resource, ref):
     saveDirPath = EnvSettings.BACKUP_DIR_PATH
     backupFilePath = os.path.join(saveDirPath,'dmps' + str(ref) + '.ab')
