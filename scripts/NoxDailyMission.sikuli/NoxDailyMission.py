@@ -173,10 +173,10 @@ while True:
             for checkRewardLoop in range(180):
                 CommonDMLib.skipStory(NoxResources)
                 type(Key.ESC)
+                wait(1)
                 #if len(findAny(NoxResources.BUTTON_BACK)) > 0:
                 #    click(NoxResources.BUTTON_BACK)
                 if len(findAny(NoxResources.MESSAGE_CONFIRM_BACK_TITLE)) > 0:
-                    wait(1)
                     type(Key.ESC)
                     wait(1)
                     break
