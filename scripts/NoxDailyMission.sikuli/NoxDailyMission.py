@@ -175,7 +175,10 @@ while True:
                 type(Key.ESC)
                 #if len(findAny(NoxResources.BUTTON_BACK)) > 0:
                 #    click(NoxResources.BUTTON_BACK)
-                if len(findAny("1604812430562.png")) > 0:
+                if len(findAny(NoxResources.MESSAGE_CONFIRM_BACK_TITLE)) > 0:
+                    wait(1)
+                    type(Key.ESC)
+                    wait(1)
                     break
             CommonDMLib.openMission(NoxResources)
             missions = CommonDMLib.getTargetMissions(NoxResources)
