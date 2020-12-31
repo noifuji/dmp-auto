@@ -18,5 +18,9 @@ for raw in rawData:
     if raw[0] == ref and raw[1] == "sold":
         print "This ref was already sold. Don't open."
         exit()
+
+if not CommonDMLib.isNoxOn():
+    print "restarting Nox..."
+    CommonDMLib.RestartNox(NoxResources, "MAIN")
 CommonDMLib.loadRef(NoxResources, ref, drive)
 CommonDMLib.RestartApp(NoxResources)
