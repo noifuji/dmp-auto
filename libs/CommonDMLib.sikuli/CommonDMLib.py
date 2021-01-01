@@ -142,10 +142,10 @@ def getNextRef(sheets, processname):
         col = "AI"
     elif processname == "LOGIN":
         col = "AM"
-    progressRange = "raw!" + col + "3:" + col + "3000"
+    progressRange = "raw!" + col + "3:" + col + "1500"
 
     #在庫表のステータス変更設定とrawを取得する。
-    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B3000","raw!C3:C3000", "raw!AG3:AG3000", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1500","raw!C3:C1500", "raw!AG3:AG1500", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
     refs = rawData[0] if not rawData[0] == None else []
     ids = rawData[1] if not rawData[1] == None else []
     pcnames = rawData[2] if not rawData[2] == None else []
@@ -171,7 +171,7 @@ def getNextRef(sheets, processname):
             tmp["STATUS"] = ""
         refInfo.append(tmp)
 
-    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:F3000", "ROWS")
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:F1500", "ROWS")
     rawData = rawData if not rawData == None else []
     availableRefs = []
     for raw in rawData:
@@ -236,10 +236,10 @@ def completeRef(sheets, ref, processname):
         col = "AI"
     elif processname == "LOGIN":
         col = "AM"
-    progressRange = "raw!" + col + "3:" + col + "3000"
+    progressRange = "raw!" + col + "3:" + col + "1500"
 
     #在庫表のステータス変更設定とrawを取得する。
-    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B3000","raw!C3:C3000", "raw!AG3:AG3000", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1500","raw!C3:C1500", "raw!AG3:AG1500", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
     refs = rawData[0] if not rawData[0] == None else []
     ids = rawData[1] if not rawData[1] == None else []
     pcnames = rawData[2] if not rawData[2] == None else []
@@ -1450,6 +1450,60 @@ def openCardPack(resources):
     print 'Opening pack'
     if exists("1608821210779.png",2) != None:
         click(Pattern("1608821210779.png").targetOffset(-1,60))
+    else:
+        for num in range(100):
+            type(Key.ESC)
+            if exists(resources.MESSAGE_CONFIRM_BACK_TITLE, 1) != None:
+                type(Key.ESC)
+                return
+    exists("1603251877777.png",30)
+    click(resources.BUTTON_OK)
+    wait(1)
+    click(resources.BUTTON_OK)
+    exists("1596593059270.png",10)
+    click("1596593059270.png")
+
+    for pack_loop in range(10):
+        if exists(resources.BUTTON_OK,5) == None:
+            print 'You got super rare.'
+            #スーパーレア発生
+            click(Pattern("1597929821232.png").targetOffset(561,167))
+            continue
+        else:
+            break
+
+    for pack_loop in range(10):
+        if exists(resources.BUTTON_OK,1) != None:
+            click(resources.BUTTON_OK)
+            print 'OK is clicked to confirm pack results.'
+            wait(2)
+            continue
+        else:
+            break
+    wait(1)
+    exists("1596593154431.png",10)
+    for num in range(100):
+        type(Key.ESC)
+        if exists(resources.MESSAGE_CONFIRM_BACK_TITLE, 1) != None:
+            type(Key.ESC)
+            break
+
+def openOmikuji(resources):
+    click(resources.ICON_SHOP)
+    for shopTutorialLoop in range(5):
+        click(Pattern("1604912893427.png").targetOffset(79,-49))
+        wait(1)
+    wait(5)
+    click(Pattern("1596592864693.png").similar(0.90).targetOffset(-5,-237))
+    wait(5)
+    click(Pattern("1596592907696.png").similar(0.90).targetOffset(-6,-215))
+    exists(resources.BUTTON_BACK, 120)
+    for shopTutorialLoop in range(5):
+        click(Pattern("1603247550151.png").targetOffset(3,75))
+        wait(1)
+    print 'Opening pack'
+    if exists(Pattern("1609459748285.png").similar(0.97),2) != None:
+        click(Pattern("1609459748285.png").similar(0.97))
     else:
         for num in range(100):
             type(Key.ESC)
