@@ -47,9 +47,9 @@ while True:
         if endFlag:
             CommonDMLib.sendMessagetoSlack(mentionUser,'All daily login were completed.', appname)
             break
-        if not CommonDMLib.isNoxOn() or exceptionFlag:
+        if (not CommonDMLib.isNoxOn()) or exceptionFlag:
             print "MAIN is off"
-            exceptionFlag = True
+            exceptionFlag = False
             CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(NoxResources)

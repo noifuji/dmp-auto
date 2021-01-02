@@ -115,7 +115,7 @@ while True:
         instanceIndex += 1
         continue
     try:
-        if not CommonDMLib.isNoxOn() or exceptionFlag:
+        if (not CommonDMLib.isNoxOn()) or exceptionFlag:
             print "restarting Nox..."
             exceptionFlag = False
             CommonDMLib.RestartNox(NoxResources, "MAIN")
