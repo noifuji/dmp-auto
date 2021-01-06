@@ -87,34 +87,35 @@ retryCount = 0
 exceptionFlag = False
 endFlag = False
 while True:
-    for retryCountGetNextRef in range(10):
-        workingRef = CommonDMLib.getNextRef(sheets, appname)
-        if workingRef != None:
-            break
-        if retryCountGetNextRef == 9:
-            endFlag = True
-            break
-    if endFlag:
-        CommonDMLib.sendMessagetoSlack(mentionUser,'All daily missions were completed.', appname)
-        break
-    
-    if statisticsData[CommonDMLib.STATISTICS_REF] != str(workingRef):
-        print "Initializing Statistics Data"
-        statisticsData[CommonDMLib.STATISTICS_COMPUTERNAME] = os.environ["COMPUTERNAME"]
-        statisticsData[CommonDMLib.STATISTICS_REF] = str(workingRef)
-        statisticsData[CommonDMLib.STATISTICS_MISSION1] = ""
-        statisticsData[CommonDMLib.STATISTICS_MISSION2] = ""
-        statisticsData[CommonDMLib.STATISTICS_MISSION3] = ""
-        statisticsData[CommonDMLib.STATISTICS_STARTTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-        statisticsData[CommonDMLib.STATISTICS_ENDTIME] = ""
-        statisticsData[CommonDMLib.STATISTICS_EXCEPTION] = 0
-    
-    if retryCount > MAX_RETRY_COUNT:
-        print "Too many retries. This instance will be skipped."
-        retryCount = 0
-        instanceIndex += 1
-        continue
     try:
+        for retryCountGetNextRef in range(10):
+            workingRef = CommonDMLib.getNextRef(sheets, appname)
+            if workingRef != None:
+                break
+            if retryCountGetNextRef == 9:
+                endFlag = True
+                break
+        if endFlag:
+            CommonDMLib.sendMessagetoSlack(mentionUser,'All daily missions were completed.', appname)
+            break
+        
+        if statisticsData[CommonDMLib.STATISTICS_REF] != str(workingRef):
+            print "Initializing Statistics Data"
+            statisticsData[CommonDMLib.STATISTICS_COMPUTERNAME] = os.environ["COMPUTERNAME"]
+            statisticsData[CommonDMLib.STATISTICS_REF] = str(workingRef)
+            statisticsData[CommonDMLib.STATISTICS_MISSION1] = ""
+            statisticsData[CommonDMLib.STATISTICS_MISSION2] = ""
+            statisticsData[CommonDMLib.STATISTICS_MISSION3] = ""
+            statisticsData[CommonDMLib.STATISTICS_STARTTIME] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            statisticsData[CommonDMLib.STATISTICS_ENDTIME] = ""
+            statisticsData[CommonDMLib.STATISTICS_EXCEPTION] = 0
+        
+        if retryCount > MAX_RETRY_COUNT:
+            print "Too many retries. This instance will be skipped."
+            retryCount = 0
+            instanceIndex += 1
+            continue
+        
         if (not CommonDMLib.isNoxOn()) or exceptionFlag:
             print "restarting Nox..."
             exceptionFlag = False
@@ -215,3 +216,4 @@ while True:
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
         exceptionFlag = True
+        wait(5)

@@ -146,6 +146,8 @@ def getNextRef(sheets, processname):
 
     #在庫表のステータス変更設定とrawを取得する。
     rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1500","raw!C3:C1500", "raw!AG3:AG1500", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    if len(rawData) == 0:
+        raise Exception("batchRead threw an error.")
     refs = rawData[0] if not rawData[0] == None else []
     ids = rawData[1] if not rawData[1] == None else []
     pcnames = rawData[2] if not rawData[2] == None else []
@@ -240,6 +242,8 @@ def completeRef(sheets, ref, processname):
 
     #在庫表のステータス変更設定とrawを取得する。
     rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1500","raw!C3:C1500", "raw!AG3:AG1500", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    if len(rawData) == 0:
+        raise Exception("batchRead threw an error.")
     refs = rawData[0] if not rawData[0] == None else []
     ids = rawData[1] if not rawData[1] == None else []
     pcnames = rawData[2] if not rawData[2] == None else []
@@ -423,6 +427,8 @@ def downloadQuestStatus(spreadsheet):
                 EnvSettings.ACCOUNT_INFO_MAIN_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
                 EnvSettings.ACCOUNT_INFO_SP_END_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
                 ], "ROWS")
+    if len(statusRaw) == 0:
+        raise Exception("batchRead threw an error.")
 
     accounts = statusRaw[0]
     statuses = statusRaw[1]

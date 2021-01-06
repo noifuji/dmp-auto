@@ -88,23 +88,30 @@ public class SpreadSheetApis {
     return values;
   }
 	
-  public List<List<List<Object>>> batchRead(String spreadsheetId, List<String> ranges, String dimension) throws IOException  {
-    if (!dimension.equals("ROWS") && !dimension.equals("COLUMNS")) {
-      throw new IOException();
-    }
-    Sheets.Spreadsheets.Values.BatchGet request = service.spreadsheets().values()
-                                                .batchGet(spreadsheetId);
-    request.setRanges(ranges);
-    request.setMajorDimension(dimension);
-                        
-    BatchGetValuesResponse response = request.execute();
-    List<ValueRange> valueRanges = response.getValueRanges();
+  public List<List<List<Object>>> batchRead(String spreadsheetId, List<String> ranges, String dimension) {
+  	
     List<List<List<Object>>> result = new ArrayList<List<List<Object>>>();
   	
-    Iterator<ValueRange> iterator = valueRanges.iterator();
-    while(iterator.hasNext()) {
-      result.add(iterator.next().getValues());
+    if (!dimension.equals("ROWS") && !dimension.equals("COLUMNS")) {
+      return result;
     }
+  	
+  	try{
+        Sheets.Spreadsheets.Values.BatchGet request = service.spreadsheets().values()
+                                                    .batchGet(spreadsheetId);
+        request.setRanges(ranges);
+        request.setMajorDimension(dimension);
+                            
+        BatchGetValuesResponse response = request.execute();
+        List<ValueRange> valueRanges = response.getValueRanges();
+      	
+        Iterator<ValueRange> iterator = valueRanges.iterator();
+        while(iterator.hasNext()) {
+          result.add(iterator.next().getValues());
+        }
+  	}catch(Exception e){
+  			return result;
+  		}
     return result;
   }
 	
