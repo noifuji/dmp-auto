@@ -55,7 +55,6 @@ while True:
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.getPresent(NoxResources)
         CommonDMLib.getMissionRewards(NoxResources)
-        CommonDMLib.openOmikuji(NoxResources)
         exists(NoxResources.ICON_SOLO_PLAY, 60)
         res = CommonDMLib.scanAccountInfo(NoxResources)
         CommonDMLib.updateAccountInfo(sheets, workingRef, res[0], res[1], res[2], res[3],res[4])
