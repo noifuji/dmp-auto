@@ -318,6 +318,9 @@ def ChargeManaLarge(resources):
     mana = getManaNumBeforeCharge(resources)
     print 'ManaZone(Before charge):' + str(mana)
 
+    if getHandCount(resources,[]) <= 3 and mana > 6:
+        return
+
     #マナゾーンの色チェック
     for manaColorLoop in range(20):
         manaColors = getManaColor(resources)    
