@@ -39,9 +39,9 @@ def finishMissions(instance, statisticsData, sheets):
     CommonDMLib.closeMission(NoxResources)
     CommonDMLib.getPresent(NoxResources)
     CommonDMLib.getMissionRewards(NoxResources)
-    CommonDMLib.openOmikuji(NoxResources)
-    #if CommonDMLib.getBeginnerRewards(NoxResources):
-    #    CommonDMLib.openCardPack(NoxResources)
+    #CommonDMLib.openOmikuji(NoxResources)
+    if CommonDMLib.getBeginnerRewards(NoxResources):
+        CommonDMLib.openCardPack(NoxResources)
     if datetime.now().day == 2 or datetime.now().day == 16:
         for openCardListLoop in range(100):
             if len(findAny(NoxResources.ICON_CARD)) > 0:

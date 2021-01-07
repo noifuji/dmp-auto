@@ -318,9 +318,6 @@ def ChargeManaLarge(resources):
     mana = getManaNumBeforeCharge(resources)
     print 'ManaZone(Before charge):' + str(mana)
 
-    if mana >= 7:
-        return mana
-
     #マナゾーンの色チェック
     for manaColorLoop in range(20):
         manaColors = getManaColor(resources)    
@@ -349,7 +346,7 @@ def ChargeManaLarge(resources):
     print "findAnyList result : " +  str(len(Hand))
     
     #　チャージ
-    if len(Hand) == 0 and mana <= 6:
+    if len(Hand) == 0:
         if len(findAny(resources.ICON_MY_UNTAPPED_BLOCKER)) > 0:
             Hand = findAny(
                     resources.ICON_COST_GREEN_5,resources.ICON_COST_WHITE_3,
