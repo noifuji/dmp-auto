@@ -349,7 +349,7 @@ def loadRef(resources, ref, driveInstance):
     restoreCmd = [EnvSettings.NoxAdbPath, "restore", restoreFilePath]
     subprocess.Popen(restoreCmd, shell=True)
 
-    exists(resources.TITLE_FULLRESTORE, 60)
+    exists(resources.BUTTON_DO_RESTORE, 60)
     wait(5)
     click(resources.BUTTON_DO_RESTORE)
 
