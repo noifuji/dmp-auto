@@ -91,14 +91,14 @@ while True:
                 click(resources.TITLE_LEGEND_STAGE3)
             elif len(findAny(resources.TITLE_LEGEND_STAGE2)) > 0  and LOOP_LEVEL >= 2:
                 level = 2
-                strategy = 2
+                strategy = 103
                 try:
                     click(resources.TITLE_LEGEND_STAGE2)
                 except:
                     print "failed to click"
             elif len(findAny(resources.TITLE_LEGEND_STAGE1)) > 0 and LOOP_LEVEL >= 1:
                 level = 1
-                strategy = 2
+                strategy = 103
                 try:
                     click(resources.TITLE_LEGEND_STAGE1)
                 except:
