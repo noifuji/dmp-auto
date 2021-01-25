@@ -83,22 +83,22 @@ while True:
                     wait(0.2)
             if len(findAny(resources.TITLE_LEGEND_STAGE4)) > 0 and LOOP_LEVEL >= 4:
                 level = 4
-                strategy = 103
+                strategy = 104
                 click(resources.TITLE_LEGEND_STAGE4)
             elif len(findAny(resources.TITLE_LEGEND_STAGE3)) > 0 and LOOP_LEVEL >= 3:
                 level = 3
-                strategy = 103
+                strategy = 104
                 click(resources.TITLE_LEGEND_STAGE3)
             elif len(findAny(resources.TITLE_LEGEND_STAGE2)) > 0  and LOOP_LEVEL >= 2:
                 level = 2
-                strategy = 103
+                strategy = 104
                 try:
                     click(resources.TITLE_LEGEND_STAGE2)
                 except:
                     print "failed to click"
             elif len(findAny(resources.TITLE_LEGEND_STAGE1)) > 0 and LOOP_LEVEL >= 1:
                 level = 1
-                strategy = 103
+                strategy = 104
                 try:
                     click(resources.TITLE_LEGEND_STAGE1)
                 except:
