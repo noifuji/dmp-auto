@@ -158,7 +158,7 @@ while True:
                 
             if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
                 CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A target reward was acquired.', appname)
-                CommonDMLib.completeRef(sheets, workingRef, "MAIN")
+                CommonDMLib.completeRef(sheets, workingRef, appname)
                 targetRewardFlag = False
                 total_duel_count = 0
                 win_count =0
