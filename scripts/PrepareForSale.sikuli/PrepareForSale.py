@@ -29,8 +29,9 @@ def filterCardList(rarities, dmpps):
     for r in rarities:
         click(r["IMAGE"])
     wait(1)
-    wheel(Pattern("1599973746387.png").targetOffset(227,-209), Button.WHEEL_DOWN, 10)
+    wheel(Pattern("1599973746387.png").targetOffset(227,-209), Button.WHEEL_DOWN, 15)
     wait(5)
+    click(NoxResources.BUTTON_BASIC)
     for dmpp in dmpps:
         click(dmpp)
     click("1596590612922.png")
