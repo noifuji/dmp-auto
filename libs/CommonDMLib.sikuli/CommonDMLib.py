@@ -1397,6 +1397,8 @@ def getMissionRewards(resource):
             #        break
 
         if len(findAny(resource.BUTON_ACHIEVEMENTS_WITH_SIGN)) > 0:
+            click(resource.BUTON_ACHIEVEMENTS_WITH_SIGN)
+            wait(3)
             if len(findAny(resource.BUTTON_DAILY_REWARD_RECEIVE_ALL)) > 0:
                 click(resource.BUTTON_DAILY_REWARD_RECEIVE_ALL)
                 exists(resource.BUTTON_OK, 60)
