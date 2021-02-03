@@ -142,6 +142,8 @@ def getNextRef(sheets, processname):
         col = "AI"
     elif processname == "LOGIN":
         col = "AM"
+    elif processname == "SP":
+        col = "AJ"
     progressRange = "raw!" + col + "3:" + col + "1500"
 
     #在庫表のステータス変更設定とrawを取得する。
@@ -173,7 +175,7 @@ def getNextRef(sheets, processname):
             tmp["STATUS"] = ""
         refInfo.append(tmp)
 
-    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:F1500", "ROWS")
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:G1500", "ROWS")
     rawData = rawData if not rawData == None else []
     availableRefs = []
     for raw in rawData:
@@ -191,6 +193,9 @@ def getNextRef(sheets, processname):
                 continue
         elif processname == "LOGIN":
             if raw[5] == "" or raw[5] == "skip":
+                continue
+        elif processname == "SP":
+            if raw[6] == "" or raw[6] == "skip":
                 continue
         availableRefs.append(raw[0])
 
@@ -238,6 +243,8 @@ def completeRef(sheets, ref, processname):
         col = "AI"
     elif processname == "LOGIN":
         col = "AM"
+    elif processname == "SP":
+        col = "AJ"
     progressRange = "raw!" + col + "3:" + col + "1500"
 
     #在庫表のステータス変更設定とrawを取得する。
@@ -1024,30 +1031,33 @@ def skipRewards(resource):
 def skipNotifications(resource):
     print 'skipNotifications'
     print "checking notifications...."
-    #中断されたデュエル
-    if len(findAny(resource.MESSAGE_RESTART_DUEL)) > 0:
-        print 'A stopped duel is detected. It will be canceled.'
-        click(resource.BUTTON_CANCEL)
-    #前回のリザルト表示
-    if len(findAny(resource.MESSAGE_LAST_SP_BATTLE)) > 0 :
-        print 'The last SP duel result detected.'
-        click(resource.BUTTON_OK)
-        return -1
-    #前回のリザルト表示
-    if len(findAny(resource.MESSAGE_LAST_BATTLE)) > 0 :
-        print 'The last duel result detected.'
-        click(resource.BUTTON_OK)
-    
-    #アカウント連携
-    #if len(findAny(resource.BUTTON_LATER)) > 0 :
- #       print 'Account backup recommendation'
- #       click(resource.BUTTON_LATER)
-    
- #   if len(findAny(resource.AD)) > 0:
- #       print 'Ads was skipped.'
-  #      if len(findAny(resource.BUTTON_OK)) > 0:
-   #         click(resource.BUTTON_OK)
-    wait(1)
+    try:
+        #中断されたデュエル
+        if len(findAny(resource.MESSAGE_RESTART_DUEL)) > 0:
+            print 'A stopped duel is detected. It will be canceled.'
+            click(resource.BUTTON_CANCEL)
+        #前回のリザルト表示
+        if len(findAny(resource.MESSAGE_LAST_SP_BATTLE)) > 0 :
+            print 'The last SP duel result detected.'
+            click(resource.BUTTON_OK)
+            return -1
+        #前回のリザルト表示
+        if len(findAny(resource.MESSAGE_LAST_BATTLE)) > 0 :
+            print 'The last duel result detected.'
+            click(resource.BUTTON_OK)
+        
+        #アカウント連携
+        #if len(findAny(resource.BUTTON_LATER)) > 0 :
+     #       print 'Account backup recommendation'
+     #       click(resource.BUTTON_LATER)
+        
+     #   if len(findAny(resource.AD)) > 0:
+     #       print 'Ads was skipped.'
+      #      if len(findAny(resource.BUTTON_OK)) > 0:
+       #         click(resource.BUTTON_OK)
+        wait(1)
+    except:
+        print "failed to click"
     return 0
 
 def openMission(resource):
@@ -1284,6 +1294,30 @@ def openMainStory(resource):
             except:
                 print "failed to click"
 
+def openCityBattle(resource):
+    print 'openCityBattle'
+    breakCount = 0
+    for openStoryLoop in range(100):
+        if len(findAny(resource.ICON_SOLO_PLAY)) > 0:
+            click(resource.ICON_SOLO_PLAY)
+            wait(3)
+        if len(findAny(resource.BUTTON_CITY_BATTLE)) > 0:
+            click(resource.BUTTON_CITY_BATTLE)
+        if len(findAny(resource.BUTTON_BACK)) > 0:
+            click(resource.BUTTON_BACK2)
+        if len(findAny(resource.BUTTON_CONFIRM_REWARD)) > 0:
+            try:
+                click(resource.BUTTON_CONFIRM_REWARD)
+                if exists(resource.TITLE_REWARD_INFO,1) != None:
+                    type(Key.ESC)
+                    waitVanish(resource.TITLE_REWARD_INFO, 5)
+                    break
+            except:
+                print "failed to click"
+        if len(findAny(resource.TITLE_REWARD_INFO)) > 0:
+            type(Key.ESC)
+            waitVanish(resource.TITLE_REWARD_INFO, 5)
+            break
 def chooseMainStoryStage(resource, ep, stageImage):
     if ep == 1:
         if exists(resource.TITLE_EP1,1) == None and exists(resource.TITLE_EP1_LOW_RESOLUTION,1) == None:

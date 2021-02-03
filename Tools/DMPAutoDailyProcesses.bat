@@ -71,6 +71,14 @@ if %ERRORLEVEL%==50 (
  exit
 )
 
+
+@REM シティ周回
+java -jar sikulixide-2.0.4.jar -r .\scripts\CityBattle.sikuli
+if %ERRORLEVEL%==50 (
+ start .\Tools\auto_update.bat .\Tools\%~n0%~x0
+ exit
+)
+
 @REM リセマラ用メインストーリー周回
 @REM java -jar sikulixide-2.0.4.jar -r .\scripts\AllMainStories.sikuli -- reset
 @REM if %ERRORLEVEL%==50 (

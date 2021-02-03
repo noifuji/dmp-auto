@@ -74,7 +74,7 @@ def countEnemyBlockers(resources, images):
         raise Exception()
     res = findAny(resources.ICON_ENEMY_CARD_COUNT)
     if len(res) == 0:
-        return
+        return 0
     cardListRegion = Region(res[0].getX()+OFFSETX,res[0]. getY()+OFFSETY,WIDTH,HEIGHT)
     cardListRegion.highlight(0.1)
     count = 0
@@ -1116,7 +1116,7 @@ def irregularLoop(resources, appname):
             retire(resources)
         
         #   トリガー発動 
-        if appname not in ["SP"]:
+        if appname not in ["aa"]:
             if len(findAny(resources.BUTTON_ST)) > 0:
                 print 'My ST is triggered.'
                 try:
@@ -1206,7 +1206,7 @@ def irregularLoop(resources, appname):
                 wait(1)
 
         
-        if appname not in ["LEGEND", "DAILY"]:
+        if appname not in ["LEGEND", "DAILY","SP"]:
             if len(findAny(resources.BUTTON_RETRY)) > 0:
                 #game_loopを終了する。
                 click(resources.BUTTON_RETRY)
@@ -1317,7 +1317,7 @@ def gameLoop(resources, strategy, appname):
                             resources.ICON_ENEMY_UNTAPPED_BLOCKER3,
                             resources.ICON_ENEMY_UNTAPPED_BLOCKER4])
                 print "blockers : " + str(blockers)
-                if blockers == 0:
+                if blockers == 0 or blockers == None:
                     directAttackHakuho(resources, [resources.ICON_MY_UNTAPPED_CREATURE])
                     break
                 else:

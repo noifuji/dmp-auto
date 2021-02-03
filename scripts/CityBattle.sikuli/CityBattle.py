@@ -1,96 +1,165 @@
 import sys
 import traceback
-sys.path.append("DMLib.sikuli")
-sys.path.append("CommonDMLib.sikuli")
-sys.path.append("EnvSettings.sikuli")
-import DMLib
-import CommonDMLib
-import EnvSettings
 
-####################Settings####################
-Avator = Pattern("Avator.png").similar(0.90).targetOffset(315,1)
-#[Pattern("1597424555384.png").similar(0.95),"White1"],[Pattern("1597424593649.png").similar(0.95),"White2"],[Pattern("1597424607478.png").similar(0.95),"White3"]
-#        ,[Pattern("1597424731368.png").similar(0.93),"Blue1"],[Pattern("1597424744007.png").similar(0.95),"Blue2"],[Pattern("1597424751985.png").similar(0.95),"Blue3"]
-#[Pattern("1597424787191.png").similar(0.95),"Black3"]
-#        ,[Pattern("1597424814414.png").similar(0.95),"Red1"],[Pattern("1597424822070.png").similar(0.95),"Red2"],[Pattern("1597424829789.png").similar(0.95),"Red3"]
-#        ,[Pattern("1597424861488.png").similar(0.95),"Green1"],
-#[Pattern("1597424869238.png").similar(0.95),"Green2"],[Pattern("1597424877984.png").similar(0.95),"Green3"]
-#        ,[Pattern("1597063981103.png").similar(0.90),"Ushi3"]
-#        ,[Pattern("1597064015074.png").similar(0.94),"Bucket1"],
-targets = [[Pattern("1597064033286.png").similar(0.93),"Bucket2"],[Pattern("1597064046126.png").similar(0.94),"Bucket3"]]
-####################Settings####################
-slack_url = EnvSettings.slack_url
+sys.path.append(os.path.join(os.environ["DMP_AUTO_HOME"] , r"settings"))
+import EnvSettings
+sys.path.append(EnvSettings.LIBS_DIR_PATH)
+sys.path.append(EnvSettings.RES_DIR_PATH)
+import GameLib
+import CommonDMLib
+import AndAppResources
+import NoxResources
+from spreadsheetapis import SpreadSheetApis
+from driveapis import DriveApis
+
+#####Settings####
+TARGETS = [Pattern("1612247246785.png").similar(0.89),Pattern("1612247256112.png").similar(0.86)]
+TARGETS_COMP = [Pattern("1612247604601.png").similar(0.90),Pattern("1612247613700.png").similar(0.90)]
+#####Settings####
+
 mentionUser = EnvSettings.mentionUser
-AppPath = EnvSettings.AppPath
-appname = 'CityBattle'
+appname = 'SP'
 Settings.MoveMouseDelay = 0.1
 Settings.DelayBeforeDrag = 0.5
-DMApp = App(AppPath)
 total_duel_count = 0
 win_count =0
-restart_count = 0
+resources = None
+
+sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
+#Pre-processing Start
+
+if CommonDMLib.isNewVersionAvailable():
+    exit(50)
+CommonDMLib.downloadDeckCodes()
+
+if EnvSettings.ENGINE_FOR_LEGEND == "ANDAPP":
+    resources = AndAppResources
+    CommonDMLib.exitNox(resources)
+elif EnvSettings.ENGINE_FOR_LEGEND == "NOX":
+    resources = NoxResources
+    App(EnvSettings.AppPath).close()
+    App(EnvSettings.AndAppPath).close()
+    CommonDMLib.deleteIdentifiers()
+    drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
+#Pre-processing End
+
+
 
 #全体ループ
+targetRewardFlag = False
+exitFlag = False
 entire_loop_flag = True
-for target in targets:
-    DMLib.RestartApp(DMApp)
-    DMLib.OpenAndStartCityBattle(target[0])
-    #バトルループ
-    for battle_loop in range(200):
-        try:
+level = 0
+strategy = 104
+endFlag = False
+targetIndex = 0
+exceptionFlag = False
+while True:
+    try:
+        workingRef = "0"
+        if EnvSettings.ENGINE_FOR_LEGEND == "NOX":
+            workingRef = None
+            #Load Ref No
+            for retryCountGetNextRef in range(10):
+                workingRef = CommonDMLib.getNextRef(sheets, appname)
+                if workingRef != None:
+                    break
+                if retryCountGetNextRef == 9:
+                    endFlag = True
+                    break
+            if endFlag:
+                CommonDMLib.sendMessagetoSlack(mentionUser,'All City Stories were completed.', appname)
+                break
+            if (not CommonDMLib.isNoxOn()) or exceptionFlag:
+                print "restarting Nox..."
+                exceptionFlag = False
+                CommonDMLib.RestartNox(resources, "MAIN")
+            CommonDMLib.loadRef(NoxResources, workingRef, drive)
+        CommonDMLib.RestartApp(resources)
+        CommonDMLib.openCityBattle(resources)
+
+        exitFlag = True
+        targetIndex = 0
+        for (tar, comp) in zip(TARGETS, TARGETS_COMP):
+            if len(findAny(comp)) == 0 and len(findAny(tar)) > 0:
+                click(tar)
+                click(resources.BUTTON_SMALL_BATTLE_START)
+                exitFlag = False
+                break
+            targetIndex = targetIndex + 1
+
+        if exitFlag:
+            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']All targets were acquired.', appname)
+            CommonDMLib.completeRef(sheets, workingRef, appname)
+            CommonDMLib.noxCallKillDMPApp()
+            wait(5)
+            continue
+
+        exists(resources.BUTTON_LARGE_BATTLE_START,60)
+        deck = CommonDMLib.getDeckByStrategy(resources, strategy)
+        if CommonDMLib.chooseDeck(resources, deck[0]) == False:
+            CommonDMLib.addNewDeckByCode(resources, deck[1])
+        click(resources.BUTTON_LARGE_BATTLE_START)
+        #バトルループ
+        for battle_loop in range(200):
+            if total_duel_count % 5 == 0:
+                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']win/total = ' + str(win_count) + "/" + str(total_duel_count), appname)
             #バトル開始まで待機
-            if DMLib.waitStartingGame(AndAppResources) == -1:
+            if CommonDMLib.waitStartingGame(resources) == -1:
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
                 continue
             wait(10)
             # ゲームループ
-            game_loop_flag = True
-            for game_loop in range(10):
-                print "Inside Game Loop"
-                #  手札選択
-                if len(findAny(Avator)) > 0:
-                    click(Avator)
-                    wait(1)
-                #  マナチャージ
-                currentMana = DMLib.ChargeManaKuwakiri(DMApp)
-                #  召喚
-                DMLib.SummonKuwakiri(currentMana)
-                #  攻撃
-                DMLib.directAttack(DMApp,Pattern("1594948414271.png").similar(0.60))
-                #  ターンエンド
-                if len(findAny(Pattern("1594954855862-1.png").similar(0.84))) > 0:          
-                    keyDown(Key.SHIFT)
-                    type(Key.ENTER)
-                    keyUp(Key.SHIFT)
-                wait(1)
-                #  イレギュラーループ
-                if DMLib.irregularLoop() == 0:
-                    break
+            gameResult = GameLib.gameLoop(resources, strategy, appname)
             # ゲームループエンド
-            # 報酬を確認(WINで報酬なしなら終了)
-            DMLib.skipRewards()
-            total_duel_count+=1
-            if len(findAny("1595034514931.png")) > 0:
-                win_count+=1
-                wait(1)
-                #報酬をしぼりつくした場合、つぎのターゲットへ移行する。
-                if len(findAny(Pattern("1595129681765.png").similar(0.97))) > 0:
-                    print ''
-                    CommonDMLib.sendMessagetoSlack(mentionUser, str(target[1]) + ' rewards were completed.', appname)
-                    break
-                    
-            # 対戦開始をクリック
-            click("1594949925094.png")
-        except:
-            e = sys.exc_info()
-            for mes in e:
-                print(mes)
-            CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
-            CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
-            CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
-            restart_count+=1
-            DMLib.RestartApp(DMApp)
-            DMLib.OpenAndStartCityBattle(target[0])
-    #バトルループエンド
+            if not gameResult == "retire":
+                total_duel_count+=1
+            breakBattleLoopFlag = False
+            winFlag = False
+            for battleResultLoop in range(200):
+                print "battleResultLoop..." + str(battleResultLoop)
+                CommonDMLib.skipRewards(resources)
+                if len(findAny(resources.BUTTON_DUEL_HISTORY)) > 0:
+                    try:
+                        click(resources.BUTTON_DUEL_HISTORY)
+                    except:
+                        print "failed to click"
+                if len(findAny(resources.TITLE_DUEL_HISTORY)) > 0:
+                    try:
+                        click(resources.BUTTON_RESULT)
+                        wait(2)
+                        break
+                    except:
+                        print "failed to click"
+                if battleResultLoop >= 199:
+                    raise Exception("Too many battleResultLoop")
 
-     
+            if CommonDMLib.isNewVersionAvailable():
+                exit(50)
+            
+            if len(findAny(resources.ICON_WIN)) > 0:
+                if len(findAny(resources.IMAGE_NO_REWARDS)) > 0:
+                    CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']The target ' + targetIndex + ' was completed.', appname)
+                    win_count = 0
+                    break
+                else:
+                    win_count = win_count + 1
+                
+            click(resources.BUTTON_SMALL_BATTLE_START)
+            continue
+            
+        #バトルループエンド
+    except SystemExit as e:
+        if e == 50:
+            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
+        exit(e)
+    except:
+        e = sys.exc_info()
+        for mes in e:
+            print(mes)
+        CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
+        CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
+        if CommonDMLib.isNewVersionAvailable():
+            exit(50)
+        exceptionFlag = True
