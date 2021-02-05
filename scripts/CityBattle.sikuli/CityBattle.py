@@ -139,7 +139,7 @@ while True:
             
             if len(findAny(resources.ICON_WIN)) > 0:
                 if len(findAny(resources.IMAGE_NO_REWARDS)) > 0:
-                    CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']The target ' + targetIndex + ' was completed.', appname)
+                    CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']The target ' + str(targetIndex) + ' was completed.', appname)
                     win_count = 0
                     break
                 else:
