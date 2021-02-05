@@ -1135,7 +1135,7 @@ def irregularLoop(resources, appname):
             wait(0.5)
 
         #効果によるクリーチャー選択
-        if appname not in ["SP"]:
+        if appname not in ["aa"]:
             if len(findAny(resources.MESSAGE_TAP)) > 0 or \
             len(findAny(resources.MESSAGE_DEST))   > 0 or \
             len(findAny(resources.MESSAGE_EFFECT)) > 0 or \
