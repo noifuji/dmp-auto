@@ -1192,7 +1192,7 @@ def getMissionStrategy(resource, mission):
 #return -1 異常発生
 def waitStartingGame(resource):
     print 'waitStartingGame'
-    WAIT_TIME = 60
+    WAIT_TIME = 120
     myTurnCount = 0
     for num in range(WAIT_TIME):
         print "waiting game start..." + str(num) + "/" + str(WAIT_TIME)

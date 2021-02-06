@@ -160,6 +160,8 @@ while True:
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
+        wait(1)
+        CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
         exceptionFlag = True
