@@ -1192,12 +1192,13 @@ def getMissionStrategy(resource, mission):
 #return -1 異常発生
 def waitStartingGame(resource):
     print 'waitStartingGame'
-    WAIT_TIME = 120
+    WAIT_TIME = 15
     myTurnCount = 0
     for num in range(WAIT_TIME):
         print "waiting game start..." + str(num) + "/" + str(WAIT_TIME)
         #ストーリースキップ
         skipStory(resource)
+        wait(1)
         #マッチングしなかった場合
         if len(findAny(resource.MESSAGE_NO_OPPONENTS)) > 0:
             try:
@@ -1209,22 +1210,28 @@ def waitStartingGame(resource):
                 return -1
             except:
                 print "failed to click"
+        wait(1)
         if len(findAny(resource.BUTTON_RETRY)) > 0:
             click(resource.BUTTON_RETRY)
+        wait(1)
         if len(findAny(resource.MESSAGE_ERROR_9003)) > 0:
             raise Exception
+        wait(1)
             
         if len(findAny(resource.MESSAGE_CONNECTION_LOST)) >0 :
             click(resource.BUTTON_OK)
             exists(resource.ICON_EXTRA,120)
             return -1
+        wait(1)
         if len(findAny(resource.BUTTON_TURN_END)) > 0:
             myTurnCount += 1
             print "myTurnCount:" + str(myTurnCount)
-            if myTurnCount >= 3:
+            if myTurnCount >= 2:
                 break
+        wait(1)
         if len(findAny(resource.BUTTON_SMALL_BATTLE_START)) > 0:
             break
+        wait(1)
         if num >= (WAIT_TIME-1):
             raise Exception("Too many waitStartingGame loop")
         wait(1)

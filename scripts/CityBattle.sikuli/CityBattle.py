@@ -141,6 +141,7 @@ while True:
                 if len(findAny(resources.IMAGE_NO_REWARDS)) > 0:
                     CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']The target ' + str(targetIndex) + ' was completed.', appname)
                     win_count = 0
+                    total_duel_count = 0
                     break
                 else:
                     win_count = win_count + 1
@@ -159,8 +160,6 @@ while True:
             print(mes)
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
-        CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
-        wait(1)
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
