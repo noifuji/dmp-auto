@@ -1851,6 +1851,8 @@ def RestartApp(resource):
     #結果発表をスキップ
     for resultLoop in range(60):
         print "checking monthly competition result...." + str(resultLoop)
+        if len(findAny(resource.ICON_HOME)) > 0:
+            break
         if len(findAny(resource.BUTTON_TAP_AND_NEXT)) > 0:
             for resultLoop in range(10):
                 click(Pattern("1598926999345.png").targetOffset(124,106))
@@ -1861,14 +1863,14 @@ def RestartApp(resource):
     #ログインボーナスやらキャンペーンをスキップ
     for num in range(60):
         print "checking login bonus.." + str(num)
+        if len(findAny(resource.ICON_HOME)) > 0:
+            break
         if len(findAny(resource.BUTTON_SKIP)) > 0: 
             click(resource.BUTTON_SKIP)
             wait(1)
         if len(findAny(resource.BUTTON_OK)) > 0:
             click(resource.BUTTON_OK)
             wait(1)
-        if exists(resource.ICON_HOME,2) != None:
-            break
         wait(1)
     for skipLoop in range(120):
         if skipNotifications(resource) == -1:

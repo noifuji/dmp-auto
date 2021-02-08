@@ -77,6 +77,7 @@ while True:
             CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(resources)
         CommonDMLib.openCityBattle(resources)
+        wait(1)
 
         exitFlag = True
         targetIndex = 0
@@ -86,7 +87,10 @@ while True:
                 click(resources.BUTTON_SMALL_BATTLE_START)
                 exitFlag = False
                 break
-            targetIndex = targetIndex + 1
+            elif len(findAny(comp)) > 0 and len(findAny(tar)) > 0:
+                targetIndex = targetIndex + 1
+            else:
+                raise Exception("Invalid city status")
 
         if exitFlag:
             CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']All targets were acquired.', appname)
