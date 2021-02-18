@@ -620,6 +620,8 @@ def scanAccountInfo(resource):
             {"NAME":"PACK6SR","IMAGE":resource.TITLE_PACK6SR},
             {"NAME":"PACK7","IMAGE":resource.TITLE_PACK7},
             {"NAME":"PACK7SR","IMAGE":resource.TITLE_PACK7SR},
+            {"NAME":"PACK8","IMAGE":resource.TITLE_PACK8},
+            {"NAME":"PACK8SR","IMAGE":resource.TITLE_PACK8SR},
             {"NAME":"BEST","IMAGE":resource.TICKET_BEST},
             {"NAME":"SUPER","IMAGE":resource.TICKET_SUPER2021},
             {"NAME":"BUILDER","IMAGE":resource.TICKET_BUILDER},]
@@ -666,7 +668,7 @@ def scanAccountInfo(resource):
             tempPacks[ts[i]["NAME"]] = res
             scanCount += 1
             if scanCount % 2 == 0:
-                Settings.MoveMouseDelay = 1
+                Settings.MoveMouseDelay = 3
                 dragDrop(resource.TITLE_ITEM_DRAG, resource.TITLE_ITEM_DROP)
                 Settings.MoveMouseDelay = 0.1
                 wait(1)
@@ -680,7 +682,7 @@ def scanAccountInfo(resource):
 
     packs = [tempPacks["PACK1"],tempPacks["PACK2"],tempPacks["PACK3"],
             tempPacks["PACK4"],tempPacks["PACK5"],tempPacks["PACK6"],
-            tempPacks["PACK7"],0,0]
+            tempPacks["PACK7"],tempPacks["PACK8"],0]
 
     specialPacks = [
             int(tempPacks["PACK5SR"]), 
@@ -688,7 +690,8 @@ def scanAccountInfo(resource):
             int(tempPacks["BEST"]),
             int(tempPacks["PACK7SR"]),
             int(tempPacks["BUILDER"]),
-            int(tempPacks["SUPER"])]
+            int(tempPacks["SUPER"]),
+            int(tempPacks["PACK8SR"])]
     return [lv, dmp, gold, packs, specialPacks]
 
 def downloadFile(url, dest):
@@ -846,6 +849,7 @@ def countAllCardsByRarity(resource):
         click(resource.BUTTON_DMPP05)
         click(resource.BUTTON_DMPP06)
         click(resource.BUTTON_DMPP07)
+        click(resource.BUTTON_DMPP08)
         click(resource.BUTTON_OK)
         wait(0.5)
         

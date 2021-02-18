@@ -68,6 +68,7 @@ try:
         CommonDMLib.RestartNox(NoxResources, "MAIN")
     CommonDMLib.loadRef(NoxResources, ref, drive)
     CommonDMLib.RestartApp(NoxResources)
+    CommonDMLib.getPresent(NoxResources)
     
     fId = drive.createFolder(str(ref), "1ApCg9taRAEmK7QH93bxmoIzMbRaC_r7m")
 
@@ -125,9 +126,9 @@ try:
     TARGET_RARITY = [{"NAME":"VR", "IMAGE":NoxResources.BUTTON_RARITY_VERYRARE}, 
             {"NAME":"SR", "IMAGE":NoxResources.BUTTON_RARITY_SUPERRARE}]
     TARGET_DMPP = [[NoxResources.BUTTON_DMPP01, NoxResources.BUTTON_DMPP02,NoxResources.BUTTON_DMPP03], 
-            [NoxResources.BUTTON_DMPP04, NoxResources.BUTTON_DMPP05,NoxResources.BUTTON_DMPP06,NoxResources.BUTTON_DMPP07]]
+            [NoxResources.BUTTON_DMPP04, NoxResources.BUTTON_DMPP05,NoxResources.BUTTON_DMPP06],[NoxResources.BUTTON_DMPP07, NoxResources.BUTTON_DMPP08]]
     for rarity in TARGET_RARITY:
-        filterCardList([rarity], TARGET_DMPP[0] + TARGET_DMPP[1])
+        filterCardList([rarity], TARGET_DMPP[0] + TARGET_DMPP[1] + TARGET_DMPP[2])
         if exists(NoxResources.SCROLL1,1) == None:
             image = captureImage(NoxResources.TITLE_CARD_LIST, 47, 1340, 620)
             drive.uploadFile(rarity["NAME"] + ".png", image.getFilename(), fId, "image/png")
