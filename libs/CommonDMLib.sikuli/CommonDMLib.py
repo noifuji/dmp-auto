@@ -180,7 +180,7 @@ def getNextRef(sheets, processname):
     availableRefs = []
     for raw in rawData:
         tmp = {}
-        if raw[1] == "sold":
+        if raw[1] == "sold" or raw[1] == "ordered":
             continue
         if processname == "DAILY":
             if raw[2] == "" or raw[2] == "skip":
