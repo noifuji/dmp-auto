@@ -13,7 +13,7 @@ from spreadsheetapis import SpreadSheetApis
 from driveapis import DriveApis
 
 #####Settings####
-LOOP_LEVEL = 3
+LOOP_LEVEL = 2
 #####Settings####
 
 mentionUser = EnvSettings.mentionUser
