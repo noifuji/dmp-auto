@@ -233,6 +233,20 @@ def getNextRef(sheets, processname):
     else:
         return None
 
+def updateLastAccessDatetime(sheets):
+    COMPUTERNAME = os.environ["COMPUTERNAME"]
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "state!A2:A100", "COLUMNS")
+    rawData = rawData if not rawData == None else []
+    targetRow = 2
+    for p in rawData[0]:
+        if p == COMPUTERNAME:
+            break
+        targetRow = targetRow + 1
+
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            "state" + "!" + "B" + str(targetRow), 
+            [[datetime.now().strftime("%Y/%m/%d %H:%M:%S")]], "ROWS")
+
 def completeRef(sheets, ref, processname):
     col = ""
     if processname == "DAILY":
@@ -291,6 +305,8 @@ def completeRef(sheets, ref, processname):
     sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             "raw" + "!AG" + str(targetRow), 
             [[""]], "ROWS")
+
+    updateLastAccessDatetime(sheets)
 
 def deleteIdentifiers():
     cmd = ["del", EnvSettings.BACKUP_DIR_PATH+"\\", "/Q"]
@@ -1196,13 +1212,12 @@ def getMissionStrategy(resource, mission):
 #return -1 異常発生
 def waitStartingGame(resource):
     print 'waitStartingGame'
-    WAIT_TIME = 15
+    WAIT_TIME = 90
     myTurnCount = 0
     for num in range(WAIT_TIME):
         print "waiting game start..." + str(num) + "/" + str(WAIT_TIME)
         #ストーリースキップ
         skipStory(resource)
-        wait(1)
         #マッチングしなかった場合
         if len(findAny(resource.MESSAGE_NO_OPPONENTS)) > 0:
             try:
@@ -1214,28 +1229,27 @@ def waitStartingGame(resource):
                 return -1
             except:
                 print "failed to click"
-        wait(1)
         if len(findAny(resource.BUTTON_RETRY)) > 0:
             click(resource.BUTTON_RETRY)
-        wait(1)
+
         if len(findAny(resource.MESSAGE_ERROR_9003)) > 0:
             raise Exception
-        wait(1)
+
             
         if len(findAny(resource.MESSAGE_CONNECTION_LOST)) >0 :
             click(resource.BUTTON_OK)
             exists(resource.ICON_EXTRA,120)
             return -1
-        wait(1)
+
         if len(findAny(resource.BUTTON_TURN_END)) > 0:
             myTurnCount += 1
             print "myTurnCount:" + str(myTurnCount)
             if myTurnCount >= 2:
                 break
-        wait(1)
+
         if len(findAny(resource.BUTTON_SMALL_BATTLE_START)) > 0:
             break
-        wait(1)
+
         if num >= (WAIT_TIME-1):
             raise Exception("Too many waitStartingGame loop")
         wait(1)

@@ -73,27 +73,34 @@ while True:
         click(resources.ICON_EXTRA)
         wait(3)
         click(resources.BUTTON_LEGEND_BATTLE)
-    
-    
-        for battleStartLoop in range(200):
-            print "battleStartLoop..." + str(battleStartLoop)
+
+        for skipTutorial in range(200):
+            print "skipTutorial..." + str(skipTutorial)
             if len(findAny(resources.BUTTON_BACK2)) > 0:
                 for skipTutorialLoop in range(10):
                     click(resources.BUTTON_BACK2)
                     wait(0.2)
+                break
+            wait(1)
+        
+        for selectStageLoop in range(200):
+            print "selectStageLoop..." + str(selectStageLoop)
             if len(findAny(resources.TITLE_LEGEND_STAGE4)) > 0 and LOOP_LEVEL >= 4:
                 level = 4
                 strategy = 104
                 click(resources.TITLE_LEGEND_STAGE4)
+                break
             elif len(findAny(resources.TITLE_LEGEND_STAGE3)) > 0 and LOOP_LEVEL >= 3:
                 level = 3
                 strategy = 104
                 click(resources.TITLE_LEGEND_STAGE3)
+                break
             elif len(findAny(resources.TITLE_LEGEND_STAGE2)) > 0  and LOOP_LEVEL >= 2:
                 level = 2
                 strategy = 104
                 try:
                     click(resources.TITLE_LEGEND_STAGE2)
+                    break
                 except:
                     print "failed to click"
             elif len(findAny(resources.TITLE_LEGEND_STAGE1)) > 0 and LOOP_LEVEL >= 1:
@@ -101,9 +108,14 @@ while True:
                 strategy = 104
                 try:
                     click(resources.TITLE_LEGEND_STAGE1)
+                    break
                 except:
                     print "failed to click"
-
+                    
+            wheel(resources.TITLE_LEGEND_BATTLE, Button.WHEEL_DOWN, 20)
+                    
+        for battleStartLoop in range(200):
+            print "battleStartLoop..." + str(battleStartLoop)
             if len(findAny(resources.BUTTON_SMALL_BATTLE_START)) > 0:
                 try:
                     click(resources.BUTTON_SMALL_BATTLE_START)
