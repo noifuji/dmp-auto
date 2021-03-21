@@ -119,10 +119,12 @@ TITLE_DMPOINT = "1600525496880.png"
 BUTTON_SETTINGS = "1603422089697.png"
 #################LegendBattle####################
 IMAGE_NO_REWARDS = Pattern("1612258768121.png").similar(0.95)
-ICON_TARGET_REWARD = Pattern("1612100763780.png").similar(0.91)#Pattern("1607732990056.png").similar(0.92)Pattern("1601645476931.png").similar(0.90)
+ICON_TARGET_REWARD = Pattern("1616303790095.png").similar(0.98)#Pattern("1612100763780.png").similar(0.91)#Pattern("1607732990056.png").similar(0.92)Pattern("1601645476931.png").similar(0.90)
 ICON_SP_TARGET_REWARD = Pattern("1604633026386.png").similar(0.86)#Pattern("1601973838151.png").similar(0.85)
-ICON_NEXT_REWARD_OF_TARGET = "ICON_NEXT_REWARD_OF_TARGET.png"
+ICON_NEXT_REWARD_OF_TARGET = Pattern("1616305958171.png").similar(0.98)#"ICON_NEXT_REWARD_OF_TARGET.png"
 ICON_REWARD_COMPLETED = "1601643940453.png"
+BUTTON_CHECK_REWARD = Pattern("1616306260652.png").similar(0.93)
+IMAGE_TARGET_POINT = Pattern("1616306377880.png").similar(0.96)
 TITLE_LEGEND_BATTLE = Pattern("1616206128115.png").similar(0.92).targetOffset(-21,253)
 TITLE_LEGEND_STAGE1 = Pattern("1616142452265.png").similar(0.95)
 TITLE_LEGEND_STAGE2 = Pattern("1616142469714.png").similar(0.95)

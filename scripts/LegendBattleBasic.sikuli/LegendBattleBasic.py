@@ -50,6 +50,7 @@ exitFlag = False
 entire_loop_flag = True
 level = 0
 strategy = 100
+exceptionCount = 0
 endFlag = False
 while True:
     try:
@@ -67,7 +68,9 @@ while True:
             if endFlag:
                 CommonDMLib.sendMessagetoSlack(mentionUser,'All Main Stories were completed.', appname)
                 break
-            CommonDMLib.RestartNox(resources, "MAIN")
+            if (not CommonDMLib.isNoxOn()) or exceptionCount > 5:
+                exceptionCount = 0
+                CommonDMLib.RestartNox(resources, "MAIN")
             CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(resources)
         click(resources.ICON_EXTRA)
@@ -165,17 +168,31 @@ while True:
                 if battleResultLoop >= 199:
                     raise Exception("Too many battleResultLoop")
                 
-            if len(findAny(resources.ICON_TARGET_REWARD)) > 0:
-                targetRewardFlag = True
+            #if len(findAny(resources.ICON_TARGET_REWARD)) > 0:
+            #    targetRewardFlag = True
                 
-            if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
+            #if (len(findAny(resources.ICON_NEXT_REWARD_OF_TARGET)) > 0 and targetRewardFlag == True) or len(findAny(resources.ICON_REWARD_COMPLETED)) > 0:
+            #    CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A target reward was acquired.', appname)
+            #    CommonDMLib.completeRef(sheets, workingRef, appname)
+           #     targetRewardFlag = False
+          #      total_duel_count = 0
+        #        win_count =0
+         #       break
+
+
+            click(resources.BUTTON_CHECK_REWARD)
+            exists(resources.TITLE_REWARD_POINT, 30)
+            if len(findAny(resources.IMAGE_TARGET_POINT)) > 0:
                 CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A target reward was acquired.', appname)
                 CommonDMLib.completeRef(sheets, workingRef, appname)
                 targetRewardFlag = False
                 total_duel_count = 0
                 win_count =0
                 break
-
+            type(Key.ESC)
+            waitVanish(resources.TITLE_REWARD_POINT, 60)
+            wait(3)
+                
             if CommonDMLib.isNewVersionAvailable():
                 exit(50)
             
@@ -207,4 +224,5 @@ while True:
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
-        CommonDMLib.exitNox(NoxResources)
+        CommonDMLib.noxCallKillDMPApp()
+        exceptionCount = exceptionCount + 1
