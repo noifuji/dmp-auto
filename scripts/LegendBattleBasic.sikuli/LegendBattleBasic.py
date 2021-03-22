@@ -136,8 +136,6 @@ while True:
         click(resources.BUTTON_LARGE_BATTLE_START)
         #バトルループ
         for battle_loop in range(200):
-            if total_duel_count % 5 == 0:
-                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']win/total = ' + str(win_count) + "/" + str(total_duel_count), appname)
             #バトル開始まで待機
             if CommonDMLib.waitStartingGame(resources) == -1:
                 CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
@@ -204,10 +202,12 @@ while True:
                 else:
                     click(resources.BUTTON_SMALL_BATTLE_START)
                     win_count += 1
+                    CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']win/total = ' + str(win_count) + "/" + str(total_duel_count), appname)
                     continue
                 
             if len(findAny(resources.ICON_LOSE)) > 0:
                 click(resources.BUTTON_SMALL_BATTLE_START)
+                CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']win/total = ' + str(win_count) + "/" + str(total_duel_count), appname)
                 continue
             
         #バトルループエンド
