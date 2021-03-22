@@ -1088,11 +1088,13 @@ def battle(resources):
 def retire(resources):
     for retireLoop in range(5):
        type(Key.ESC)
+       wait(1)
        if exists(resources.MESSAGE_RETIRE, 3) != None:
            try:
                click(resources.BUTTON_OK3)
            except:
                print "failed to click"
+               continue
            break
 
 #ゲーム中のイレギュラーの処理
