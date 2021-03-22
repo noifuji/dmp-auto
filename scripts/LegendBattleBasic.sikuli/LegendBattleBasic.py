@@ -148,9 +148,10 @@ while True:
                 total_duel_count+=1
             breakBattleLoopFlag = False
             winFlag = False
-            for battleResultLoop in range(200):
+            for battleResultLoop in range(60):
                 print "battleResultLoop..." + str(battleResultLoop)
-                CommonDMLib.skipRewards(resources)
+                type(Key.ESC)
+                #CommonDMLib.skipRewards(resources)
                 if len(findAny(resources.BUTTON_DUEL_HISTORY)) > 0:
                     try:
                         click(resources.BUTTON_DUEL_HISTORY)
@@ -163,7 +164,7 @@ while True:
                         break
                     except:
                         print "failed to click"
-                if battleResultLoop >= 199:
+                if battleResultLoop >= 59:
                     raise Exception("Too many battleResultLoop")
                 
             #if len(findAny(resources.ICON_TARGET_REWARD)) > 0:
