@@ -51,6 +51,7 @@ entire_loop_flag = True
 level = 0
 strategy = 100
 exceptionCount = 0
+restartCount = 0
 endFlag = False
 while True:
     try:
@@ -68,9 +69,10 @@ while True:
             if endFlag:
                 CommonDMLib.sendMessagetoSlack(mentionUser,'All Main Stories were completed.', appname)
                 break
-            if (not CommonDMLib.isNoxOn()) or exceptionCount > 5:
+            if (not CommonDMLib.isNoxOn()) or exceptionCount > 3:
                 exceptionCount = 0
                 CommonDMLib.RestartNox(resources, "MAIN")
+                restartCount = restartCount + 1
             CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(resources)
         click(resources.ICON_EXTRA)
@@ -223,6 +225,10 @@ while True:
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
+        if restartCount > EnvSettings.RESTART_COUNT_LIMIT:
+            CommonDMLib.restartOS()
+            CommonDMLib.sendMessagetoSlack(mentionUser,"Restart OS", appname)
+            exit()
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
         CommonDMLib.noxCallKillDMPApp()

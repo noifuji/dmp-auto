@@ -35,6 +35,7 @@ drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 retryCount = 0
 endFlag = False
 exceptionFlag = False
+restartCount = 0
 while True:
     try:
         for retryCountGetNextRef in range(10):
@@ -51,6 +52,7 @@ while True:
             print "MAIN is off"
             exceptionFlag = False
             CommonDMLib.RestartNox(NoxResources, "MAIN")
+            restartCount = restartCount + 1
         CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.getPresent(NoxResources)
@@ -72,6 +74,10 @@ while True:
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(workingRef) + '.', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.sendMessagetoSlack(mentionUser, "Screenshot" ,appname)
+        if restartCount > EnvSettings.RESTART_COUNT_LIMIT:
+            CommonDMLib.restartOS()
+            CommonDMLib.sendMessagetoSlack(mentionUser,"Restart OS", appname)
+            exit()
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
         exceptionFlag = True

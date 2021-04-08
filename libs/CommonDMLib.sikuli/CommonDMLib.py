@@ -23,6 +23,10 @@ def killNoxInstance():
     cmd = 'taskkill /im Nox.exe /t /F'
     returncode = subprocess.Popen(cmd, shell=True)
 
+def restartOS():
+    cmd = 'shutdown.exe -r -t 60'
+    returncode = subprocess.Popen(cmd, shell=True)
+
 def getCredentials():
     f = open(os.path.join(EnvSettings.DATA_DIR_PATH , EnvSettings.CREDENTIALS_JSON_FILE))
     strCredentials = f.read()

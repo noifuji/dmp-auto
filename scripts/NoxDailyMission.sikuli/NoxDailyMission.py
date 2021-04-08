@@ -85,6 +85,7 @@ statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_
 instanceIndex = 0
 retryCount = 0
 exceptionCount = 0
+restartCount = 0
 endFlag = False
 while True:
     try:
@@ -116,10 +117,11 @@ while True:
             instanceIndex += 1
             continue
         
-        if (not CommonDMLib.isNoxOn()) or exceptionCount > 5:
+        if (not CommonDMLib.isNoxOn()) or exceptionCount > 3:
             print "restarting Nox..."
             exceptionCount = 0
             CommonDMLib.RestartNox(NoxResources, "MAIN")
+            restartCount = restartCount + 1
         CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)
@@ -213,8 +215,12 @@ while True:
             print(mes)
         CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
+        if restartCount > EnvSettings.RESTART_COUNT_LIMIT:
+            CommonDMLib.restartOS()
+            CommonDMLib.sendMessagetoSlack(mentionUser,"Restart OS", appname)
+            exit()
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
         CommonDMLib.noxCallKillDMPApp()
-        exceptionCountag = exceptionCount + 1
+        exceptionCount = exceptionCount + 1
         wait(5)

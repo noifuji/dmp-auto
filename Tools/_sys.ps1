@@ -22,3 +22,16 @@ $Principal = New-ScheduledTaskPrincipal -UserId $sid -LogonType ServiceAccount -
 
 
 Register-ScheduledTask -TaskPath "\DMPAuto\" -TaskName "KillProcess" -Trigger $Trigger -Action $Action -Principal $Principal -Settings $settings -Force
+
+
+$sid = ([wmi]"win32_userAccount.Domain='$Env:Computername',Name='$env:username'").sid
+$currentPath = $PSScriptRoot
+$batPath = $currentPath +  "\DMPAutoDailyProcesses.bat"
+
+$Trigger = New-ScheduledTaskTrigger -AtLogon
+$Action = New-ScheduledTaskAction -Execute $batPath
+$settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit 23:50:00
+$Principal = New-ScheduledTaskPrincipal -UserId $sid -LogonType ServiceAccount -RunLevel Highest
+
+
+Register-ScheduledTask -TaskPath "\DMPAuto\" -TaskName "Startup" -Trigger $Trigger -Action $Action -Principal $Principal -Settings $settings -Force

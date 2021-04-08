@@ -9,10 +9,11 @@ SLACK_UPLOAD_URL = 'https://slack.com/api/files.upload'
 LIBS_DIR_PATH = os.path.join(DMP_AUTO_HOME , r"libs")
 RES_DIR_PATH = os.path.join(DMP_AUTO_HOME , r"resources")
 DATA_DIR_PATH = os.path.join(DMP_AUTO_HOME , r"data")
-REMOVE_DATA_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\noxRemoveDMData\noxRemovePkgData.bat")
-NOX_START_APP_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\noxRemoveDMData\startDMPApp.bat")
-NOX_KILL_APP_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\noxRemoveDMData\killDMPApp.bat")
-NOX_BACKUP_APP_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\noxRemoveDMData\backupDMPApp.bat")
+REMOVE_DATA_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\bat\noxRemovePkgData.bat")
+NOX_START_APP_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\bat\startDMPApp.bat")
+NOX_KILL_APP_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\bat\killDMPApp.bat")
+NOX_BACKUP_APP_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\bat\backupDMPApp.bat")
+RESTART_OS_BAT_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib\bat\restartOS.bat")
 JAVA_API_PATH = os.path.join(DMP_AUTO_HOME , r"libs\ThirdPartyLib/javaapis/build/libs/javaapis-all.jar")
 COMPLETED_INSTANCES_JSON_FILE = "CompletedInstance.json"
 DECK_CODE_JSON_FILE = "DMPAutoDeckCodes.json"
@@ -20,6 +21,8 @@ CREDENTIALS_JSON_FILE = "credentials.json"
 BACKUP_DIR_NAME = "20201203"
 BACKUP_DIR_PATH = os.path.join(DMP_AUTO_HOME , r"data\identifier")
 USER_SETTINGS_SHEET_ID = UserSettings.USER_SETTINGS_SHEET_ID
+
+RESTART_COUNT_LIMIT = 10
 
 #account status
 ACCOUNT_INFO_SHEET_NAME = "raw"
