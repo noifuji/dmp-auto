@@ -225,6 +225,7 @@ while True:
         CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
         CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "screenshot" ,appname)
+        CommonDMLib.sendMessagetoSlack(mentionUser,"ExceptionCount:" + str(exceptionCount) + "/RestartCount:" + str(restartCount), appname)
         if restartCount > EnvSettings.RESTART_COUNT_LIMIT:
             CommonDMLib.restartOS()
             CommonDMLib.sendMessagetoSlack(mentionUser,"Restart OS", appname)
