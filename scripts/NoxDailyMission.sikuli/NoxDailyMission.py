@@ -120,8 +120,8 @@ while True:
         if (not CommonDMLib.isNoxOn()) or exceptionCount > 3:
             print "restarting Nox..."
             exceptionCount = 0
-            CommonDMLib.RestartNox(NoxResources, "MAIN")
             restartCount = restartCount + 1
+            CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.openMission(NoxResources)

@@ -71,8 +71,8 @@ while True:
                 break
             if (not CommonDMLib.isNoxOn()) or exceptionCount > 3:
                 exceptionCount = 0
-                CommonDMLib.RestartNox(resources, "MAIN")
                 restartCount = restartCount + 1
+                CommonDMLib.RestartNox(resources, "MAIN")
             CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(resources)
         click(resources.ICON_EXTRA)

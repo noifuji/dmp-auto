@@ -51,8 +51,8 @@ while True:
         if (not CommonDMLib.isNoxOn()) or exceptionFlag:
             print "MAIN is off"
             exceptionFlag = False
-            CommonDMLib.RestartNox(NoxResources, "MAIN")
             restartCount = restartCount + 1
+            CommonDMLib.RestartNox(NoxResources, "MAIN")
         CommonDMLib.loadRef(NoxResources, workingRef, drive)
         CommonDMLib.RestartApp(NoxResources)
         CommonDMLib.getPresent(NoxResources)
