@@ -139,19 +139,27 @@ def getNextRef(sheets, processname):
     
     col = ""
     if processname == "DAILY":
-        col = "AL"
+        col = EnvSettings.ACCOUNT_INFO_DAILY_COL
     elif processname == "MAIN":
-        col = "AH"
+        col = EnvSettings.ACCOUNT_INFO_MAIN_COL
     elif processname == "LEGEND":
-        col = "AI"
+        col = EnvSettings.ACCOUNT_INFO_LEGEND_COL
     elif processname == "LOGIN":
-        col = "AM"
+        col = EnvSettings.ACCOUNT_INFO_LOGIN_COL
     elif processname == "SP":
-        col = "AJ"
-    progressRange = "raw!" + col + "3:" + col + "1500"
+        col = EnvSettings.ACCOUNT_INFO_SP_END_COL
+    progressRange = EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + col + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + col + EnvSettings.ACCOUNT_INFO_END_ROW
 
     #在庫表のステータス変更設定とrawを取得する。
-    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1500","raw!C3:C1500", "raw!AG3:AG1500", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            [EnvSettings.ACCOUNT_INFO_SHEET_NAME + 
+                "!" + EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+                EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_END_ROW,
+                EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_PLAYERID_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+                EnvSettings.ACCOUNT_INFO_PLAYERID_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
+                EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" +
+                EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
+                progressRange], "ROWS")
     if len(rawData) == 0:
         raise Exception("batchRead threw an error.")
     refs = rawData[0] if not rawData[0] == None else []
@@ -225,12 +233,12 @@ def getNextRef(sheets, processname):
         
     #空いてるrefのWORKERとSTATUSに書き込む
     sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
-            "raw" + "!AG" + str(targetRef["ROW_NO"]), 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(targetRef["ROW_NO"]), 
             [[COMPUTERNAME]], "ROWS")
 
     wait(3)
     updatedPcname = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
-            "raw" + "!AG" + str(targetRef["ROW_NO"]), "ROWS")
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(targetRef["ROW_NO"]), "ROWS")
     
     if updatedPcname[0][0] == COMPUTERNAME:
         return targetRef["REF"]
@@ -253,20 +261,31 @@ def updateLastAccessDatetime(sheets):
 
 def completeRef(sheets, ref, processname):
     col = ""
+
     if processname == "DAILY":
-        col = "AL"
+        col = EnvSettings.ACCOUNT_INFO_DAILY_COL
     elif processname == "MAIN":
-        col = "AH"
+        col = EnvSettings.ACCOUNT_INFO_MAIN_COL
     elif processname == "LEGEND":
-        col = "AI"
+        col = EnvSettings.ACCOUNT_INFO_LEGEND_COL
     elif processname == "LOGIN":
-        col = "AM"
+        col = EnvSettings.ACCOUNT_INFO_LOGIN_COL
     elif processname == "SP":
-        col = "AJ"
-    progressRange = "raw!" + col + "3:" + col + "1500"
+        col = EnvSettings.ACCOUNT_INFO_SP_END_COL
+    progressRange = EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + col + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + col + EnvSettings.ACCOUNT_INFO_END_ROW
+
 
     #在庫表のステータス変更設定とrawを取得する。
-    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, ["raw!B3:B1500","raw!C3:C1500", "raw!AG3:AG1500", progressRange], "ROWS")#[[[1020][1021]...],[[[][][]..]]..]
+    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            [EnvSettings.ACCOUNT_INFO_SHEET_NAME + 
+                "!" + EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+                EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_END_ROW,
+                EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_PLAYERID_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+                EnvSettings.ACCOUNT_INFO_PLAYERID_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
+                EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" +
+                EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
+                progressRange], "ROWS")
+    
     if len(rawData) == 0:
         raise Exception("batchRead threw an error.")
     refs = rawData[0] if not rawData[0] == None else []
@@ -304,10 +323,10 @@ def completeRef(sheets, ref, processname):
         raise Exception("No working ref")
     
     sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
-            "raw" + "!" + col + str(targetRow), 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + col + str(targetRow), 
             [["complete"]], "ROWS")
     sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
-            "raw" + "!AG" + str(targetRow), 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(targetRow), 
             [[""]], "ROWS")
 
     updateLastAccessDatetime(sheets)
@@ -644,7 +663,8 @@ def scanAccountInfo(resource):
             {"NAME":"PACK8SR","IMAGE":resource.TITLE_PACK8SR},
             {"NAME":"BEST","IMAGE":resource.TICKET_BEST},
             {"NAME":"SUPER","IMAGE":resource.TICKET_SUPER2021},
-            {"NAME":"BUILDER","IMAGE":resource.TICKET_BUILDER},]
+            {"NAME":"BUILDER","IMAGE":resource.TICKET_BUILDER},
+            {"NAME":"PACK8EX","IMAGE":resource.TITLE_PACK8EX}]
 
     dmp = 0
     gold = 0
@@ -702,7 +722,7 @@ def scanAccountInfo(resource):
 
     packs = [tempPacks["PACK1"],tempPacks["PACK2"],tempPacks["PACK3"],
             tempPacks["PACK4"],tempPacks["PACK5"],tempPacks["PACK6"],
-            tempPacks["PACK7"],tempPacks["PACK8"],0]
+            tempPacks["PACK7"],tempPacks["PACK8"],tempPacks["PACK8EX"]]
 
     specialPacks = [
             int(tempPacks["PACK5SR"]), 
@@ -870,6 +890,7 @@ def countAllCardsByRarity(resource):
         click(resource.BUTTON_DMPP06)
         click(resource.BUTTON_DMPP07)
         click(resource.BUTTON_DMPP08)
+        click(resource.BUTTON_DMPP08EX)
         click(resource.BUTTON_OK)
         wait(0.5)
         
@@ -1922,11 +1943,21 @@ def RestartApp(resource):
         if len(extra) > 0 and extra[0].getScore() < 0.99:
             click(resource.ICON_OTHER)
             wait(3)
+                            
             if exists(resource.BUTTON_SETTINGS,5) != None:
                 click(resource.BUTTON_SETTINGS)
+
+                if exists(resource.BUTTON_GAME_SETTINGS,5) != None:
+                    click(resource.BUTTON_GAME_SETTINGS)
+                
                 exists("1603422361520.png", 60)
                 dragDropAtSpeed(Pattern("1603422361520.png").targetOffset(28,548), Pattern("1603422361520.png").targetOffset(-3,-73), 2)
                 click(Pattern("1604913302661.png").similar(0.86))
                 wait(5)
+            
+            for num in range(100):
                 type(Key.ESC)
-                waitVanish("1603422361520.png", 10)
+                wait(5)
+                if len(findAny(resource.MESSAGE_CONFIRM_BACK_TITLE)) > 0:
+                    type(Key.ESC)
+                    break

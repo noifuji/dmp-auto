@@ -84,7 +84,8 @@ try:
     TARGET_RARITY = [{"NAME":"VR", "IMAGE":NoxResources.BUTTON_RARITY_VERYRARE}, 
             {"NAME":"SR", "IMAGE":NoxResources.BUTTON_RARITY_SUPERRARE}]
     TARGET_DMPP = [[NoxResources.BUTTON_DMPP01, NoxResources.BUTTON_DMPP02,NoxResources.BUTTON_DMPP03], 
-            [NoxResources.BUTTON_DMPP04, NoxResources.BUTTON_DMPP05,NoxResources.BUTTON_DMPP06],[NoxResources.BUTTON_DMPP07, NoxResources.BUTTON_DMPP08]]
+            [NoxResources.BUTTON_DMPP04, NoxResources.BUTTON_DMPP05,NoxResources.BUTTON_DMPP06],
+            [NoxResources.BUTTON_DMPP07, NoxResources.BUTTON_DMPP08,NoxResources.BUTTON_DMPP08EX]]
     for rarity in TARGET_RARITY:
         filterCardList([rarity], TARGET_DMPP[0] + TARGET_DMPP[1] + TARGET_DMPP[2])
         if exists(NoxResources.SCROLL1,1) == None:
@@ -130,7 +131,7 @@ try:
             CommonDMLib.dragDropAtSpeed(Pattern("1605239781030.png").targetOffset(3,715), Pattern("1605239781030.png").targetOffset(1,233), 1.5)
             image = captureImage(NoxResources.TITLE_ITEM, 0, 1380, 810)
             drive.uploadFile("Packs" + str(packLoop + 2) + ".png", image.getFilename(), fId, "image/png")
-            if len(findAny(Pattern("1605239930745.png").similar(0.90))) > 0:
+            if len(findAny(Pattern("1605239930745.png").similar(0.94))) > 0:
                 break
     
     click(NoxResources.BUTTON_OTHER)
