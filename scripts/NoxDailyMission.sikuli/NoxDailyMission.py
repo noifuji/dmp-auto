@@ -39,7 +39,6 @@ def finishMissions(instance, statisticsData, sheets):
     CommonDMLib.closeMission(NoxResources)
     CommonDMLib.getPresent(NoxResources)
     CommonDMLib.getMissionRewards(NoxResources)
-    #CommonDMLib.openOmikuji(NoxResources)
     if CommonDMLib.getBeginnerRewards(NoxResources):
         CommonDMLib.openCardPack(NoxResources)
     if datetime.now().day == 2 or datetime.now().day == 16:
@@ -179,8 +178,6 @@ while True:
                 CommonDMLib.skipStory(NoxResources)
                 type(Key.ESC)
                 wait(3)
-                #if len(findAny(NoxResources.BUTTON_BACK)) > 0:
-                #    click(NoxResources.BUTTON_BACK)
                 if len(findAny(NoxResources.MESSAGE_CONFIRM_BACK_TITLE)) > 0:
                     wait(3)
                     type(Key.ESC)

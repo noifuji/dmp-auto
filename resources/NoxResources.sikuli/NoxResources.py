@@ -15,9 +15,9 @@ DECKIMAGE_HAKUHO = "1605099751692.png"
 DECKIMAGE_AGRO = "1605880217361.png"
 ##############NoxPlayer Home#################
 TITLE_MULTI_PLAYER = Pattern("1596962591946.png").targetOffset(92,154)
-BUTTON_NOX_STOP = Pattern("1596777933938.png").similar(0.90)
-BUTTON_NOX_RENAME = Pattern("1603533707676.png").similar(0.90).targetOffset(-337,-1)
-BUTTON_NOX_PLAY = Pattern("1601077335160.png").similar(0.95)
+BUTTON_NOX_STOP = Pattern("1622113845695.png").similar(0.95)
+BUTTON_NOX_RENAME = Pattern("1622113845695.png").similar(0.95).targetOffset(-421,-2)
+BUTTON_NOX_PLAY = Pattern("1622113922656.png").similar(0.94)
 ICON_SEARCH = Pattern("1601532705094.png").similar(0.83).targetOffset(-84,4)
 BUTTON_HOME = Pattern("1607354280695.png").similar(0.85)
 BUTTON_NOX_OK_BLUE = Pattern("1601533049989.png").similar(0.90)
@@ -43,6 +43,7 @@ BUTTON_TAKEOVER = Pattern("1596765489772.png").targetOffset(-257,83)
 BUTTON_MENU = "1602164343414.png"
 BUTTON_CLEAR_CACHE = Pattern("1602164939945.png").targetOffset(144,-66)
 BUTTON_SKIP = Pattern("skip.png").similar(0.91)
+BUTTON_ACCEPT = Pattern("1622112409975.png").similar(0.89)
 BUTTON_OK = Pattern("OK.png").similar(0.81)
 BUTTON_OK2 = "1601521147368.png"
 BUTTON_OK3 =Pattern("1601873579981.png").similar(0.88) 
@@ -107,10 +108,16 @@ TITLE_PACK7 = Pattern("TITLE_PACK7.png").similar(0.90)
 TITLE_PACK7SR = Pattern("1607588773139.png").similar(0.95)
 TITLE_PACK8 = Pattern("1613654383510.png").similar(0.90)
 TITLE_PACK8SR = Pattern("1613654470488.png").similar(0.95)
+TITLE_PACK9 = Pattern("1622112926836.png").similar(0.92)
+TITLE_PACK9SR = Pattern("TITLE_PACK9SR.png").similar(0.94)
 TICKET_BEST = Pattern("1601801798254.png").similar(0.85)
 TICKET_BUILDER = Pattern("1607647198965.png").similar(0.88)
 TICKET_SUPER2021 = Pattern("1608628403997.png").similar(0.95)
 TITLE_PACK8EX = Pattern("1619086799148.png").similar(0.86)
+
+
+
+
 TITLE_ITEM = Pattern("1600524382930.png").targetOffset(268,239)
 TITLE_ITEM_DRAG = Pattern("1601009165140.png").targetOffset(372,392)
 TITLE_ITEM_DROP = Pattern("1601009179822.png").targetOffset(359,68)
@@ -297,6 +304,7 @@ SCROLL1 = Pattern("SCROLL1.png").similar(0.95)
 SCROLL2 = Pattern("SCROLL2.png").similar(0.90)
 BUTTON_RESET = "BUTTON_RESET.png"
 BUTTON_BASIC =Pattern("1611535508187.png").similar(0.90)
+BUTTON_PRIZE = "1607823678517.png"
 BUTTON_DMPP01 = "1621136692743.png"
 BUTTON_DMPP02 = "1621136718328.png"
 BUTTON_DMPP03 = "1621136645767.png"
@@ -306,6 +314,8 @@ BUTTON_DMPP06 ="1602809581827.png"
 BUTTON_DMPP07 ="1607821317345.png"
 BUTTON_DMPP08 ="1613654562268.png"
 BUTTON_DMPP08EX = "1619085551041.png"
+BUTTON_DMPP09 = Pattern("1622112782831.png").similar(0.86)
+
 ICON_CARD_COUNT = [Pattern("x1.png").similar(0.85),Pattern("x2.png").similar(0.92),Pattern("x3.png").similar(0.91),Pattern("x4.png").similar(0.90)]
 TITLE_CARD_LIST = Pattern("1603352084329.png").targetOffset(53,166)
 TITLE_DECK = "1603869510560.png"
@@ -435,3 +445,34 @@ TITLE_ENEMY_CEMETRY = Pattern("1605259885246.png").similar(0.84)
 ################BATTLE RESULT#################
 ICON_WIN = "ICON_WIN.png"
 ICON_LOSE = "ICON_LOSE.png"
+
+########################   VARIABLES FOR NEW EXPANSION   ####################
+#scna order
+TITLE_PACK_ARRAY = [{"NAME":"PACK1","IMAGE":TITLE_PACK1},
+            {"NAME":"PACK2","IMAGE":TITLE_PACK2},
+            {"NAME":"PACK3","IMAGE":TITLE_PACK3},
+            {"NAME":"PACK4","IMAGE":TITLE_PACK4},
+            {"NAME":"PACK5","IMAGE":TITLE_PACK5},
+            {"NAME":"PACK5SR","IMAGE":TITLE_PACK5SR},
+            {"NAME":"PACK6","IMAGE":TITLE_PACK6},
+            {"NAME":"PACK6SR","IMAGE":TITLE_PACK6SR},
+            {"NAME":"PACK7","IMAGE":TITLE_PACK7},
+            {"NAME":"PACK7SR","IMAGE":TITLE_PACK7SR},
+            {"NAME":"PACK8","IMAGE":TITLE_PACK8},
+            {"NAME":"PACK8SR","IMAGE":TITLE_PACK8SR},
+            {"NAME":"PACK9","IMAGE":TITLE_PACK9},
+            {"NAME":"PACK9SR","IMAGE":TITLE_PACK9SR},
+            {"NAME":"BEST","IMAGE":TICKET_BEST},
+            {"NAME":"SUPER","IMAGE":TICKET_SUPER2021},
+            {"NAME":"BUILDER","IMAGE":TICKET_BUILDER},
+            {"NAME":"PACK8EX","IMAGE":TITLE_PACK8EX}]
+
+#upload order
+PACK_NAME_ARRAY1 = ["PACK1","PACK2","PACK3","PACK4","PACK5","PACK6","PACK7","PACK8","PACK8EX",
+        "PACK5SR", "PACK6SR", "BEST", "PACK7SR", "BUILDER", "SUPER", "PACK8SR"]
+PACK_NAME_ARRAY2 = ["PACK9","PACK9SR"]
+
+#filter button
+BUTTON_DMPPS = [BUTTON_PRIZE, BUTTON_DMPP01,BUTTON_DMPP02,BUTTON_DMPP03,
+        BUTTON_DMPP04,BUTTON_DMPP05,BUTTON_DMPP06,
+        BUTTON_DMPP07,BUTTON_DMPP08,BUTTON_DMPP08EX,BUTTON_DMPP09]

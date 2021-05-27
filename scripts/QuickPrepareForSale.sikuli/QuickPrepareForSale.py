@@ -29,9 +29,11 @@ def filterCardList(rarities, dmpps):
     for r in rarities:
         click(r["IMAGE"])
     wait(1)
-    wheel(Pattern("1599973746387.png").targetOffset(227,-209), Button.WHEEL_DOWN, 15)
+    wheel(Pattern("1599973746387.png").targetOffset(227,-209), Button.WHEEL_DOWN, 4)
     wait(5)
     click(NoxResources.BUTTON_BASIC)
+    wheel(Pattern("1599973746387.png").targetOffset(227,-209), Button.WHEEL_DOWN, 15)
+    wait(5)
     for dmpp in dmpps:
         click(dmpp)
     click("1596590612922.png")
@@ -83,28 +85,38 @@ try:
     
     TARGET_RARITY = [{"NAME":"VR", "IMAGE":NoxResources.BUTTON_RARITY_VERYRARE}, 
             {"NAME":"SR", "IMAGE":NoxResources.BUTTON_RARITY_SUPERRARE}]
-    TARGET_DMPP = [[NoxResources.BUTTON_DMPP01, NoxResources.BUTTON_DMPP02,NoxResources.BUTTON_DMPP03], 
-            [NoxResources.BUTTON_DMPP04, NoxResources.BUTTON_DMPP05,NoxResources.BUTTON_DMPP06],
-            [NoxResources.BUTTON_DMPP07, NoxResources.BUTTON_DMPP08,NoxResources.BUTTON_DMPP08EX]]
+    TARGET_DMPP = NoxResources.BUTTON_DMPPS
     for rarity in TARGET_RARITY:
-        filterCardList([rarity], TARGET_DMPP[0] + TARGET_DMPP[1] + TARGET_DMPP[2])
+        filterCardList([rarity], TARGET_DMPP)
         if exists(NoxResources.SCROLL1,1) == None:
             image = captureImage(NoxResources.TITLE_CARD_LIST, 47, 1340, 620)
             drive.uploadFile(rarity["NAME"] + ".png", image.getFilename(), fId, "image/png")
         else:
-            for i in range(len(TARGET_DMPP)):
-                filterCardList([rarity], TARGET_DMPP[i])
+            i = 0
+            while i < len(TARGET_DMPP):
+                target = []
+                target.append(TARGET_DMPP[i])
+                if i + 1 < len(TARGET_DMPP):
+                    target.append(TARGET_DMPP[i+1])
+
+                if i + 2 < len(TARGET_DMPP):
+                    target.append(TARGET_DMPP[i+2])
+                
+                filterCardList([rarity], target)
                 image = captureImage(NoxResources.TITLE_CARD_LIST, 47, 1340, 620)
                 drive.uploadFile(rarity["NAME"] + str(i+1) +  ".png", image.getFilename(), fId, "image/png")
+
+                i = i + 3
+
     #PRIZE
-    TARGET_RARITY = [[{"NAME":"VR", "IMAGE":NoxResources.BUTTON_RARITY_VERYRARE}], 
-            [{"NAME":"C", "IMAGE":NoxResources.BUTTON_RARITY_COMMON},
-                {"NAME":"UC", "IMAGE":NoxResources.BUTTON_RARITY_UNCOMMON},
-                {"NAME":"R", "IMAGE":NoxResources.BUTTON_RARITY_RARE}]]
-    for i in range(len(TARGET_RARITY)):
-        filterCardList(TARGET_RARITY[i], ["1607823678517.png"])
-        image = captureImage(NoxResources.TITLE_CARD_LIST, 47, 1340, 620)
-        drive.uploadFile("PRIZE" + str(i) + ".png", image.getFilename(), fId, "image/png")
+    #TARGET_RARITY = [[{"NAME":"VR", "IMAGE":NoxResources.BUTTON_RARITY_VERYRARE}], 
+    #        [{"NAME":"R", "IMAGE":NoxResources.BUTTON_RARITY_RARE}],
+    #        [{"NAME":"C", "IMAGE":NoxResources.BUTTON_RARITY_COMMON},
+    #         {"NAME":"UC", "IMAGE":NoxResources.BUTTON_RARITY_UNCOMMON}]]
+    # for i in range(len(TARGET_RARITY)):
+    #    filterCardList(TARGET_RARITY[i], [NoxResources.BUTTON_PRIZE])
+    #    image = captureImage(NoxResources.TITLE_CARD_LIST, 47, 1340, 620)
+    #    drive.uploadFile("PRIZE" + str(i) + ".png", image.getFilename(), fId, "image/png")
 
     type(Key.ESC)
     exists(NoxResources.ICON_SOLO_PLAY, 60)

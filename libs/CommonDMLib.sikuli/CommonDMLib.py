@@ -568,10 +568,11 @@ def updatePlayerId(spreadsheet, ref, playerId, computername):
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
             EnvSettings.ACCOUNT_INFO_CREATEDATE_COL + str(rowIndex), [[datetime.now().strftime("%Y/%m/%d")]], "ROWS")#aaa
 
-def updateAccountInfo(spreadsheet, ref, lv, dmp, gold, packs, specialPacks):
+def updateAccountInfo(spreadsheet, ref, lv, dmp, gold, packs1, packs2):
     row = [[lv, dmp, gold]]
-    row[0].extend(packs)
-    row[0].extend(specialPacks)
+    row[0].extend(packs1)
+
+    row2 = [packs2]
     
     refs = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
@@ -590,6 +591,12 @@ def updateAccountInfo(spreadsheet, ref, lv, dmp, gold, packs, specialPacks):
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
             EnvSettings.ACCOUNT_INFO_START_COL + str(rowIndex) + ":" + 
             EnvSettings.ACCOUNT_INFO_END_COL + str(rowIndex), row, "ROWS")
+
+    if len(row2[0]) > 0:
+        spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID,
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+            EnvSettings.ACCOUNT_INFO_START_COL2 + str(rowIndex) + ":" + 
+            EnvSettings.ACCOUNT_INFO_END_COL2 + str(rowIndex), row2, "ROWS")
 
 #Only for less 999,999
 def isNumber(str):
@@ -649,22 +656,7 @@ def scanNumberChangeWidth(targetImage, offsetX, offsetY, width, height, RightLef
     return num
 
 def scanAccountInfo(resource):
-    ts = [{"NAME":"PACK1","IMAGE":resource.TITLE_PACK1},
-            {"NAME":"PACK2","IMAGE":resource.TITLE_PACK2},
-            {"NAME":"PACK3","IMAGE":resource.TITLE_PACK3},
-            {"NAME":"PACK4","IMAGE":resource.TITLE_PACK4},
-            {"NAME":"PACK5","IMAGE":resource.TITLE_PACK5},
-            {"NAME":"PACK5SR","IMAGE":resource.TITLE_PACK5SR},
-            {"NAME":"PACK6","IMAGE":resource.TITLE_PACK6},
-            {"NAME":"PACK6SR","IMAGE":resource.TITLE_PACK6SR},
-            {"NAME":"PACK7","IMAGE":resource.TITLE_PACK7},
-            {"NAME":"PACK7SR","IMAGE":resource.TITLE_PACK7SR},
-            {"NAME":"PACK8","IMAGE":resource.TITLE_PACK8},
-            {"NAME":"PACK8SR","IMAGE":resource.TITLE_PACK8SR},
-            {"NAME":"BEST","IMAGE":resource.TICKET_BEST},
-            {"NAME":"SUPER","IMAGE":resource.TICKET_SUPER2021},
-            {"NAME":"BUILDER","IMAGE":resource.TICKET_BUILDER},
-            {"NAME":"PACK8EX","IMAGE":resource.TITLE_PACK8EX}]
+    ts = resource.TITLE_PACK_ARRAY
 
     dmp = 0
     gold = 0
@@ -720,19 +712,15 @@ def scanAccountInfo(resource):
     gold = scanNumberChangeWidth(resource.TITLE_GOLD, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT, 0, 20)
     dmp = scanNumberChangeWidth(resource.TITLE_DMPOINT, OFFSET_X, OFFSET_Y, WIDTH_INIT_LONG, HEIGHT, 0, 20)
 
-    packs = [tempPacks["PACK1"],tempPacks["PACK2"],tempPacks["PACK3"],
-            tempPacks["PACK4"],tempPacks["PACK5"],tempPacks["PACK6"],
-            tempPacks["PACK7"],tempPacks["PACK8"],tempPacks["PACK8EX"]]
+    packs1 = []
+    for name in resource.PACK_NAME_ARRAY1:
+        packs1.append(int(tempPacks[name]))
 
-    specialPacks = [
-            int(tempPacks["PACK5SR"]), 
-            int(tempPacks["PACK6SR"]), 
-            int(tempPacks["BEST"]),
-            int(tempPacks["PACK7SR"]),
-            int(tempPacks["BUILDER"]),
-            int(tempPacks["SUPER"]),
-            int(tempPacks["PACK8SR"])]
-    return [lv, dmp, gold, packs, specialPacks]
+    packs2 = []
+    for name in resource.PACK_NAME_ARRAY2:
+        packs2.append(int(tempPacks[name]))
+    
+    return [lv, dmp, gold, packs1, packs2]
 
 def downloadFile(url, dest):
     print "downloadFile"
@@ -882,15 +870,8 @@ def countAllCardsByRarity(resource):
         wheel(rarity,Button.WHEEL_DOWN, 20)
         wait(3)
         click(resource.BUTTON_BASIC)
-        click(resource.BUTTON_DMPP01)
-        click(resource.BUTTON_DMPP02)
-        click(resource.BUTTON_DMPP03)
-        click(resource.BUTTON_DMPP04)
-        click(resource.BUTTON_DMPP05)
-        click(resource.BUTTON_DMPP06)
-        click(resource.BUTTON_DMPP07)
-        click(resource.BUTTON_DMPP08)
-        click(resource.BUTTON_DMPP08EX)
+        for b in resource.BUTTON_DMPPS:
+            click(b)
         click(resource.BUTTON_OK)
         wait(0.5)
         
@@ -1827,6 +1808,13 @@ def RestartApp(resource):
                 except:
                     print "failed to click"
                 break
+        if len(findAny(resource.BUTTON_ACCEPT)) > 0:
+            try:
+                click(resource.BUTTON_ACCEPT)
+            except:
+                print "failed to click"
+            break
+        
         if len(findAny(resource.MESSAGE_MAINTENANCE)) > 0:
             wait(1800)
             click(resource.BUTTON_OK)
