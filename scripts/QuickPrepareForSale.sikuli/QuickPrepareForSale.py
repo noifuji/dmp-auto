@@ -36,6 +36,7 @@ def filterCardList(rarities, dmpps):
     wait(5)
     for dmpp in dmpps:
         click(dmpp)
+        wait(1)
     click("1596590612922.png")
     waitVanish("1596590612922.png", 60)
 
