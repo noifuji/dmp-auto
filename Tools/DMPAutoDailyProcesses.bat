@@ -62,6 +62,10 @@ if %ERRORLEVEL%==50 (
  start .\Tools\auto_update.bat .\Tools\%~n0%~x0
  exit
 )
+if %ERRORLEVEL%==60 (
+ start .\Tools\createGameTradeDraft.bat .\Tools\%~n0%~x0
+ exit
+)
 
 
 @REM レジェンド周回

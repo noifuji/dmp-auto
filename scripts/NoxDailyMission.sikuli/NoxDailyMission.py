@@ -28,6 +28,8 @@ App(EnvSettings.AndAppPath).close()
 
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
+if CommonDMLib.checkPrepareGameTradeDraft() != None:
+    exit(60)
 CommonDMLib.deleteIdentifiers()
 CommonDMLib.downloadDeckCodes()
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
@@ -72,6 +74,8 @@ def finishMissions(instance, statisticsData, sheets):
     CommonDMLib.uploadStatistics(sheets, "DailyMission" ,statisticsData)
     if CommonDMLib.isNewVersionAvailable():
         exit(50)
+    if CommonDMLib.checkPrepareGameTradeDraft() != None:
+        exit(60)
     CommonDMLib.noxCallKillDMPApp()
 
 statisticsData = {CommonDMLib.STATISTICS_COMPUTERNAME:"",CommonDMLib.STATISTICS_REF:"",

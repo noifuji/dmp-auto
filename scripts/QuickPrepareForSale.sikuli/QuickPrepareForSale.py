@@ -40,12 +40,19 @@ def filterCardList(rarities, dmpps):
     click("1596590612922.png")
     waitVanish("1596590612922.png", 60)
 
+
+import sys.argv
+
+
 appname = 'QUICKPREPARE'
 Settings.MoveMouseDelay = 0.1
 drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 try:
-    ref = input("[Quick]Enter Ref")
+    if len(sys.argv) > 1 and sys.argv[1] == "1":
+        ref = CommonDMLib.checkPrepareGameTradeDraft();
+    else:
+        ref = input("[Quick]Enter Ref")
 
     rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:F3000", "ROWS")
     rawData = rawData if not rawData == None else []
@@ -58,6 +65,7 @@ try:
     if not CommonDMLib.isNoxOn():
         print "MAIN is off"
         CommonDMLib.RestartNox(NoxResources, "MAIN")
+    CommonDMLib.lockPrepare(sheets, ref)
     CommonDMLib.loadRef(NoxResources, ref, drive)
     CommonDMLib.RestartApp(NoxResources)
     CommonDMLib.getPresent(NoxResources)
@@ -151,9 +159,15 @@ try:
     exists(NoxResources.TITLE_ITEM, 60)
     image = captureImage(NoxResources.TITLE_ITEM, 0, 1380, 810)
     drive.uploadFile("Others.png", image.getFilename(), fId, "image/png")
+
+    CommonDMLib.unlockPrepare(sheets, ref)
+
+    if len(sys.argv) > 1 and sys.argv[1] == "1":
+        CommonDMLib.createGameTradeDraft(ref)
 except:
     e = sys.exc_info()
     for mes in e:
         print(mes)
     CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser, 'Error occured.', appname)
     CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser,traceback.format_exc(), appname)
+    CommonDMLib.unlockPrepare(sheets, ref)

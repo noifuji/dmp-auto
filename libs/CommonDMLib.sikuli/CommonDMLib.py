@@ -15,6 +15,26 @@ sys.path.append(EnvSettings.JAVA_API_PATH)
 from slackapis import SlackApis
 from resizeimage import ResizeImage;
 
+def createGameTradeDraft(ref):
+    url = "https://w4vo2tvmdf.execute-api.ap-northeast-1.amazonaws.com/dev"
+    data = json.dumps({"ref" : str(ref)})
+    req = urllib2.Request(url, data, {'Content-Type': 'application/json'})
+    f = urllib2.urlopen(req)
+    response = f.read()
+    f.close()
+    print response
+
+def checkPrepareGameTradeDraft():
+    url = "https://cckbzlmsd6.execute-api.ap-northeast-1.amazonaws.com/dev"
+    f = urllib2.urlopen(url)
+    response = f.read()
+    f.close()
+    print response
+    dic = json.loads(response)
+    print dic["body"]
+    
+    return dic["body"]
+
 def killMultiPlayerManager():
     cmd = 'taskkill /im MultiPlayerManager.exe /t /F'
     returncode = subprocess.Popen(cmd, shell=True)
@@ -258,6 +278,58 @@ def updateLastAccessDatetime(sheets):
     sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             "state" + "!" + "B" + str(targetRow), 
             [[datetime.now().strftime("%Y/%m/%d %H:%M:%S")]], "ROWS")
+
+def getRowOfRef(sheets, sheetname, refcol, ref):
+    rawData = sheets.batchRead(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            [sheetname + 
+                "!" + refcol + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+                EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_END_ROW
+                ], "ROWS")
+
+    if len(rawData) == 0:
+        raise Exception("batchRead threw an error.")
+    refs = rawData[0] if not rawData[0] == None else []
+    refInfo = []
+    for i in range(len(refs)):
+        tmp = {}
+        tmp["REF"] = refs[i][0]
+        tmp["ROW_NO"] = i + 3
+        refInfo.append(tmp)
+
+    targetRow = ""
+    for r in refInfo:
+        if r["REF"] == str(ref):
+            targetRow = r["ROW_NO"]
+            break
+    
+    if targetRow == "":
+        raise Exception("No working ref")
+
+    return targetRow
+
+def lockPrepare(sheets, ref):
+    COMPUTERNAME = os.environ["COMPUTERNAME"]
+    targetRow = getRowOfRef(sheets, EnvSettings.ACCOUNT_INFO_SHEET_NAME, EnvSettings.ACCOUNT_INFO_REF_COL ,ref)
+
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(targetRow), 
+            [[COMPUTERNAME]], "ROWS")
+
+    targetRow = getRowOfRef(sheets, EnvSettings.STATUS_INFO_SHEET_NAME, EnvSettings.STATUS_INFO_REF_COL ,ref)
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.STATUS_INFO_SHEET_NAME + "!" + EnvSettings.STATUS_INFO_STATUS_COL + str(targetRow), 
+            [["preparing"]], "ROWS")
+    
+
+def unlockPrepare(sheets, ref):
+    targetRow = getRowOfRef(sheets,EnvSettings.ACCOUNT_INFO_SHEET_NAME,  EnvSettings.ACCOUNT_INFO_REF_COL,ref)
+    
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(targetRow), 
+            [[""]], "ROWS")
+
+    updateLastAccessDatetime(sheets)
+    
 
 def completeRef(sheets, ref, processname):
     col = ""
@@ -872,6 +944,7 @@ def countAllCardsByRarity(resource):
         click(resource.BUTTON_BASIC)
         for b in resource.BUTTON_DMPPS:
             click(b)
+            wait(1000)
         click(resource.BUTTON_OK)
         wait(0.5)
         

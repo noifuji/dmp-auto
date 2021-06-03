@@ -1,10 +1,11 @@
-setlocal enabledelayedexpansion
-cd %~dp0/..
+cd %~dp0\..
 
 set PIDFile=./data/pid.txt
 
 powershell "Get-WmiObject win32_process -filter processid=$pid | ForEach-Object{$_.parentprocessid;}" > %PIDFile%
 
-java -jar sikulixide-2.0.4.jar -r ./scripts/ex.sikuli --args 111
+java -jar sikulixide-2.0.4.jar -r ./scripts/QuickPrepareForSale.sikuli --args 1
 
-pause
+
+start %1
+exit
