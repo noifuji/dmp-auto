@@ -329,6 +329,27 @@ def unlockPrepare(sheets, ref):
             [[""]], "ROWS")
 
     updateLastAccessDatetime(sheets)
+
+def getAvailableTwitterID(sheets):
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "accounts!C4:G20", "ROWS")
+    available = []
+    for data in rawData:
+        if data[3] == "available":
+            available.append(data)
+    return available
+
+def lockTwitterID(sheets, acountname, ref):
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "accounts!C4:C20", "ROWS")
+    count = 0
+    for data in rawData:
+        if data[0] == acountname:
+            break
+        count = count + 1
+        
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            "accounts!G" + str(count + 4), 
+            [[ref]], "ROWS")
+    
     
 
 def completeRef(sheets, ref, processname):

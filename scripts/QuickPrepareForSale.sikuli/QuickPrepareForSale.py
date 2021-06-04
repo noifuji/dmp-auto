@@ -11,6 +11,53 @@ import NoxResources
 from driveapis import DriveApis
 from spreadsheetapis import SpreadSheetApis
 
+def linkTwitter(username, password):
+    for count in range(100):
+        type(Key.ESC)
+        wait(1)
+        if len(findAny(NoxResources.MESSAGE_BACK_TO_TITLE)) > 0:
+            wait(1)
+            type(Key.ESC)
+            break
+
+    click(NoxResources.ICON_OTHER)
+
+    exists(NoxResources.BUTTON_ACCOUNT_LINK, 60)
+    click(NoxResources.BUTTON_ACCOUNT_LINK)
+
+    exists(NoxResources.BUTTON_LINK_TWITTER, 60)
+    wait(10)
+    click(NoxResources.BUTTON_LINK_TWITTER)
+
+    exists(NoxResources.BUTTON_OK, 60)
+    click(NoxResources.BUTTON_OK)
+    wait(10)
+    click(NoxResources.BUTTON_OK)
+
+    if exists(NoxResources.TEXT_USERNAME, 30) == None:
+        click(NoxResources.BUTTON_AVATAR)
+        wait(3)
+        click(NoxResources.BUTTON_LOGOUT)
+        wait(3)
+
+        
+    click(NoxResources.TEXT_USERNAME)
+    wait(10)
+    type(username)
+    wait(10)
+    click(NoxResources.TEXT_PASSWORD)
+    wait(10)
+    type(password)
+    wait(10)
+    click(NoxResources.BUTTON_AUTH_APP)
+
+    exists(NoxResources.BUTTON_OK, 30)
+    click(NoxResources.BUTTON_OK)
+    wait(3)
+    click(NoxResources.BUTTON_OK)
+    wait(3)
+    click(NoxResources.BUTTON_OK)
+
 def captureImage(keyImage, offsetY, width, height):
     keyImageObj = findAny(keyImage)
     if len(keyImageObj) <= 0:
@@ -160,8 +207,13 @@ try:
     image = captureImage(NoxResources.TITLE_ITEM, 0, 1380, 810)
     drive.uploadFile("Others.png", image.getFilename(), fId, "image/png")
 
-    CommonDMLib.unlockPrepare(sheets, ref)
+    #Twitter連携
+    twitterIds = CommonDMLib.getAvailableTwitterID(sheets)
+    if len(twitterIds) > 0:
+        CommonDMLib.lockTwitterID(sheets, twitterIds[0][0], ref)
+        linkTwitter(twitterIds[0][0], twitterIds[0][1])
 
+    CommonDMLib.unlockPrepare(sheets, ref)
     if len(sys.argv) > 1 and sys.argv[1] == "1":
         CommonDMLib.createGameTradeDraft(ref)
 except:

@@ -2,6 +2,14 @@
 from sikuli import *
 #################Constants###############
 APP_ENGINE = "NOX"
+
+#################TWITTER###############
+TEXT_USERNAME = Pattern("1622734350742.png").similar(0.89)
+TEXT_PASSWORD = Pattern("1622734370769.png").similar(0.85)
+BUTTON_AUTH_APP = Pattern("1622734401295.png").similar(0.87)
+BUTTON_AVATAR = Pattern("1622736085351.png").similar(0.86)
+BUTTON_LOGOUT = Pattern("BUTTON_LOGOUT.png").similar(0.84)
+
 #################DECKS###############
 DECKIMAGE_RED_BLACK = Pattern("1598939664217.png").similar(0.85)
 DECKIMAGE_ST = Pattern("1596892120520-1.png").similar(0.90)
@@ -85,6 +93,8 @@ BUTTON_ORGANIZE_NEWDIV_DECK = "1607820619599.png"
 BUTTON_LEGEND_BATTLE = Pattern("BUTTON_LEGEND_BATTLE.png").similar(0.78)
 BUTTON_SP_BATTLE = Pattern("1601885213479.png").similar(0.84)
 BUTTON_PROFILE = "BUTTON_PROFILE.png"
+BUTTON_ACCOUNT_LINK = Pattern("1622734202651.png").similar(0.83)
+BUTTON_LINK_TWITTER = Pattern("1622734240834.png").similar(0.89)
 MESSAGE_CONFIRM_BACK_TITLE = "1608817933908.png"
 ################BEGINNER################
 OPEN_CARD_PACK_REWARD = "1608817680860.png"
