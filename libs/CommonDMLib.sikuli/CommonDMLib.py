@@ -35,6 +35,49 @@ def checkPrepareGameTradeDraft():
     
     return dic["body"]
 
+def isRefAvailable(sheets, argRef):
+    ref = str(argRef)
+    #check status
+    STATUS_RANGE = EnvSettings.STATUS_INFO_SHEET_NAME + "!" + EnvSettings.STATUS_INFO_REF_COL + "2:" + EnvSettings.STATUS_INFO_STATUS_COL + "3000"
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, STATUS_RANGE, "ROWS")
+    rawData = rawData if not rawData == None else []
+    isExists = False
+    for raw in rawData:
+        if raw[0] == ref:
+            isExists = True
+            if len(raw) > 1 and (raw[1] == "sold" or raw[1] == "ordered" or raw[1] == "preparing"):
+                print "This ref was already sold or busy. Don't open."
+                return False
+
+    if not isExists:
+        print "No ref exists."
+        return False
+
+    #check working status
+    RAW_RANGE = EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_END_ROW
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, RAW_RANGE, "ROWS")
+    rawData = rawData if not rawData == None else []
+    isExists = False
+    targetRow = int(EnvSettings.ACCOUNT_INFO_START_ROW)
+    for raw in rawData:
+        if raw[0] == ref:
+            isExists = True
+            break
+        targetRow = targetRow + 1
+
+    if not isExists:
+        print "No ref exists."
+        return False
+
+    PCNAME_RANGE = EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(targetRow)
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, PCNAME_RANGE, "ROWS")
+
+    if rawData != None:
+        print "ref:" + ref + "is busy"
+        return False
+    
+    return True
+
 def killMultiPlayerManager():
     cmd = 'taskkill /im MultiPlayerManager.exe /t /F'
     returncode = subprocess.Popen(cmd, shell=True)

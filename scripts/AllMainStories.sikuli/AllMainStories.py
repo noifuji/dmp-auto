@@ -63,6 +63,9 @@ elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
 
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
+
+if CommonDMLib.checkPrepareGameTradeDraft() != None:
+    exit(60)
     
 #Pre-processing End
 
@@ -239,6 +242,9 @@ while True:
             CommonDMLib.uploadStatistics(sheets, "MainStory" ,statisticsData)
             retryCount = 0
             exceptionCout = 0
+
+            if CommonDMLib.checkPrepareGameTradeDraft() != None:
+                exit(60)
 
         #stage_loop End
     except SystemExit as e:

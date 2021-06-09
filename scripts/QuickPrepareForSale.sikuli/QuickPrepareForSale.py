@@ -51,12 +51,12 @@ def linkTwitter(username, password):
     wait(10)
     click(NoxResources.BUTTON_AUTH_APP)
 
-    exists(NoxResources.BUTTON_OK, 30)
-    click(NoxResources.BUTTON_OK)
-    wait(3)
-    click(NoxResources.BUTTON_OK)
-    wait(3)
-    click(NoxResources.BUTTON_OK)
+    
+    for i in range(100):
+        if exists(NoxResources.BUTTON_OK, 60) == None:
+            break
+        click(NoxResources.BUTTON_OK)
+        wait(10)
 
 def captureImage(keyImage, offsetY, width, height):
     keyImageObj = findAny(keyImage)
@@ -70,12 +70,12 @@ def captureImage(keyImage, offsetY, width, height):
 
 def filterCardList(rarities, dmpps):
     click(Pattern("1596590519784.png").similar(0.90))
-    wait(0.2)
+    wait(3)
     click("1599973746387.png")
-    wait(0.2)
+    wait(3)
     for r in rarities:
         click(r["IMAGE"])
-    wait(1)
+    wait(3)
     wheel(Pattern("1599973746387.png").targetOffset(227,-209), Button.WHEEL_DOWN, 4)
     wait(5)
     click(NoxResources.BUTTON_BASIC)
@@ -101,13 +101,9 @@ try:
     else:
         ref = input("[Quick]Enter Ref")
 
-    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "status!A2:F3000", "ROWS")
-    rawData = rawData if not rawData == None else []
-    availableRefs = []
-    for raw in rawData:
-        if raw[0] == ref and raw[1] == "sold":
-            print "This ref was already sold. Don't open."
-            exit()
+    if not CommonDMLib.isRefAvailable(sheets, ref):
+        CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser, 'Preparing was stopped. Ref:' + str(ref) + "is not available now.", appname)
+        exit()
     
     if not CommonDMLib.isNoxOn():
         print "MAIN is off"
