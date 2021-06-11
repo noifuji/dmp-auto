@@ -5,10 +5,14 @@ APP_ENGINE = "NOX"
 
 #################TWITTER###############
 TEXT_USERNAME = Pattern("1622734350742.png").similar(0.89)
+TEXT_USERNAME_JP = Pattern("1623337535262.png").similar(0.88)
 TEXT_PASSWORD = Pattern("1622734370769.png").similar(0.85)
+TEXT_PASSWORD_JP = Pattern("1623337560202.png").similar(0.86)
 BUTTON_AUTH_APP = Pattern("1622734401295.png").similar(0.87)
+BUTTON_AUTH_APP_JP = Pattern("1623337586547.png").similar(0.85)
 BUTTON_AVATAR = Pattern("1622736085351.png").similar(0.86)
 BUTTON_LOGOUT = Pattern("BUTTON_LOGOUT.png").similar(0.84)
+BUTTON_LOGOUT_JP = Pattern("1623337864763.png").similar(0.90)
 
 #################DECKS###############
 DECKIMAGE_RED_BLACK = Pattern("1598939664217.png").similar(0.85)

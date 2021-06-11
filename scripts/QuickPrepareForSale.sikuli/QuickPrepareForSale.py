@@ -34,24 +34,52 @@ def linkTwitter(username, password):
     wait(10)
     click(NoxResources.BUTTON_OK)
 
-    if exists(NoxResources.TEXT_USERNAME, 30) == None:
+    if exists(NoxResources.BUTTON_AVATAR, 30) != None:
         click(NoxResources.BUTTON_AVATAR)
         wait(3)
-        click(NoxResources.BUTTON_LOGOUT)
+        if exists(NoxResources.BUTTON_LOGOUT, 30) != None:
+            click(NoxResources.BUTTON_LOGOUT)
+        elif exists(NoxResources.BUTTON_LOGOUT_JP, 30) != None:
+            click(NoxResources.BUTTON_LOGOUT_JP)
         wait(3)
 
-        
-    click(NoxResources.TEXT_USERNAME)
-    wait(10)
-    type(username)
-    wait(10)
-    click(NoxResources.TEXT_PASSWORD)
-    wait(10)
-    type(password)
-    wait(10)
-    click(NoxResources.BUTTON_AUTH_APP)
+    if exists(NoxResources.TEXT_USERNAME, 30) != None:
+        click(NoxResources.TEXT_USERNAME)
+        wait(10)
+        type(username)
+        wait(10)
+        click(NoxResources.TEXT_PASSWORD)
+        wait(10)
+        type(password)
+        wait(10)
+        click(NoxResources.BUTTON_AUTH_APP)
+    elif exists(NoxResources.TEXT_USERNAME_JP, 30) != None:
+        click(NoxResources.TEXT_USERNAME_JP)
+        wait(10)
+        type(username)
+        wait(10)
+        click(NoxResources.TEXT_PASSWORD_JP)
+        wait(10)
+        type(password)
+        wait(10)
+        click(NoxResources.BUTTON_AUTH_APP_JP)
 
-    
+    #OK
+    for i in range(100):
+        if exists(NoxResources.BUTTON_OK, 60) == None:
+            break
+        click(NoxResources.BUTTON_OK)
+        wait(10)
+
+    #If the accaount is already linked, click auth again
+    if exists(NoxResources.BUTTON_AUTH_APP, 30) != None:
+        click(NoxResources.BUTTON_AUTH_APP)
+        wait(10)
+    if exists(NoxResources.BUTTON_AUTH_APP_JP, 30) != None:
+        click(NoxResources.BUTTON_AUTH_APP_JP)
+        wait(10)
+
+    #OK
     for i in range(100):
         if exists(NoxResources.BUTTON_OK, 60) == None:
             break

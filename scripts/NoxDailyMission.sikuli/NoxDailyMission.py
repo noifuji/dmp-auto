@@ -208,6 +208,10 @@ while True:
         if e == 50:
             CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
+
+        if e == 60:
+            CommonDMLib.sendMessagetoSlack(mentionUser, 'QuickPrepare will be started.', appname)
+        exit(e)
     except:
         statisticsData["EXCEPTION"] += 1
         retryCount += 1

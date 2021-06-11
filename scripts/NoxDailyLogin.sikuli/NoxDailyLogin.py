@@ -72,6 +72,15 @@ while True:
 
         if CommonDMLib.checkPrepareGameTradeDraft() != None:
             exit(60)
+            
+    except SystemExit as e:
+    if e == 50:
+        CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
+    exit(e)
+
+    if e == 60:
+        CommonDMLib.sendMessagetoSlack(mentionUser, 'QuickPrepare will be started.', appname)
+    exit(e)
     
     except:
         Settings.MoveMouseDelay = 0.1
