@@ -31,11 +31,16 @@ def checkPrepareGameTradeDraft():
     f.close()
     print response
     dic = json.loads(response)
-    print dic["body"]
-    
-    return dic["body"]
+
+    if "body" in dic:
+        return dic["body"]
+    else:
+        return None
 
 def isRefAvailable(sheets, argRef):
+    if argRef == None:
+        return False
+    
     ref = str(argRef)
     #check status
     STATUS_RANGE = EnvSettings.STATUS_INFO_SHEET_NAME + "!" + EnvSettings.STATUS_INFO_REF_COL + "2:" + EnvSettings.STATUS_INFO_STATUS_COL + "3000"
@@ -350,7 +355,7 @@ def getRowOfRef(sheets, sheetname, refcol, ref):
 
     return targetRow
 
-def lockPrepare(sheets, ref):
+def lockComputer(sheets, ref):
     COMPUTERNAME = os.environ["COMPUTERNAME"]
     targetRow = getRowOfRef(sheets, EnvSettings.ACCOUNT_INFO_SHEET_NAME, EnvSettings.ACCOUNT_INFO_REF_COL ,ref)
 
@@ -358,6 +363,17 @@ def lockPrepare(sheets, ref):
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(targetRow), 
             [[COMPUTERNAME]], "ROWS")
 
+def unlockComputer(sheets, ref):
+    COMPUTERNAME = os.environ["COMPUTERNAME"]
+    targetRow = getRowOfRef(sheets, EnvSettings.ACCOUNT_INFO_SHEET_NAME, EnvSettings.ACCOUNT_INFO_REF_COL ,ref)
+
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(targetRow), 
+            [[""]], "ROWS"
+            )
+    updateLastAccessDatetime(sheets)
+
+def lockPrepare(sheets, ref):
     targetRow = getRowOfRef(sheets, EnvSettings.STATUS_INFO_SHEET_NAME, EnvSettings.STATUS_INFO_REF_COL ,ref)
     sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             EnvSettings.STATUS_INFO_SHEET_NAME + "!" + EnvSettings.STATUS_INFO_STATUS_COL + str(targetRow), 
@@ -365,13 +381,10 @@ def lockPrepare(sheets, ref):
     
 
 def unlockPrepare(sheets, ref):
-    targetRow = getRowOfRef(sheets,EnvSettings.ACCOUNT_INFO_SHEET_NAME,  EnvSettings.ACCOUNT_INFO_REF_COL,ref)
-    
+    targetRow = getRowOfRef(sheets, EnvSettings.STATUS_INFO_SHEET_NAME, EnvSettings.STATUS_INFO_REF_COL ,ref)
     sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
-            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + EnvSettings.ACCOUNT_INFO_COMPUTERNAME_COL + str(targetRow), 
+            EnvSettings.STATUS_INFO_SHEET_NAME + "!" + EnvSettings.STATUS_INFO_STATUS_COL + str(targetRow), 
             [[""]], "ROWS")
-
-    updateLastAccessDatetime(sheets)
 
 def getAvailableTwitterID(sheets):
     rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "accounts!C4:G20", "ROWS")
@@ -392,7 +405,18 @@ def lockTwitterID(sheets, acountname, ref):
     sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             "accounts!G" + str(count + 4), 
             [[ref]], "ROWS")
-    
+
+def unlockTwitterID(sheets, acountname):
+    rawData = sheets.read(EnvSettings.ACCOUNT_INFO_SHEET_ID, "accounts!C4:C20", "ROWS")
+    count = 0
+    for data in rawData:
+        if data[0] == acountname:
+            break
+        count = count + 1
+        
+    sheets.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
+            "accounts!G" + str(count + 4), 
+            [[""]], "ROWS")
     
 
 def completeRef(sheets, ref, processname):

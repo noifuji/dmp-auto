@@ -136,6 +136,8 @@ try:
     if not CommonDMLib.isNoxOn():
         print "MAIN is off"
         CommonDMLib.RestartNox(NoxResources, "MAIN")
+        
+    CommonDMLib.lockComputer(sheets, ref)
     CommonDMLib.lockPrepare(sheets, ref)
     CommonDMLib.loadRef(NoxResources, ref, drive)
     CommonDMLib.RestartApp(NoxResources)
@@ -237,7 +239,7 @@ try:
         CommonDMLib.lockTwitterID(sheets, twitterIds[0][0], ref)
         linkTwitter(twitterIds[0][0], twitterIds[0][1])
 
-    CommonDMLib.unlockPrepare(sheets, ref)
+    CommonDMLib.unlockComputer(sheets, ref)
     if len(sys.argv) > 1 and sys.argv[1] == "1":
         CommonDMLib.createGameTradeDraft(ref)
 except:
@@ -246,4 +248,7 @@ except:
         print(mes)
     CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser, 'Error occured.', appname)
     CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser,traceback.format_exc(), appname)
+    CommonDMLib.unlockComputer(sheets, ref)
     CommonDMLib.unlockPrepare(sheets, ref)
+    if twitterIds != None:
+        CommonDMLib.unlockTwitterID(sheets, twitterIds[0][0])
