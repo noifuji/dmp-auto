@@ -80,10 +80,14 @@ if %ERRORLEVEL%==50 (
 )
 
 
-@REM シティ周回
-java -jar sikulixide-2.0.4.jar -r .\scripts\CityBattle.sikuli
+@REM クイックピック周回
+java -jar sikulixide-2.0.4.jar -r .\scripts\QuickPick.sikuli
 if %ERRORLEVEL%==50 (
  start .\Tools\auto_update.bat .\Tools\%~n0%~x0
+ exit
+)
+if %ERRORLEVEL%==60 (
+ start .\Tools\createGameTradeDraft.bat .\Tools\%~n0%~x0
  exit
 )
 
