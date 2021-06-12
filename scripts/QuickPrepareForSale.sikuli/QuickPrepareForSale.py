@@ -20,6 +20,9 @@ def linkTwitter(username, password):
             type(Key.ESC)
             break
 
+        if count >= 99:
+            raise Exception("Timeout. could not go back to home.")
+
     click(NoxResources.ICON_OTHER)
 
     exists(NoxResources.BUTTON_ACCOUNT_LINK, 60)
@@ -246,6 +249,7 @@ except:
     e = sys.exc_info()
     for mes in e:
         print(mes)
+            CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
     CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser, 'Error occured.', appname)
     CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser,traceback.format_exc(), appname)
     CommonDMLib.unlockComputer(sheets, ref)

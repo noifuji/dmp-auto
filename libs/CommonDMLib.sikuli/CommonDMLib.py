@@ -571,7 +571,7 @@ def loadRef(resources, ref, driveInstance):
     else:
         restoreDirnameCmd = [EnvSettings.NoxAdbPath, "shell", "mv", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays1", r"/storage/emulated/0/Android/data/jp.co.takaratomy.duelmastersplays"]
         subprocess.call(restoreDirnameCmd)
-        raise Exception("Timeout. Backup failed.")
+        raise Exception("Timeout. Load failed.")
 
 
 #url:slackのwebhookのURL
