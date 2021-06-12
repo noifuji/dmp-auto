@@ -32,8 +32,6 @@ sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
 drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 #Pre-processing End
 
-if CommonDMLib.checkPrepareGameTradeDraft() != None:
-    exit(60)
 
 retryCount = 0
 endFlag = False

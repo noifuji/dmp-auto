@@ -64,8 +64,6 @@ elif EnvSettings.ENGINE_FOR_MAIN == "NOX":
 if CommonDMLib.isNewVersionAvailable():
     exit(50)
 
-if CommonDMLib.checkPrepareGameTradeDraft() != None:
-    exit(60)
     
 #Pre-processing End
 

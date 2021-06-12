@@ -126,6 +126,7 @@ appname = 'QUICKPREPARE'
 Settings.MoveMouseDelay = 0.1
 drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 sheets = SpreadSheetApis("DMPAuto", CommonDMLib.getCredentials())
+
 try:
     if len(sys.argv) > 1 and sys.argv[1] == "1":
         ref = CommonDMLib.checkPrepareGameTradeDraft();
@@ -245,6 +246,8 @@ try:
     CommonDMLib.unlockComputer(sheets, ref)
     if len(sys.argv) > 1 and sys.argv[1] == "1":
         CommonDMLib.createGameTradeDraft(ref)
+
+    break
 except:
     e = sys.exc_info()
     for mes in e:
@@ -256,3 +259,5 @@ except:
     CommonDMLib.unlockPrepare(sheets, ref)
     if twitterIds != None:
         CommonDMLib.unlockTwitterID(sheets, twitterIds[0][0])
+    CommonDMLib.noxCallKillDMPApp()
+    wait(5)
