@@ -247,12 +247,11 @@ try:
     if len(sys.argv) > 1 and sys.argv[1] == "1":
         CommonDMLib.createGameTradeDraft(ref)
 
-    break
 except:
     e = sys.exc_info()
     for mes in e:
         print(mes)
-            CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
+    CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
     CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser, 'Error occured.', appname)
     CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser,traceback.format_exc(), appname)
     CommonDMLib.unlockComputer(sheets, ref)
