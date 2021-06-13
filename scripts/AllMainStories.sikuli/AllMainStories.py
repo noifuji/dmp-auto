@@ -246,11 +246,11 @@ while True:
 
         #stage_loop End
     except SystemExit as e:
-        if e == 50:
+        if str(e) == "50":
             CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
         
-        if e == 60:
+        if str(e) == "60":
             CommonDMLib.sendMessagetoSlack(mentionUser, 'QuickPrepare will be started.', appname)
         exit(e)
     except:
