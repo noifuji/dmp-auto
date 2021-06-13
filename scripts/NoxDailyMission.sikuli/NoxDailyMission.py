@@ -35,7 +35,7 @@ drive = DriveApis("DMPAuto", CommonDMLib.getCredentials())
 #Pre-processing End
 
 def finishMissions(instance, statisticsData, sheets):
-    CommonDMLib.sendMessagetoSlack(mentionUser, 'Account' + str(instance) + ' was completed.', appname)
+    CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser, 'Account' + str(instance) + ' was completed.', appname)
     CommonDMLib.closeMission(NoxResources)
     CommonDMLib.getPresent(NoxResources)
     CommonDMLib.getMissionRewards(NoxResources)
@@ -98,7 +98,7 @@ while True:
                 endFlag = True
                 break
         if endFlag:
-            CommonDMLib.sendMessagetoSlack(mentionUser,'All daily missions were completed.', appname)
+            CommonDMLib.sendMessagetoSlack("INFO", mentionUser,'All daily missions were completed.', appname)
             break
         
         if statisticsData[CommonDMLib.STATISTICS_REF] != str(workingRef):
@@ -132,7 +132,7 @@ while True:
         
         if mode == "DEV":
             wait(1)
-            CommonDMLib.sendMessagetoSlack(mentionUser,'Account' + str(workingRef) + ' is in process.', appname)
+            CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser,'Account' + str(workingRef) + ' is in process.', appname)
         
         if statisticsData[CommonDMLib.STATISTICS_MISSION1] == "":
             for i in range(len(missions)):
@@ -161,7 +161,7 @@ while True:
         for battle_loop in range(200):
             #バトル開始まで待機
             if CommonDMLib.waitStartingGame(NoxResources) == -1:
-                CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
+                CommonDMLib.sendMessagetoSlack("ERROR", mentionUser, 'matching failed', appname)
                 raise Exception
     
             wait(10)
@@ -204,11 +204,11 @@ while True:
         retryCount = 0
     except SystemExit as e:
         if str(e) == "50":
-            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
+            CommonDMLib.sendMessagetoSlack("INFO", mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
 
         if str(e) == "60":
-            CommonDMLib.sendMessagetoSlack(mentionUser, 'QuickPrepare will be started.', appname)
+            CommonDMLib.sendMessagetoSlack("INFO", mentionUser, 'QuickPrepare will be started.', appname)
         exit(e)
     except:
         statisticsData["EXCEPTION"] += 1
@@ -218,11 +218,11 @@ while True:
         for mes in e:
             print(mes)
         CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
-        CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
-        CommonDMLib.sendMessagetoSlack(mentionUser,"ExceptionCount:" + str(exceptionCount) + "/RestartCount:" + str(restartCount), appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,traceback.format_exc(), appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,"ExceptionCount:" + str(exceptionCount) + "/RestartCount:" + str(restartCount), appname)
         if restartCount > EnvSettings.RESTART_COUNT_LIMIT:
             CommonDMLib.restartOS()
-            CommonDMLib.sendMessagetoSlack(mentionUser,"Restart OS", appname)
+            CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,"Restart OS", appname)
             exit()
         if CommonDMLib.isNewVersionAvailable():
             exit(50)

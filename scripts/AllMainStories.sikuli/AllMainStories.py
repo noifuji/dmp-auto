@@ -86,13 +86,13 @@ while True:
                     endFlag = True
                     break
             if endFlag:
-                CommonDMLib.sendMessagetoSlack(mentionUser,'All Main Stories were completed.', appname)
+                CommonDMLib.sendMessagetoSlack("INFO", mentionUser,'All Main Stories were completed.', appname)
                 break
             if not CommonDMLib.isNoxOn() or exceptionFlag:
                 exceptionFlag = False
                 CommonDMLib.RestartNox(resources, "MAIN")
             CommonDMLib.loadRef(NoxResources, workingRef, drive)
-        CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(workingRef)+"]"+'launching...', appname)
+        CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser, "["+str(workingRef)+"]"+'launching...', appname)
         CommonDMLib.RestartApp(resources)
         CommonDMLib.openMainStory(resources)
         
@@ -112,7 +112,7 @@ while True:
                     CommonDMLib.getMissionRewards(NoxResources)
                     res = CommonDMLib.scanAccountInfo(NoxResources)
                     CommonDMLib.updateAccountInfo(sheets, workingRef, res[0], res[1], res[2], res[3],res[4])
-                CommonDMLib.sendMessagetoSlack(mentionUser, 'All stories were cleared!', appname)
+                CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser, 'All stories were cleared!', appname)
                 CommonDMLib.completeRef(sheets, workingRef, "MAIN")
                 CommonDMLib.noxCallKillDMPApp()
                 break
@@ -136,7 +136,7 @@ while True:
             for battle_loop in range(200):
                 #バトル開始まで待機
                 if CommonDMLib.waitStartingGame(resources) == -1:
-                    CommonDMLib.sendMessagetoSlack(mentionUser, 'matching failed', appname)
+                    CommonDMLib.sendMessagetoSlack("ERROR", mentionUser, 'matching failed', appname)
                     break
     
                 # ゲームループ
@@ -185,25 +185,25 @@ while True:
                 #エピソード選択画面にいる場合の処理
                 if len(findAny(resources.BACKGROUND_EPISODE_LIST)) > 0:
                     if len(findAny(resources.EPISODES[4]["IMAGE"])) > 0:
-                        CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode5 has started.', appname)
+                        CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser, 'Episode5 has started.', appname)
                         try:
                             click(resources.EPISODES[4]["IMAGE"])
                         except:
                             print "failed to click"
                     elif len(findAny(resources.EPISODES[3]["IMAGE"])) > 0:
-                        CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode4 has started.', appname)
+                        CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser, 'Episode4 has started.', appname)
                         try:
                             click(resources.EPISODES[3]["IMAGE"])
                         except:
                             print "failed to click"
                     elif len(findAny(resources.EPISODES[2]["IMAGE"])) > 0:
-                        CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode3 has started.', appname)
+                        CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser, 'Episode3 has started.', appname)
                         try:
                             click(resources.EPISODES[2]["IMAGE"])
                         except:
                             print "failed to click"
                     elif len(findAny(resources.EPISODES[1]["IMAGE"])) > 0:
-                        CommonDMLib.sendMessagetoSlack(mentionUser, 'Episode2 has started.', appname)
+                        CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser, 'Episode2 has started.', appname)
                         try:
                             click(resources.EPISODES[1]["IMAGE"])
                         except:
@@ -233,7 +233,7 @@ while True:
 
             if EnvSettings.RUN_MODE == "DEV":
                 wait(1)
-                CommonDMLib.sendMessagetoSlack(mentionUser, "["+str(workingRef)+"]"+'[EP:'+str(episode)+',ST:'+str(stage)+']Battle Loop Count : ' + str(retryCount), appname)
+                CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser, "["+str(workingRef)+"]"+'[EP:'+str(episode)+',ST:'+str(stage)+']Battle Loop Count : ' + str(retryCount), appname)
             statisticsData["RETRY"] = retryCount
             statisticsData["EXCEPTION"] = exceptionCout
             statisticsData["ENDTIME"] = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
@@ -247,19 +247,19 @@ while True:
         #stage_loop End
     except SystemExit as e:
         if str(e) == "50":
-            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
+            CommonDMLib.sendMessagetoSlack("INFO", mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
         exit(e)
         
         if str(e) == "60":
-            CommonDMLib.sendMessagetoSlack(mentionUser, 'QuickPrepare will be started.', appname)
+            CommonDMLib.sendMessagetoSlack("INFO", mentionUser, 'QuickPrepare will be started.', appname)
         exit(e)
     except:
         exceptionCout += 1
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured. The app was restarted successfully .', appname)
-        CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser, 'Error occured. The app was restarted successfully .', appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser, "Screenshot" , appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)

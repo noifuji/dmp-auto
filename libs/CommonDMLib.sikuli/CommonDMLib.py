@@ -573,12 +573,18 @@ def loadRef(resources, ref, driveInstance):
         subprocess.call(restoreDirnameCmd)
         raise Exception("Timeout. Load failed.")
 
-
+#level:
 #url:slackのwebhookのURL
 #userid:slackのmemberID
 #contents:送信するメッセージ
 #appname:メッセージに表示する送信元の名前
-def sendMessagetoSlack(userid, contents, appname):
+def sendMessagetoSlack(level ,userid, contents, appname):
+    if level == "DEBUG" and (EnvSettings.RUN_MODE == "INFO" or EnvSettings.RUN_MODE == "ERROR"):
+        return
+
+    if level == "INFO" and EnvSettings.RUN_MODE == "ERROR":
+        return
+    
     slack = SlackApis(EnvSettings.TOKEN, EnvSettings.TARGET_CHANNEL)
     slack.sendMessage(userid, appname, contents)
 

@@ -47,7 +47,7 @@ while True:
                 endFlag = True
                 break
         if endFlag:
-            CommonDMLib.sendMessagetoSlack(mentionUser,'All daily login were completed.', appname)
+            CommonDMLib.sendMessagetoSlack("INFO", mentionUser,'All daily login were completed.', appname)
             break
         if (not CommonDMLib.isNoxOn()) or exceptionFlag:
             print "MAIN is off"
@@ -62,7 +62,7 @@ while True:
         res = CommonDMLib.scanAccountInfo(NoxResources)
         CommonDMLib.updateAccountInfo(sheets, workingRef, res[0], res[1], res[2], res[3],res[4])
         CommonDMLib.completeRef(sheets, workingRef, appname)
-        CommonDMLib.sendMessagetoSlack(mentionUser, 'Instance ' + str(workingRef) + 'was completed.', appname)
+        CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser, 'Instance ' + str(workingRef) + 'was completed.', appname)
         if CommonDMLib.isNewVersionAvailable():
             exit(50)
         CommonDMLib.noxCallKillDMPApp()
@@ -73,11 +73,11 @@ while True:
             
     except SystemExit as e:
         if str(e) == "50":
-            CommonDMLib.sendMessagetoSlack(mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
+            CommonDMLib.sendMessagetoSlack("INFO", mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
             exit(e)
         
         if str(e) == "60":
-            CommonDMLib.sendMessagetoSlack(mentionUser, 'QuickPrepare will be started.', appname)
+            CommonDMLib.sendMessagetoSlack("INFO", mentionUser, 'QuickPrepare will be started.', appname)
             exit(e)
     
     except:
@@ -85,13 +85,13 @@ while True:
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.sendMessagetoSlack(mentionUser, 'Error occured in ' + str(workingRef) + '.', appname)
-        CommonDMLib.sendMessagetoSlack(mentionUser,traceback.format_exc(), appname)
-        CommonDMLib.sendMessagetoSlack(mentionUser, "Screenshot" ,appname)
-        CommonDMLib.sendMessagetoSlack(mentionUser,"RestartCount:" + str(restartCount), appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser, 'Error occured in ' + str(workingRef) + '.', appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,traceback.format_exc(), appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser, "Screenshot" ,appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,"RestartCount:" + str(restartCount), appname)
         if restartCount > EnvSettings.RESTART_COUNT_LIMIT:
             CommonDMLib.restartOS()
-            CommonDMLib.sendMessagetoSlack(mentionUser,"Restart OS", appname)
+            CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,"Restart OS", appname)
             exit()
         if CommonDMLib.isNewVersionAvailable():
             exit(50)

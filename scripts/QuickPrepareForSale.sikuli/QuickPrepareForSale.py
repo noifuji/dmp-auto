@@ -134,7 +134,7 @@ try:
         ref = input("[Quick]Enter Ref")
 
     if not CommonDMLib.isRefAvailable(sheets, ref):
-        CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser, 'Preparing was stopped. Ref:' + str(ref) + "is not available now.", appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", EnvSettings.mentionUser, 'Preparing was stopped. Ref:' + str(ref) + "is not available now.", appname)
         exit()
     
     if not CommonDMLib.isNoxOn():
@@ -252,8 +252,8 @@ except:
     for mes in e:
         print(mes)
     CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
-    CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser, 'Error occured.', appname)
-    CommonDMLib.sendMessagetoSlack(EnvSettings.mentionUser,traceback.format_exc(), appname)
+    CommonDMLib.sendMessagetoSlack("ERROR", EnvSettings.mentionUser, 'Error occured.', appname)
+    CommonDMLib.sendMessagetoSlack("ERROR", EnvSettings.mentionUser,traceback.format_exc(), appname)
     CommonDMLib.unlockComputer(sheets, ref)
     CommonDMLib.unlockPrepare(sheets, ref)
     if twitterIds != None:
