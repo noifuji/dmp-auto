@@ -1282,8 +1282,11 @@ def changeMission(resource):
 
 def closeMission(resource):
     print "closeMission"
-    type(Key.ESC)
-    waitVanish(resource.TITLE_MISSION, 30)
+    for closeMissionLoop in range(10): 
+        type(Key.ESC)
+        wait(10)
+        if waitVanish(resource.TITLE_MISSION, 60):
+            break
 
 def getTargetMissions(resource):
     print "getTargetMissions"
@@ -1636,9 +1639,8 @@ def getMissionRewards(resource):
                 exists(resource.BUTTON_OK, 60)
                 click(resource.BUTTON_OK)
                 waitVanish(resource.TITLE_REWARD_DAILY, 5)
-            
-        type(Key.ESC)
-        waitVanish(resource.TITLE_MISSION)
+
+        closeMission(resource)
 
 def getBeginnerRewards(resources):
     #通知あり初心者アイコンあり
