@@ -47,7 +47,7 @@ while True:
                 endFlag = True
                 break
         if endFlag:
-            CommonDMLib.sendMessagetoSlack("INFO", mentionUser,'All daily login were completed.', appname)
+            CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser,'All daily login were completed.', appname)
             break
         if (not CommonDMLib.isNoxOn()) or exceptionFlag:
             print "MAIN is off"

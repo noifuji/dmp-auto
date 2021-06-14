@@ -98,7 +98,7 @@ while True:
                 endFlag = True
                 break
         if endFlag:
-            CommonDMLib.sendMessagetoSlack("INFO", mentionUser,'All daily missions were completed.', appname)
+            CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser,'All daily missions were completed.', appname)
             break
         
         if statisticsData[CommonDMLib.STATISTICS_REF] != str(workingRef):
@@ -205,11 +205,11 @@ while True:
     except SystemExit as e:
         if str(e) == "50":
             CommonDMLib.sendMessagetoSlack("INFO", mentionUser, '[' + str(workingRef) + ']A new version is detected. The instance will be restarted.', appname)
-        exit(e)
+            exit(e)
 
         if str(e) == "60":
             CommonDMLib.sendMessagetoSlack("INFO", mentionUser, 'QuickPrepare will be started.', appname)
-        exit(e)
+            exit(e)
     except:
         statisticsData["EXCEPTION"] += 1
         retryCount += 1
