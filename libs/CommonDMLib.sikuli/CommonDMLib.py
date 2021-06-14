@@ -2038,6 +2038,7 @@ def RestartApp(resource):
             break
         if num >= 179:
            raise Exception 
+        wait(2)
     if skipDownloadFlag == False:
         click(resource.BUTTON_OK)
         for downloadLoop in range(DOWNLOAD_TIMEOUT):
