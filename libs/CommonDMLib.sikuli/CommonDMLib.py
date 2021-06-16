@@ -1038,7 +1038,7 @@ def countAllCardsByRarity(resource):
         click(resource.BUTTON_BASIC)
         for b in resource.BUTTON_DMPPS:
             click(b)
-            wait(1000)
+            wait(2)
         click(resource.BUTTON_OK)
         wait(0.5)
         
