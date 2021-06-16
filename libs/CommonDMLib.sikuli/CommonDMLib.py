@@ -1033,7 +1033,7 @@ def countAllCardsByRarity(resource):
         click(resource.BUTTON_FILTER)
         click(resource.BUTTON_RESET)
         click(rarity)
-        wheel(rarity,Button.WHEEL_DOWN, 20)
+        wheel(rarity,Button.WHEEL_DOWN, 40)
         wait(3)
         click(resource.BUTTON_BASIC)
         for b in resource.BUTTON_DMPPS:
