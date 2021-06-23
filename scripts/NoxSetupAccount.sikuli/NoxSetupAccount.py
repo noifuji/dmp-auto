@@ -34,6 +34,11 @@ CommonDMLib.downloadDeckCodes()
 
 exceptionFlag = False
 for count in range(100):
+    if CommonDMLib.fetchCurrentAccountCount(sheets) > 300:
+        CommonDMLib.sendMessagetoSlack("INFO", mentionUser, 'No need to create new accounts.', appname)
+        break
+
+    
     try:
         if not CommonDMLib.isNoxOn() or exceptionFlag:
             print "restarting Nox..."
@@ -45,7 +50,7 @@ for count in range(100):
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.sendMessagetoSlack(mentionUser,'Failed to launch instance. Setup was canceled.', appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,'Failed to launch instance. Setup was canceled.', appname)
         break
         
     for num in range(100):
@@ -73,7 +78,7 @@ for count in range(100):
                     print 'loop without action : ' + str(loop_without_action_count)
                 
                 if loop_without_action_count >= 119:
-                    CommonDMLib.sendMessagetoSlack(mentionUser,'Too many loops without actions. This app will be restarted.', appname)
+                    CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,'Too many loops without actions. This app will be restarted.', appname)
                     breakFlag = True
                     loop_without_action_count = 0
 
@@ -155,7 +160,7 @@ for count in range(100):
                     print 'loop without action : ' + str(loop_without_action_count)
                 
                 if loop_without_action_count >= 119:
-                    CommonDMLib.sendMessagetoSlack(mentionUser,'Too many loops without actions. This app will be restarted.', appname)
+                    CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,'Too many loops without actions. This app will be restarted.', appname)
                     breakFlag = True
                     loop_without_action_count = 0
                     break
@@ -231,6 +236,9 @@ for count in range(100):
             click(NoxResources.ICON_OTHER)
             wait(3)
             click("1596781081109.png")
+            exists(NoxResources.BUTTON_GAME_SETTINGS, 30)
+            click(NoxResources.BUTTON_GAME_SETTINGS)
+            
             exists("1596781095779.png", 30)
             wheel(Pattern("1596781095779.png").targetOffset(19,145), Button.WHEEL_DOWN, 100)
             wait(5)
@@ -239,6 +247,8 @@ for count in range(100):
             click(Pattern("1596781253234.png").targetOffset(511,1))
             click(Pattern("1596781269013.png").targetOffset(500,8))
             click(Pattern("1596781287439.png").similar(0.60).targetOffset(506,0))
+            click("1596781316064.png")
+            wait(5)
             click("1596781316064.png")
             exists("1597235336512.png",10)
             click("1597235336512.png")
@@ -253,7 +263,7 @@ for count in range(100):
             exists("1600004802890.png", 120)
             ref = CommonDMLib.getSetupAccountRef(sheets)
             if ref == "":
-                CommonDMLib.sendMessagetoSlack(mentionUser,"No empty Ref numbers. Add Refs to the inventory list.", appname)
+                CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,"No empty Ref numbers. Add Refs to the inventory list.", appname)
                 breakFlag = True
                 break
             playerId = CommonDMLib.scanNumberChangeWidth("1601082545206.png", -270, 0, 233, 38, 0, 25)
@@ -277,7 +287,7 @@ for count in range(100):
                     os.path.join(EnvSettings.BACKUP_DIR_PATH,identifierFilename),
                     EnvSettings.IDENTIFIER_DRIVE_DIR_ID, 
                     "application/octet-stream")
-            CommonDMLib.sendMessagetoSlack(mentionUser,'Setup has finished.', appname)
+            CommonDMLib.sendMessagetoSlack("DEBUG", mentionUser,'Setup has finished.', appname)
             if CommonDMLib.isNewVersionAvailable():
                 exit(50)
             wait(5)
@@ -287,8 +297,8 @@ for count in range(100):
             for mes in e:
                 print(mes)
             CommonDMLib.updatePlayerId(sheets, ref, "", "")
-            CommonDMLib.sendMessagetoSlack(mentionUser,'Error occured. Restarting..', appname)
-            CommonDMLib.sendMessagetoSlack( mentionUser,traceback.format_exc(), appname)
+            CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,'Error occured. Restarting..', appname)
+            CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,traceback.format_exc(), appname)
             if CommonDMLib.isNewVersionAvailable():
                 exit(50)
             wait(5)

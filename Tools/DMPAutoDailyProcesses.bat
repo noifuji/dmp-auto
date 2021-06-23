@@ -41,12 +41,6 @@ set PIDFile=./data/pid.txt
 powershell "Get-WmiObject win32_process -filter processid=$pid | ForEach-Object{$_.parentprocessid;}" > %PIDFile%
 
 
-@REM セットアップ
-@REM java -jar sikulixide-2.0.4.jar -r .\scripts\NoxSetupAccount.sikuli
-@REM if %ERRORLEVEL%==50 (
-@REM  start .\Tools\auto_update.bat .\Tools\%~n0%~x0
-@REM  exit
-@REM )
 
 @REM デイリーログイン
 java -jar sikulixide-2.0.4.jar -r .\scripts\NoxDailyLogin.sikuli
@@ -88,6 +82,13 @@ if %ERRORLEVEL%==50 (
 )
 if %ERRORLEVEL%==60 (
  start .\Tools\createGameTradeDraft.bat .\Tools\%~n0%~x0
+ exit
+)
+
+@REM セットアップ
+java -jar sikulixide-2.0.4.jar -r .\scripts\NoxSetupAccount.sikuli
+if %ERRORLEVEL%==50 (
+ start .\Tools\auto_update.bat .\Tools\%~n0%~x0
  exit
 )
 

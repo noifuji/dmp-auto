@@ -200,6 +200,41 @@ def noxCallKillDMPApp():
     print command
     os.system(command)
 
+def fetchCurrentAccountCount(spreadsheet):
+    status = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
+            EnvSettings.STATUS_INFO_SHEET_NAME + "!" + 
+            EnvSettings.STATUS_INFO_REF_COL + "2:" + 
+            EnvSettings.STATUS_INFO_STATUS_COL + "3000", 
+            "ROWS")
+
+    soldAccounts = []
+    for s in status:
+        if len(s) == 2:
+            soldAccounts.append(s)
+    
+    raw = spreadsheet.read(EnvSettings.ACCOUNT_INFO_SHEET_ID,
+            EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" + 
+            EnvSettings.ACCOUNT_INFO_REF_COL + EnvSettings.ACCOUNT_INFO_START_ROW + ":" + 
+            EnvSettings.ACCOUNT_INFO_PLAYERID_COL + EnvSettings.ACCOUNT_INFO_END_ROW, 
+            "ROWS")
+
+    accountsWithId = []
+    for r in raw:
+        if len(r) == 2:
+            accountsWithId.append(r)
+
+    count = 0
+    for ac in accountsWithId:
+        soldFlag = False
+        for sold in soldAccounts:
+            if ac[0] == sold[0]:
+                soldFlag = True
+                break
+        if not soldFlag:
+            count = count + 1
+
+    return count
+
 #PROCESSNAME
 #DAILY, MAIN, LEGEND
 def getNextRef(sheets, processname):
