@@ -85,7 +85,7 @@ while True:
         e = sys.exc_info()
         for mes in e:
             print(mes)
-        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser, 'Error occured in ' + str(workingRef) + '.', appname)
+        CommonDMLib.sendMessagetoSlack("ERROR", mentionUser, 'Error occured.', appname)
         CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,traceback.format_exc(), appname)
         CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
         CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,"RestartCount:" + str(restartCount), appname)
