@@ -94,5 +94,6 @@ while True:
             CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,"Restart OS", appname)
             exit()
         if CommonDMLib.isNewVersionAvailable():
+            CommonDMLib.sendMessagetoSlack("INFO", mentionUser, 'A new version is detected. The instance will be restarted.', appname)
             exit(50)
         exceptionFlag = True

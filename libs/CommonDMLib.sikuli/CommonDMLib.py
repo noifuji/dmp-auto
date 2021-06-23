@@ -2090,9 +2090,9 @@ def RestartApp(resource):
                     wait(1)
                     break
         if exists(resource.BUTTON_QUICKPICK_REWARD, 0.5) != None:
-            click(NoxResources.BUTTON_QUICKPICK_REWARD)
+            click(resource.BUTTON_QUICKPICK_REWARD)
             wait(5)
-            click(NoxResources.BUTTON_OK)
+            click(resource.BUTTON_OK)
             
         if exists(resource.MESSAGE_BACK_TO_TITLE, 0.5) != None:
             type(Key.ESC)
