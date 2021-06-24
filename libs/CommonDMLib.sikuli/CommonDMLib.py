@@ -760,6 +760,8 @@ def updatePlayerId(spreadsheet, ref, playerId, computername):
     rowIndex = None
     for i in range(len(refs)):
         if refs[i][0] == str(ref):
+            if len(refs[i]) > 1 and refs[i][1] != "":
+                return False
             rowIndex = i + 3
             break
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
@@ -768,6 +770,8 @@ def updatePlayerId(spreadsheet, ref, playerId, computername):
     spreadsheet.write(EnvSettings.ACCOUNT_INFO_SHEET_ID, 
             EnvSettings.ACCOUNT_INFO_SHEET_NAME + "!" +
             EnvSettings.ACCOUNT_INFO_CREATEDATE_COL + str(rowIndex), [[datetime.now().strftime("%Y/%m/%d")]], "ROWS")#aaa
+
+    return True
 
 def updateAccountInfo(spreadsheet, ref, lv, dmp, gold, packs1, packs2):
     row = [[lv, dmp, gold]]

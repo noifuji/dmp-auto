@@ -261,13 +261,20 @@ for count in range(100):
             exists("1600004729257.png",10)
             click(Pattern("1600004729257.png").targetOffset(6,330))
             exists("1600004802890.png", 120)
-            ref = CommonDMLib.getSetupAccountRef(sheets)
-            if ref == "":
-                CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,"No empty Ref numbers. Add Refs to the inventory list.", appname)
-                breakFlag = True
-                break
             playerId = CommonDMLib.scanNumberChangeWidth("1601082545206.png", -270, 0, 233, 38, 0, 25)
-            #プレーヤー名をrefに変更する。
+
+            for loopCount in range(100):
+                ref = CommonDMLib.getSetupAccountRef(sheets)
+                if ref == "":
+                    CommonDMLib.sendMessagetoSlack("ERROR", mentionUser,"No empty Ref numbers. Add Refs to the inventory list.", appname)
+                    raise Exception("Failed to create new Ref.")
+            
+                if CommonDMLib.updatePlayerId(sheets, str(ref), playerId, os.environ["COMPUTERNAME"]):
+                    break
+
+                if loopCount > 10:
+                    raise Exception("Failed to create new Ref.")
+            
             click(Pattern("1603534330138.png").targetOffset(106,81))
             for bkLoop in range(10):
                 type(Key.BACKSPACE)
@@ -277,7 +284,6 @@ for count in range(100):
             click("1603541423678.png")
             wait(1)
             CommonDMLib.uploadScreenShotToSlack(mentionUser, str(ref), appname)
-            CommonDMLib.updatePlayerId(sheets, str(ref), playerId, os.environ["COMPUTERNAME"])
             restoreCmd = [EnvSettings.NoxAdbPath, "shell", "input", "keyevent", "KEYCODE_HOME"]
             subprocess.Popen(restoreCmd, shell=True)
             wait(5)
