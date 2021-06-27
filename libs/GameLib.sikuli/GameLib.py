@@ -1221,6 +1221,14 @@ def irregularLoop(resources, appname):
                 click(resources.TITLE_HAND2)
                 click(resources.BUTTON_OK2)
                 wait(1)
+
+        if appname not in ["aa"]:
+            #x button
+            if len(findAny(resources.BUTTON_CLOSE)) > 0:
+                click(resources.BUTTON_CLOSE)
+                wait(3)
+                
+            
         
         if  enemyturn_loop == 49:
             print 'Irregular loop is over 50. Restart is necessary.'

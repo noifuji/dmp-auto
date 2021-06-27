@@ -150,37 +150,42 @@ def isNewVersionAvailable():
         return False
 
 def dragDropAtSpeed(fromImg, toImg, speed):
-    currentSpeed = Settings.MoveMouseDelay
 
-    toImgObj = None
-    if isinstance(toImg, str) or isinstance(toImg, Pattern):
-        res = findAny(toImg)
-        if len(res) == 0:
+    for retryLoop in range(5):
+        if retryLoop >= 4:
             raise Exception
-        toImgObj = res[0]
-    else:
-        toImgObj = toImg
-    toImg_gx = toImgObj.getX() + toImgObj.getW()/2 + toImgObj.getTargetOffset().getX()
-    toImg_gy = toImgObj.getY() + toImgObj.getH()/2 + toImgObj.getTargetOffset().getY()
-
-    fromImgObj = None
-    if isinstance(fromImg, str) or isinstance(fromImg, Pattern):
-        res = findAny(fromImg)
-        if len(res) == 0:
-            raise Exception
-        fromImgObj = res[0]
-    else:
-        fromImgObj = fromImg
-    fromImg_gx = fromImgObj.getX() + fromImgObj.getW()/2 + fromImgObj.getTargetOffset().getX()
-    fromImg_gy = fromImgObj.getY() + fromImgObj.getH()/2 + fromImgObj.getTargetOffset().getY()
+        
+        currentSpeed = Settings.MoveMouseDelay
+        toImgObj = None
+        if isinstance(toImg, str) or isinstance(toImg, Pattern):
+            res = findAny(toImg)
+            if len(res) == 0:
+                continue
+            toImgObj = res[0]
+        else:
+            toImgObj = toImg
+        toImg_gx = toImgObj.getX() + toImgObj.getW()/2 + toImgObj.getTargetOffset().getX()
+        toImg_gy = toImgObj.getY() + toImgObj.getH()/2 + toImgObj.getTargetOffset().getY()
     
-    mouseMove(fromImg)
-    mouseDown(Button.LEFT)
-    wait(0.2)
-    Settings.MoveMouseDelay = speed
-    mouseMove(toImg_gx - fromImg_gx, toImg_gy - fromImg_gy)
-    mouseUp(Button.LEFT)
-    Settings.MoveMouseDelay = currentSpeed
+        fromImgObj = None
+        if isinstance(fromImg, str) or isinstance(fromImg, Pattern):
+            res = findAny(fromImg)
+            if len(res) == 0:
+                continue
+            fromImgObj = res[0]
+        else:
+            fromImgObj = fromImg
+        fromImg_gx = fromImgObj.getX() + fromImgObj.getW()/2 + fromImgObj.getTargetOffset().getX()
+        fromImg_gy = fromImgObj.getY() + fromImgObj.getH()/2 + fromImgObj.getTargetOffset().getY()
+        
+        mouseMove(fromImg)
+        mouseDown(Button.LEFT)
+        wait(0.2)
+        Settings.MoveMouseDelay = speed
+        mouseMove(toImg_gx - fromImg_gx, toImg_gy - fromImg_gy)
+        mouseUp(Button.LEFT)
+        Settings.MoveMouseDelay = currentSpeed
+        break
 
 def callRemoveDataBat():
     cmd_file = EnvSettings.REMOVE_DATA_BAT_PATH
