@@ -41,7 +41,7 @@ def finishMissions(instance, statisticsData, sheets):
     CommonDMLib.getMissionRewards(NoxResources)
     if CommonDMLib.getBeginnerRewards(NoxResources):
         CommonDMLib.openCardPack(NoxResources)
-    if datetime.now().day == 2 or datetime.now().day == 16:
+    if datetime.now().day == 16:# or datetime.now().day == 16:
         for openCardListLoop in range(100):
             if len(findAny(NoxResources.ICON_CARD)) > 0:
                 try:
