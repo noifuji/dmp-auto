@@ -28,7 +28,12 @@ def linkTwitter(username, password):
     exists(NoxResources.BUTTON_ACCOUNT_LINK, 60)
     click(NoxResources.BUTTON_ACCOUNT_LINK)
 
-    exists(NoxResources.BUTTON_LINK_TWITTER, 60)
+    if exists(NoxResources.BUTTON_LINK_TWITTER, 60) == None:
+        click(NoxResources.BUTTON_LINKED_TWITTER)
+        exists(NoxResources.BUTTON_OK, 60)
+        click(NoxResources.BUTTON_OK)
+        wait(10)
+        click(NoxResources.BUTTON_OK)
     wait(10)
     click(NoxResources.BUTTON_LINK_TWITTER)
 
@@ -251,7 +256,7 @@ except:
     e = sys.exc_info()
     for mes in e:
         print(mes)
-    CommonDMLib.uploadScreenShotToSlack(mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
+    CommonDMLib.uploadScreenShotToSlack(EnvSettings.mentionUser,'Error occured in ' + str(workingRef) + '. Retrying....' , appname)
     CommonDMLib.sendMessagetoSlack("ERROR", EnvSettings.mentionUser, 'Error occured.', appname)
     CommonDMLib.sendMessagetoSlack("ERROR", EnvSettings.mentionUser,traceback.format_exc(), appname)
     CommonDMLib.unlockComputer(sheets, ref)
